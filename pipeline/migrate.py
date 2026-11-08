@@ -11,6 +11,7 @@ for _f in sorted(glob.glob(MANI)): rows+=json.load(gzip.open(_f,"rt",encoding="u
 _drop=set(json.load(open("manifest/drop.json"))) if os.path.exists("manifest/drop.json") else set()
 rows=[r for r in rows if r["id"] not in _drop]
 BIG=2048000
+NOACC=set(json.load(open("manifest/noaccess.json"))) if os.path.exists("manifest/noaccess.json") else set()
 UNRES=json.load(open("manifest/shortcuts_unres.json")) if os.path.exists("manifest/shortcuts_unres.json") else {}
 HAVE=set(open("/tmp/assets.txt").read().split()) if os.path.exists("/tmp/assets.txt") else set()
 A=os.path.join(OUT,"archive"); AA=os.path.join(A,"a"); os.makedirs(AA,exist_ok=True)
@@ -82,6 +83,7 @@ def name_of(p): return p.rsplit("/",1)[-1]
 def proc(r):
     p=r["path"];n=name_of(p);m=r["mime"];i=r["id"]
     try:
+        if i in NOACC: return
         if m=="application/vnd.google-apps.folder" or m=="application/vnd.google-apps.shortcut": return
         dest=os.path.join(AA,os.path.basename(site(r)))
         if m.startswith("image/"):
@@ -154,6 +156,8 @@ for fp in sorted(folders):
         elif m=="application/vnd.google-apps.shortcut":
             _u=UNRES.get(k["id"])
             body+=('<div class="card sub">⚠ לא הועתק (אין גישה לתיקייה): <a href="%s" target="_blank">%s ↗</a></div>'%(_u,html.escape(n))) if _u else ('<div class="card sub">קיצור דרך: %s</div>'%html.escape(n))
+        elif k["id"] in NOACC:
+            body+='<div class="card sub">🔒 לא הועתק (הקובץ חסום במקור): %s</div>'%html.escape(n)
         else:
             if int(k["size"])<=BIG and not os.path.exists(os.path.join(AA,os.path.basename(site(k)))): continue
             href=rel_url(k) if int(k["size"])>BIG else "a/"+os.path.basename(site(k))
