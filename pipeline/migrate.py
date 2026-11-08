@@ -11,6 +11,7 @@ for _f in sorted(glob.glob(MANI)): rows+=json.load(gzip.open(_f,"rt",encoding="u
 _drop=set(json.load(open("manifest/drop.json"))) if os.path.exists("manifest/drop.json") else set()
 rows=[r for r in rows if r["id"] not in _drop]
 BIG=2048000
+UNRES=json.load(open("manifest/shortcuts_unres.json")) if os.path.exists("manifest/shortcuts_unres.json") else {}
 HAVE=set(open("/tmp/assets.txt").read().split()) if os.path.exists("/tmp/assets.txt") else set()
 A=os.path.join(OUT,"archive"); AA=os.path.join(A,"a"); os.makedirs(AA,exist_ok=True)
 REL=os.path.join(OUT,"_release"); os.makedirs(REL,exist_ok=True)
@@ -72,8 +73,10 @@ h1{color:red;font-size:26px}h2{color:red}a{color:#fff}.bar a{display:inline-bloc
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-width:1000px;margin:12px auto}.grid img{width:100%;height:150px;object-fit:cover;border-radius:8px;border:1px solid red;display:block}
 video,audio{max-width:100%}.doc{background:#fff;color:#000;text-align:right;max-width:800px;margin:16px auto;padding:20px;border-radius:8px}.doc *{max-width:100%}
 .sub{font-size:13px;color:#aaa}"""
-def page(title,body,back):
-    return '<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%s</title><style>%s</style></head><body><div class="bar">%s</div><h1>%s</h1>%s</body></html>'%(html.escape(title),CSS,back,html.escape(title),body)
+BGCSS="""body{background:#000 url('../bg-%(c)s.jpg') center/cover no-repeat fixed}h1,h2{text-shadow:0 0 6px #000,0 0 3px #000}.card,.grid img{background:rgba(17,17,17,.93)}@media(max-width:600px){body{padding-top:155px;background:linear-gradient(to bottom,rgba(0,0,0,0) 62%%,#000 98%%),url('../bg-%(c)s.jpg') top center/100%% auto no-repeat,#000}}"""
+def page(title,body,back,bg=None):
+    st=CSS+(BGCSS%{"c":bg} if bg else "")
+    return '<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%s</title><style>%s</style></head><body><div class="bar">%s</div><h1>%s</h1>%s</body></html>'%(html.escape(title),st,back,html.escape(title),body)
 def name_of(p): return p.rsplit("/",1)[-1]
 # process files
 def proc(r):
@@ -149,7 +152,8 @@ for fp in sorted(folders):
             if not ex(".html"): continue
             body+='<div class="card"><a href="a/%s.html">📄 %s</a></div>'%(k["id"],html.escape(n))
         elif m=="application/vnd.google-apps.shortcut":
-            body+='<div class="card sub">קיצור דרך: %s</div>'%html.escape(n)
+            _u=UNRES.get(k["id"])
+            body+=('<div class="card sub">⚠ לא הועתק (אין גישה לתיקייה): <a href="%s" target="_blank">%s ↗</a></div>'%(_u,html.escape(n))) if _u else ('<div class="card sub">קיצור דרך: %s</div>'%html.escape(n))
         else:
             if int(k["size"])<=BIG and not os.path.exists(os.path.join(AA,os.path.basename(site(k)))): continue
             href=rel_url(k) if int(k["size"])>BIG else "a/"+os.path.basename(site(k))
@@ -160,6 +164,6 @@ for fp in sorted(folders):
     parent=fp.rsplit("/",1)[0] or "/"
     if fp!="/" and parent!="/": back+='<a href="%s.html">⬆ %s</a>'%(slug(parent),html.escape(name_of(parent)))
     elif fp!="/": back+='<a href="f_root.html">הארכיון</a>'
-    open(os.path.join(A,("f_root" if fp=="/" else slug(fp))+".html"),"w").write(page(title,"".join(sub)+body,back))
+    open(os.path.join(A,("f_root" if fp=="/" else slug(fp))+".html"),"w").write(page(title,"".join(sub)+body,back,CAT.get(fp.split("/")[1]) if fp!="/" else None))
 json.dump({"stats":stats,"fails":fails},open(os.path.join(OUT,"report.json"),"w"),ensure_ascii=False,indent=1)
 print(dict(stats),"fails",len(fails))
