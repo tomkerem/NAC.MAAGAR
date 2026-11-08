@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NA-C GAMES - מאגר הנשיא</title>
+
+    <!-- הפונט השבטי -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: black;
+            color: red;
+            text-align: center;
+            font-family: 'Secular One', sans-serif;
+            padding: 30px 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: red;
+            text-decoration: none;
+            font-size: 18px;
+            border: 2px solid red;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .back-btn:hover {
+            color: black;
+            background-color: red;
+        }
+
+        body {
+            background: #000 url('bg-games.jpg') center/cover no-repeat fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        @media (max-width: 600px) {
+            body::before { display: none; }
+            body {
+                padding-top: 155px;
+                background:
+                    linear-gradient(to bottom, rgba(0,0,0,0) 62%, #000 98%),
+                    url('bg-games.jpg') top center / 100% auto no-repeat,
+                    #000;
+            }
+        }
+
+.sec{border:2px solid red;border-radius:12px;background:rgba(17,17,17,.92);max-width:700px;margin:18px auto;padding:14px}
+.sec h2{margin:4px 0 6px}.sec h2 a{color:red;text-decoration:none}
+.cnt{color:#ccc;font-size:14px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<h1>NA-C GAMES</h1>
+<p>שבט הנשיא</p>
+
+<div class="sec"><div class="cnt" style="margin:0">התכנים של NA-C GAMES בדרך, בקרוב כאן.</div></div>
+
+<!-- כפתור חזרה לדף הבית -->
+<a href="index.html" class="back-btn">⬅ חזרה להתחלה</a>
+
+</body>
+</html>
