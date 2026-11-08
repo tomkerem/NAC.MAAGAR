@@ -8,6 +8,10 @@ try:
 except Exception: pass
 rows=[]
 for _f in sorted(glob.glob(MANI)): rows+=json.load(gzip.open(_f,"rt",encoding="utf-8"))
+_drop=set(json.load(open("manifest/drop.json"))) if os.path.exists("manifest/drop.json") else set()
+rows=[r for r in rows if r["id"] not in _drop]
+BIG=2048000
+HAVE=set(open("/tmp/assets.txt").read().split()) if os.path.exists("/tmp/assets.txt") else set()
 A=os.path.join(OUT,"archive"); AA=os.path.join(A,"a"); os.makedirs(AA,exist_ok=True)
 REL=os.path.join(OUT,"_release"); os.makedirs(REL,exist_ok=True)
 CAT={"מדיה וצ׳ופרים":"media","גלופות וסמלים":"glupot","קטלוג השבט":"catalog","פנאטיות":"fanatia","הדרכה":"hadracha","מחנאות":"machanot","ג׳ינגלים":"jingles"}
@@ -54,7 +58,7 @@ def rewrite_links(s,hrefprefix=""):
                 p=idpath[i]; r=next((x for x in rows if x["id"]==i),None)
                 if r["mime"]=="application/vnd.google-apps.folder": return hrefprefix+slug(p)+".html"
                 if r["mime"]=="application/vnd.google-apps.document": return hrefprefix+"a/%s.html"%i
-                return hrefprefix+site(r) if not r["mime"].startswith(("video/","audio/")) else rel_url(r)
+                return hrefprefix+site(r) if not (r["mime"].startswith(("video/","audio/")) or int(r["size"])>BIG) else rel_url(r)
         stats["drive_links_left"]+=1
         return m.group(0)
     return LINKRE.sub(sub,s)
@@ -78,21 +82,24 @@ def proc(r):
         if m=="application/vnd.google-apps.folder" or m=="application/vnd.google-apps.shortcut": return
         dest=os.path.join(AA,os.path.basename(site(r)))
         if m.startswith("image/"):
+            if os.path.exists(os.path.join(AA,i+".jpg")): return
             tmp=dest+".src";
             if not gdl(i,tmp): fails.append(p);return
             from PIL import Image,ImageOps
             try:
-                im=ImageOps.exif_transpose(Image.open(tmp)).convert("RGB");im.thumbnail((1280,1280))
-                dest=os.path.join(AA,i+".jpg");im.save(dest,quality=72,optimize=True);stats["img"]+=1
+                im=ImageOps.exif_transpose(Image.open(tmp)).convert("RGB");im.thumbnail((1000,1000))
+                dest=os.path.join(AA,i+".jpg");im.save(dest,quality=62,optimize=True);stats["img"]+=1
             except Exception as e:
                 fails.append(p+" (image decode: %s)"%type(e).__name__)
             os.remove(tmp)
         elif m.startswith(("video/","audio/")):
             d=os.path.join(REL,os.path.basename(site(r)))
+            if os.path.basename(d) in HAVE: return
             if gdl(i,d): stats["release_files"]+=1
             else: fails.append(p)
         elif m=="application/vnd.google-apps.document":
             d=os.path.join(AA,i+".html")
+            if os.path.exists(d): return
             tmp=d+".src"
             if not dl("https://docs.google.com/document/d/%s/export?format=html"%i,tmp): fails.append(p);return
             s=open(tmp,errors="ignore").read();os.remove(tmp)
@@ -102,11 +109,13 @@ def proc(r):
             body=re.sub(r'https://www\.google\.com/url\?q=([^&"]+)[^"]*',lambda x:__import__("urllib.parse").parse.unquote(x.group(1)),body)
             open(d,"w").write(page(n,'<div class="doc"><style>%s</style>%s</div>'%(st,body),'<a href="%s.html">חזרה</a>'%slug(p.rsplit("/",1)[0] or "/")));stats["docs"]+=1
         else:
-            if r["size"]>60e6:
+            if int(r["size"])>BIG:
                 d=os.path.join(REL,os.path.basename(site(r)))
+                if os.path.basename(d) in HAVE: return
                 if gdl(i,d): stats["release_files"]+=1
                 else: fails.append(p)
             else:
+                if os.path.exists(dest): return
                 if gdl(i,dest): stats["files"]+=1
                 else: fails.append(p)
     except Exception as e: fails.append(p+" (%s)"%e)
@@ -131,10 +140,10 @@ for fp in sorted(folders):
         if m.startswith("image/"):
             if os.path.exists(os.path.join(AA,k["id"]+".jpg")): imgs.append('<a href="a/%s.jpg"><img loading="lazy" src="a/%s.jpg" alt="%s"></a>'%(k["id"],k["id"],html.escape(n)))
         elif m.startswith("video/"):
-            if k["id"] not in TAGMAP: continue
+            if k["path"] in fails: continue
             body+='<div class="card"><div>%s</div><video controls preload="none" playsinline src="%s"></video></div>'%(html.escape(n),rel_url(k))
         elif m.startswith("audio/"):
-            if k["id"] not in TAGMAP: continue
+            if k["path"] in fails: continue
             body+='<div class="card"><div>%s</div><audio controls preload="none" src="%s"></audio></div>'%(html.escape(n),rel_url(k))
         elif m=="application/vnd.google-apps.document":
             if not ex(".html"): continue
@@ -142,9 +151,8 @@ for fp in sorted(folders):
         elif m=="application/vnd.google-apps.shortcut":
             body+='<div class="card sub">קיצור דרך: %s</div>'%html.escape(n)
         else:
-            if k["size"]<=60e6 and not os.path.exists(os.path.join(AA,os.path.basename(site(k)))): continue
-            if k["size"]>60e6 and k["id"] not in TAGMAP: continue
-            href=rel_url(k) if k["size"]>60e6 else "a/"+os.path.basename(site(k))
+            if int(k["size"])<=BIG and not os.path.exists(os.path.join(AA,os.path.basename(site(k)))): continue
+            href=rel_url(k) if int(k["size"])>BIG else "a/"+os.path.basename(site(k))
             body+='<div class="card"><a href="%s">⬇ %s</a><div class="sub">%.1f MB</div></div>'%(href,html.escape(n),k["size"]/1e6)
     if imgs: body+='<div class="grid">%s</div>'%"".join(imgs)
     title=name_of(fp) if fp!="/" else "הארכיון"
