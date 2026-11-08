@@ -1,4 +1,4 @@
-import json,os,re,sys,gzip,html,subprocess,hashlib,time,collections
+import json,os,re,sys,gzip,glob,html,subprocess,hashlib,time,collections
 from concurrent.futures import ThreadPoolExecutor
 REPO="tomkerem/NAC.MAAGAR"
 PREFIX=sys.argv[1]; TAG=sys.argv[2]; OUT=sys.argv[3]; LIMIT=int(sys.argv[4]) if len(sys.argv)>4 else 10**9
@@ -6,7 +6,6 @@ MANI=os.environ.get("MANIFEST","manifest/part*.json.gz")
 try:
     import pillow_heif; pillow_heif.register_heif_opener()
 except Exception: pass
-import glob
 rows=[]
 for _f in sorted(glob.glob(MANI)): rows+=json.load(gzip.open(_f,"rt",encoding="utf-8"))
 A=os.path.join(OUT,"archive"); AA=os.path.join(A,"a"); os.makedirs(AA,exist_ok=True)
@@ -18,7 +17,10 @@ def ext_of(name,mime):
 # folder ids: stable slug from path
 def slug(path): return "f"+hashlib.md5(path.encode()).hexdigest()[:10]
 idpath={r["id"]:r["path"] for r in rows}
-sel=[r for r in rows if r["path"].startswith(PREFIX)][:LIMIT]
+if PREFIX.startswith("="):
+    PREFIX=PREFIX[1:]; sel=[r for r in rows if r["path"].rsplit("/",1)[0]==PREFIX][:LIMIT]
+else:
+    sel=[r for r in rows if r["path"].startswith(PREFIX)][:LIMIT]
 # all folders on the way (to build tree)
 folders=set(["/"]) 
 children=collections.defaultdict(list)
@@ -56,7 +58,10 @@ def rewrite_links(s,hrefprefix=""):
         stats["drive_links_left"]+=1
         return m.group(0)
     return LINKRE.sub(sub,s)
-def rel_url(r): return "https://github.com/%s/releases/download/%s/%s"%(REPO,TAG,os.path.basename(site(r)))
+TAGMAP={}
+for _f in glob.glob(os.path.join(A,"tags-*.json")):
+    TAGMAP.update(json.load(open(_f)))
+def rel_url(r): return "https://github.com/%s/releases/download/%s/%s"%(REPO,TAGMAP.get(r["id"],TAG),os.path.basename(site(r)))
 CSS="""body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;direction:rtl;text-align:center;padding:20px}
 h1{color:red;font-size:26px}h2{color:red}a{color:#fff}.bar a{display:inline-block;border:2px solid red;border-radius:8px;padding:8px 16px;color:red;text-decoration:none;margin:4px}
 .card{border:2px solid red;border-radius:12px;background:#111;max-width:700px;margin:12px auto;padding:14px}
@@ -107,6 +112,9 @@ def proc(r):
     except Exception as e: fails.append(p+" (%s)"%e)
 files=[r for r in sel if r["mime"] not in("application/vnd.google-apps.folder",)]
 with ThreadPoolExecutor(6) as ex: list(ex.map(proc,files))
+for r in sel:
+    if os.path.exists(os.path.join(REL,os.path.basename(site(r)))): TAGMAP[r["id"]]=TAG
+json.dump({r["id"]:TAG for r in sel if os.path.exists(os.path.join(REL,os.path.basename(site(r))))},open(os.path.join(A,"tags-%s.json"%re.sub(r"[^A-Za-z0-9_-]","",TAG)),"w"))
 # folder pages: only for folders on selected subtree and its ancestors
 def has_sel(fp):
     return any(r["path"].startswith(fp+"/") or r["path"]==fp for r in sel) or PREFIX.startswith(fp+"/") or fp=="/"
@@ -116,21 +124,26 @@ for fp in sorted(folders):
     for k in sorted(kids,key=lambda x:x["path"]):
         n=name_of(k["path"]);m=k["mime"]
         if m=="application/vnd.google-apps.folder":
-            if k["path"].startswith(PREFIX) or PREFIX.startswith(k["path"]+"/"): sub.append('<div class="card"><a href="%s.html">📁 %s</a></div>'%(slug(k["path"]),html.escape(n)))
+            if True: sub.append('<div class="card"><a href="%s.html">📁 %s</a></div>'%(slug(k["path"]),html.escape(n)))
             continue
-        if k["id"] not in selids: continue
+        ex=lambda e: os.path.exists(os.path.join(AA,k["id"]+e))
         fn=os.path.exists
         if m.startswith("image/"):
             if os.path.exists(os.path.join(AA,k["id"]+".jpg")): imgs.append('<a href="a/%s.jpg"><img loading="lazy" src="a/%s.jpg" alt="%s"></a>'%(k["id"],k["id"],html.escape(n)))
         elif m.startswith("video/"):
+            if k["id"] not in TAGMAP: continue
             body+='<div class="card"><div>%s</div><video controls preload="none" playsinline src="%s"></video></div>'%(html.escape(n),rel_url(k))
         elif m.startswith("audio/"):
+            if k["id"] not in TAGMAP: continue
             body+='<div class="card"><div>%s</div><audio controls preload="none" src="%s"></audio></div>'%(html.escape(n),rel_url(k))
         elif m=="application/vnd.google-apps.document":
+            if not ex(".html"): continue
             body+='<div class="card"><a href="a/%s.html">📄 %s</a></div>'%(k["id"],html.escape(n))
         elif m=="application/vnd.google-apps.shortcut":
             body+='<div class="card sub">קיצור דרך: %s</div>'%html.escape(n)
         else:
+            if k["size"]<=60e6 and not os.path.exists(os.path.join(AA,os.path.basename(site(k)))): continue
+            if k["size"]>60e6 and k["id"] not in TAGMAP: continue
             href=rel_url(k) if k["size"]>60e6 else "a/"+os.path.basename(site(k))
             body+='<div class="card"><a href="%s">⬇ %s</a><div class="sub">%.1f MB</div></div>'%(href,html.escape(n),k["size"]/1e6)
     if imgs: body+='<div class="grid">%s</div>'%"".join(imgs)
