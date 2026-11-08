@@ -136,6 +136,20 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
   .screen.on>.animItem,.btn,.scoreLine,.trophy,.trophyTop,.centerGoal,#splashLogo,#splashHint,.patternBg span{animation:none !important}
   .racer,#ropeKnot,.tugEmoji{transition:none}
 }
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+#s_arena,#s_arena *{touch-action:none}
+img{-webkit-user-drag:none}
+/* ---------- WINNER overlay ---------- */
+.winFx{position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden}
+.winTint{position:absolute;inset:0}
+.winRibbon{position:absolute;top:50%;left:50%;width:150vw;height:78px;transform:translate(-50%,-50%) rotate(-7deg);border-top:3px solid rgba(255,255,255,.4);border-bottom:3px solid rgba(255,255,255,.4);box-shadow:0 10px 40px rgba(0,0,0,.6);animation:ribbonIn .5s cubic-bezier(.2,1.2,.3,1) both}
+@keyframes ribbonIn{from{transform:translate(-50%,-50%) rotate(-7deg) scaleX(0)}to{transform:translate(-50%,-50%) rotate(-7deg) scaleX(1)}}
+.winBanner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-7deg);text-align:center;animation:winPop .65s cubic-bezier(.18,1.7,.35,1) both .12s}
+@keyframes winPop{0%{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(.2)}60%{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1.14)}100%{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
+.winWord{font-size:clamp(44px,13.5vw,84px);font-weight:900;letter-spacing:1px;color:#fff;-webkit-text-stroke:2px #140000;text-shadow:0 4px 0 #140000,0 0 34px rgba(0,0,0,.55);white-space:nowrap;line-height:1.05}
+.winSub{margin-top:4px;font-size:clamp(20px,6.5vw,34px);font-weight:900;color:#fff;-webkit-text-stroke:1.2px #140000;text-shadow:0 3px 0 #140000}
+.confetti{position:absolute;top:-26px;border-radius:2px;opacity:.95;animation:confFall linear forwards}
+@keyframes confFall{to{transform:translateY(118vh) rotate(760deg)}}
 </style>
 </head>
 <body>
@@ -151,8 +165,7 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
   <div class="patternBg" data-pattern></div>
   <img class="animItem" src="games-logo.jpg" alt="234 NA-C GAMES" style="width:min(64vw,250px);border-radius:16px;filter:drop-shadow(0 0 22px rgba(255,0,0,.5))">
   <div class="sub animItem">משחקי שבט הנשיא על מסך אחד</div>
-  <button class="btn animItem" data-go="s_mode" data-mode="free">משחק חופשי</button>
-  <button class="btn animItem" data-go="s_mode" data-mode="tour">טורניר 🏆</button>
+  <button class="btn animItem" data-go="s_mode" data-mode="free">התחל משחק</button>
   <button class="btn small animItem" onclick="location.href='index.html'">⬅ חזרה להתחלה</button>
 </div>
 
@@ -192,16 +205,6 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
   <button class="btn small animItem" data-go="s_home">⬅ חזרה</button>
 </div>
 
-<!-- TOURNAMENT LENGTH -->
-<div class="screen" id="s_rounds">
-  <div class="patternBg" data-pattern></div>
-  <h1 class="animItem">כמה סיבובים?</h1>
-  <button class="btn animItem" data-rounds="3">3 סיבובים</button>
-  <button class="btn animItem" data-rounds="5">5 סיבובים</button>
-  <button class="btn animItem" data-rounds="7">7 סיבובים</button>
-  <button class="btn small animItem" data-go="s_mode">⬅ חזרה</button>
-</div>
-
 <!-- PICK GAME -->
 <div class="screen" id="s_pick">
   <div class="patternBg" data-pattern></div>
@@ -236,6 +239,7 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
   <div class="bigTitle" id="resTitle"></div>
   <div id="resBody" style="display:flex;flex-direction:column;align-items:center"></div>
   <button class="btn" id="resNext"></button>
+  <button class="btn small" id="resMenu">לתפריט</button>
 </div>
 
 <!-- FINAL -->
@@ -250,6 +254,19 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
 
 <script>
 "use strict";
+/* iOS zoom/scroll lockdown: rapid taps on pads must not double-tap-zoom or rubber-band */
+(function(){
+  document.addEventListener('gesturestart',function(e){e.preventDefault();});
+  document.addEventListener('gesturechange',function(e){e.preventDefault();});
+  document.addEventListener('dblclick',function(e){e.preventDefault();},{passive:false});
+  var lastEnd=0;
+  document.addEventListener('touchend',function(e){
+    var n=Date.now();
+    if(n-lastEnd<380)e.preventDefault();
+    lastEnd=n;
+  },{passive:false});
+  document.getElementById('s_arena').addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+})();
 function $(id){return document.getElementById(id)}
 var NAMES=["שחקן 1","שחקן 2","שחקן 3","שחקן 4"];
 var COLORS=["#ff2222","#f5f5f5","#a30d0d","#9a9a9a"];
@@ -279,7 +296,7 @@ setTimeout(closeSplash,3400);
 
 /* state + navigation */
 var mode="free",numPlayers=2,totalRounds=3,roundIdx=0,points=[0,0,0,0],curGame=null,raf=null,timers=[];
-var screens=["s_home","s_mode","s_rounds","s_pick","s_intro","s_arena","s_result","s_final"];
+var screens=["s_home","s_mode","s_pick","s_intro","s_arena","s_result","s_final"];
 function show(id){screens.forEach(function(s){$(s).classList.toggle("on",s===id)});}
 function stopLoop(){if(raf)cancelAnimationFrame(raf);raf=null;timers.forEach(clearTimeout);timers=[];}
 function later(fn,ms){timers.push(setTimeout(fn,ms));}
@@ -293,13 +310,14 @@ document.querySelectorAll("[data-go]").forEach(function(b){
 document.querySelectorAll(".pcard").forEach(function(c){
   c.addEventListener("click",function(){
     numPlayers=+c.dataset.n;
-    if(mode==="tour")show("s_rounds");else{buildPick();show("s_pick");}
+    buildPick();show("s_pick");
   });
 });
 document.querySelectorAll("[data-rounds]").forEach(function(b){
   b.addEventListener("click",function(){totalRounds=+b.dataset.rounds;points=[0,0,0,0];roundIdx=0;pickRoundGame();});
 });
 $("exitBtn").addEventListener("click",function(){stopLoop();show("s_home");});
+$("resMenu").addEventListener("click",function(){show("s_home");});
 $("againBtn").addEventListener("click",function(){show("s_home");});
 
 /* game registry */
@@ -385,28 +403,47 @@ function padCenter(i){var r=pads[i].getBoundingClientRect();return{x:r.left+r.wi
 function endRound(winnerIdx,detail){
   stopLoop();
   if(winnerIdx!=null&&winnerIdx>=0)points[winnerIdx]++;
-  var isLast=(mode==="tour")?(roundIdx>=totalRounds-1):true;
-  $("resTitle").textContent=winnerIdx==null?"תיקו!":(NAMES[winnerIdx]+" לוקח את הסיבוב!");
+  $("resTitle").textContent=winnerIdx==null?"תיקו!":(NAMES[winnerIdx]+" לוקח!");
   var h="";
   if(detail)h+='<div class="msg" style="margin-bottom:14px">'+detail+"</div>";
-  if(mode==="tour"){for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine"><bdi>'+NAMES[i]+'</bdi>: <b>'+points[i]+"</b></div>";}
   $("resBody").innerHTML=h;
-  $("resNext").textContent=isLast?(mode==="tour"?"לתוצאות הטורניר 🏆":"לתפריט"):("לסיבוב הבא ("+(roundIdx+2)+"/"+totalRounds+")");
-  $("resNext").onclick=function(){
-    if(isLast){finishAll();}
-    else{roundIdx++;pickRoundGame();}
-  };
+  $("resNext").textContent="עוד סיבוב";
+  $("resNext").onclick=function(){startGame(curGame);};
   show("s_result");
+  winFx(winnerIdx);
 }
-function finishAll(){
-  if(mode==="free"){show("s_home");return;}
-  var mx=Math.max.apply(null,points),winners=[];
-  points.forEach(function(p,i){if(p===mx)winners.push(NAMES[i])});
-  $("winTitle").textContent=winners.length>1?"תיקו בצמרת!":winners[0]+" מנצח!";
-  var h="";for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine"><bdi>'+NAMES[i]+'</bdi>: <b>'+points[i]+"</b></div>";
-  $("winBody").innerHTML=h;
-  show("s_final");
+function winFx(winnerIdx){
+  var old=document.querySelector('.winFx');if(old)old.remove();
+  var col=winnerIdx!=null?COLORS[winnerIdx]:'#8a8a8a';
+  var fx=document.createElement('div');fx.className='winFx';
+  var tint=document.createElement('div');tint.className='winTint';
+  tint.style.background='radial-gradient(circle at 50% 42%, '+col+'2e, transparent 72%)';
+  fx.appendChild(tint);
+  var rib=document.createElement('div');rib.className='winRibbon';
+  rib.style.background='linear-gradient(180deg,'+col+' 0%, #0a0000 130%)';
+  fx.appendChild(rib);
+  var bn=document.createElement('div');bn.className='winBanner';
+  bn.innerHTML='<div class="winWord">'+(winnerIdx==null?'תיקו!':'מנצח!')+'</div>'+(winnerIdx!=null?'<div class="winSub">'+NAMES[winnerIdx]+'</div>':'');
+  fx.appendChild(bn);
+  var reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced){
+    var pal=[col,'#ffffff','#ff2222','#9a9a9a'];
+    for(var i=0;i<64;i++){
+      var c=document.createElement('span');c.className='confetti';
+      var s=6+Math.random()*9;
+      c.style.left=(Math.random()*100)+'vw';
+      c.style.width=s+'px';c.style.height=(s*0.45+Math.random()*6)+'px';
+      c.style.background=pal[i%pal.length];
+      c.style.animationDuration=(1.6+Math.random()*1.6)+'s';
+      c.style.animationDelay=(Math.random()*1.1)+'s';
+      if(i%3===0)c.style.borderRadius='50%';
+      fx.appendChild(c);
+    }
+  }
+  document.body.appendChild(fx);
+  setTimeout(function(){fx.style.transition='opacity .5s';fx.style.opacity='0';setTimeout(function(){fx.remove();},520);},3400);
 }
+function finishAll(){show("s_home");}
 /* ============ game 1: bull race - horizontal lanes ============ */
 GAMES[0].build=function(st){
   st.innerHTML='<div class="arenaGlow"></div>';
