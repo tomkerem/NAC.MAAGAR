@@ -36,7 +36,7 @@ ul.sug li{margin:6px 0}
 
 <div class="box">
 <h2>כותבים פעולה</h2>
-<p class="small">כותבים חופשי, בלי טופס. צריך בפעולה: מטרת הפעולה, מסגרת הפעולה, משחק פתיחה ולפחות 6 הפעלות. הרשימה למטה מתעדכנת תוך כדי כתיבה, ו"בדיקה עם AI" נותנת משוב אמיתי והצעות לפי פעולות מהמאגר.</p>
+<p class="small">כותבים חופשי, בלי טופס. צריך בפעולה: מטרת הפעולה, מסגרת הפעולה, משחק פתיחה ולפחות 6 הפעלות. הרשימה למטה מתעדכנת תוך כדי כתיבה, ו"בדיקה עם AI" נותנת משוב אמיתי והצעות לפי פעולות מהמאגר, ואפשר גם לשאול אותו שאלות על הפעולה.</p>
 <textarea id="draft" placeholder="למשל:&#10;מטרת הפעולה: ...&#10;מסגרת הפעולה: ...&#10;משחק פתיחה: ...&#10;הפעלה 1: ...&#10;הפעלה 2: ..."></textarea>
 </div>
 
@@ -53,11 +53,20 @@ ul.sug li{margin:6px 0}
 <div class="status" id="status"></div>
 </div>
 
+<div class="box" id="askbox">
+<h2>צריכים עזרה?</h2>
+<p class="small">שואלים את ה-AI חופשי על הפעולה שלכם, למשל "תציע משחק פתיחה", "רעיון להפעלה שנייה" או "אני תקוע בסיום". התשובה מופיעה כאן למטה ולא משנה את הטקסט שכתבתם.</p>
+<textarea id="q" style="min-height:80px" placeholder="מה תרצו לשאול?"></textarea>
+<button id="ask">שאלו את ה-AI</button>
+<div class="status" id="astatus"></div>
+<div id="aans" style="display:none;margin-top:10px;line-height:1.6;white-space:pre-wrap"></div>
+</div>
+
 <div class="box" id="res" style="display:none"><h2>משוב</h2><div id="resbody"></div></div>
 
 <div class="box">
 <h2>מה נשלח ל-AI</h2>
-<p class="small">בלחיצה על "בדיקה עם AI" נשלחים רק: הטקסט שכתבת, ועד 3 קטעים קצרים מפעולות והדרכות ציבוריות שהועתקו למאגר. אין תמונות, אין קבצים חסומים ואין מסמכים אישיים. לפי מדיניות Cloudflare הטקסט אינו נשמר ואינו משמש לאימון. התשובות מוגבלות במכסה חינמית יומית, וכשהיא נגמרת ה-AI לא עונה עד שהיא מתחדשת.</p>
+<p class="small">בלחיצה על "בדיקה עם AI" נשלחים רק: הטקסט שכתבת (וגם השאלה, אם שואלים), ועד 3 קטעים קצרים מפעולות והדרכות ציבוריות שהועתקו למאגר. אין תמונות, אין קבצים חסומים ואין מסמכים אישיים. לפי מדיניות Cloudflare הטקסט אינו נשמר ואינו משמש לאימון. התשובות מוגבלות במכסה חינמית יומית, וכשהיא נגמרת ה-AI לא עונה עד שהיא מתחדשת.</p>
 <details id="exd"><summary>הקטעים שיישלחו עכשיו</summary><div id="exlist" class="small">אין עדיין, מתחילים לכתוב.</div></details>
 </div>
 
@@ -97,7 +106,7 @@ function update(){
  ex.forEach(function(e){var d=document.createElement("div");d.innerHTML="<b></b><pre></pre>";d.firstChild.textContent=e.title;d.lastChild.textContent=e.text;$("exlist").appendChild(d)});
  return{c:c,ex:ex}}
 $("draft").addEventListener("input",update);
-var ERR={limit_ip:"הגעת למכסה היומית שלך. אפשר לנסות שוב מחר.",limit_daily:"המכסה החינמית היומית של ה-AI נגמרה. היא מתחדשת מחר, וה-AI לא יענה עד אז.",draft_too_short:"הטקסט קצר מדי. כותבים עוד קצת ואז בודקים.",ai_unavailable:"ה-AI לא זמין כרגע. נסו שוב עוד רגע.",bad_model_output:"ה-AI החזיר תשובה לא תקינה. נסו שוב.",forbidden:"הבקשה נחסמה."};
+var ERR={question_too_short:"כותבים שאלה קצרה קודם.",limit_ip:"הגעת למכסה היומית שלך. אפשר לנסות שוב מחר.",limit_daily:"המכסה החינמית היומית של ה-AI נגמרה. היא מתחדשת מחר, וה-AI לא יענה עד אז.",draft_too_short:"הטקסט קצר מדי. כותבים עוד קצת ואז בודקים.",ai_unavailable:"ה-AI לא זמין כרגע. נסו שוב עוד רגע.",bad_model_output:"ה-AI החזיר תשובה לא תקינה. נסו שוב.",forbidden:"הבקשה נחסמה."};
 function esc(s){var d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
 $("go").addEventListener("click",function(){
  var u=update(),t=$("draft").value;
@@ -118,6 +127,19 @@ $("go").addEventListener("click",function(){
   $("resbody").innerHTML=h;$("res").style.display="block";$("res").scrollIntoView({behavior:"smooth"});
  })
  .catch(function(e){$("status").className="status err";$("status").textContent=e&&e.name==="AbortError"?"ה-AI לא ענה בזמן. נסו שוב.":"אין חיבור ל-AI כרגע."})
+ .then(function(){clearTimeout(to);btn.disabled=false})});
+$("ask").addEventListener("click",function(){
+ var q=$("q").value.trim(),t=$("draft").value,u=update();
+ if(q.length<3){$("astatus").className="status err";$("astatus").textContent="כותבים שאלה קצרה קודם.";return}
+ var btn=$("ask");btn.disabled=true;$("astatus").className="status";$("astatus").textContent="ה-AI חושב... זה יכול לקחת עד דקה.";$("aans").style.display="none";
+ var ctl=new AbortController(),to=setTimeout(function(){ctl.abort()},110000);
+ fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",question:q,draft:t,excerpts:u.ex}),signal:ctl.signal})
+ .then(function(r){return r.json()})
+ .then(function(j){
+  if(!j.ok){$("astatus").className="status err";$("astatus").textContent=ERR[j.error]||"משהו השתבש, נסו שוב.";return}
+  $("astatus").textContent="";$("aans").textContent=String(j.answer).replace(/\*\*/g,"").replace(/^#+\s*/gm,"");$("aans").style.display="block";
+ })
+ .catch(function(e){$("astatus").className="status err";$("astatus").textContent=e&&e.name==="AbortError"?"ה-AI לא ענה בזמן. נסו שוב.":"אין חיבור ל-AI כרגע."})
  .then(function(){clearTimeout(to);btn.disabled=false})});
 loadIndex().catch(function(){$("exlist").textContent="אינדקס המאגר לא נטען."});
 </script>
