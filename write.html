@@ -46,11 +46,15 @@ ul.sug li{margin:6px 0}
 <li id="c_goal" class="no">✗ מטרת הפעולה</li>
 <li id="c_fw" class="no">✗ מסגרת הפעולה</li>
 <li id="c_open" class="no">✗ משחק פתיחה</li>
-<li id="c_acts" class="no">✗ הפעלות: 0 מתוך 6</li>
+<li id="c_acts" class="no">✗ הפעלות: 0 (לפחות 6)</li>
 </ul>
 <p class="small">כותבים כל הפעלה בשורה חדשה שמתחילה ב"הפעלה 1:", "הפעלה 2:" וכן הלאה. זו בדיקה מקומית בלבד, והמשוב המלא מגיע מה-AI.</p>
 <button id="go">בדיקה עם AI</button>
 <div class="status" id="status"></div>
+<details id="exd" class="small" style="margin-top:10px"><summary>מה נשלח ל-AI?</summary>
+<p class="small">נשלחים רק הטקסט שכתבתם (והשאלה, אם שואלים) ועד 3 קטעים קצרים מפעולות ציבוריות מהמאגר. בלי תמונות ובלי קבצים אישיים, והטקסט לא נשמר ולא משמש לאימון. יש מכסה חינמית יומית; כשהיא נגמרת ה-AI לא עונה עד שהיא מתחדשת.</p>
+<div id="exlist" class="small">אין עדיין, מתחילים לכתוב.</div>
+</details>
 </div>
 
 <div class="box" id="askbox">
@@ -64,11 +68,7 @@ ul.sug li{margin:6px 0}
 
 <div class="box" id="res" style="display:none"><h2>משוב</h2><div id="resbody"></div></div>
 
-<div class="box">
-<h2>מה נשלח ל-AI</h2>
-<p class="small">בלחיצה על "בדיקה עם AI" נשלחים רק: הטקסט שכתבת (וגם השאלה, אם שואלים), ועד 3 קטעים קצרים מפעולות והדרכות ציבוריות שהועתקו למאגר. אין תמונות, אין קבצים חסומים ואין מסמכים אישיים. לפי מדיניות Cloudflare הטקסט אינו נשמר ואינו משמש לאימון. התשובות מוגבלות במכסה חינמית יומית, וכשהיא נגמרת ה-AI לא עונה עד שהיא מתחדשת.</p>
-<details id="exd"><summary>הקטעים שיישלחו עכשיו</summary><div id="exlist" class="small">אין עדיין, מתחילים לכתוב.</div></details>
-</div>
+
 
 <a class="back-btn" href="index.html">חזרה לדף הבית</a>
 
@@ -100,7 +100,7 @@ function setc(id,ok,txt){var e=$(id);e.className=ok?"ok":"no";e.textContent=(ok?
 function update(){
  var t=$("draft").value,c=check(t);
  setc("c_goal",c.goal,"מטרת הפעולה");setc("c_fw",c.fw,"מסגרת הפעולה");setc("c_open",c.open,"משחק פתיחה");
- setc("c_acts",c.acts>=6,"הפעלות: "+c.acts+" מתוך 6");
+ setc("c_acts",c.acts>=6,"הפעלות: "+c.acts+" (לפחות 6)");
  var ex=retrieve(t);
  $("exlist").innerHTML=ex.length?"":"אין עדיין, מתחילים לכתוב.";
  ex.forEach(function(e){var d=document.createElement("div");d.innerHTML="<b></b><pre></pre>";d.firstChild.textContent=e.title;d.lastChild.textContent=e.text;$("exlist").appendChild(d)});

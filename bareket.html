@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ברקת הנשיא - מאגר הנשיא</title>
+
+    <!-- הפונט השבטי -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: black;
+            color: red;
+            text-align: center;
+            font-family: 'Secular One', sans-serif;
+            padding: 30px 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: red;
+            text-decoration: none;
+            font-size: 18px;
+            border: 2px solid red;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .back-btn:hover {
+            color: black;
+            background-color: red;
+        }
+
+        body {
+            background: #000 url('bg-bareket.jpg') center/cover no-repeat fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        @media (max-width: 600px) {
+            body::before { display: none; }
+            body {
+                padding-top: 155px;
+                background:
+                    linear-gradient(to bottom, rgba(0,0,0,0) 62%, #000 98%),
+                    url('bg-bareket.jpg') top center / 100% auto no-repeat,
+                    #000;
+            }
+        }
+
+.sec{border:2px solid red;border-radius:12px;background:rgba(17,17,17,.92);max-width:700px;margin:18px auto;padding:14px}
+.sec h2{margin:4px 0 6px}.sec h2 a{color:red;text-decoration:none}
+.cnt{color:#ccc;font-size:14px;margin-bottom:10px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.strip img{width:100%;height:105px;object-fit:cover;border-radius:6px;border:1px solid red;display:block}
+.chips a,.all,.doclist a,.chips span{display:inline-block;color:#fff;border:1px solid red;border-radius:16px;padding:4px 12px;margin:4px;text-decoration:none;font-size:15px;background:#000}
+.all{border-width:2px;color:red;margin-top:10px}
+.doclist{text-align:right}.doclist a{display:block;border-radius:8px;margin:5px 0}
+.sec video,.sec audio{width:100%;margin-top:8px;border-radius:8px}
+.warn{color:#ffb3b3;font-size:14px}.warn a{color:#fff}
+</style>
+</head>
+<body>
+
+<h1>ברקת הנשיא</h1>
+<p>שכבת ברקת SINCE2019</p>
+
+<div class="sec"><div class="cnt" style="margin:0">הקבצים של כל קטגוריה עולים לאתר הלילה. הקטגוריות כבר כאן:</div></div>
+
+<div class="sec"><h2>גלופות שכבת ברקת</h2><div class="cnt">11 תמונות</div></div>
+
+<div class="sec"><h2>ג׳ינגלים</h2><div class="cnt">2 קבצים</div><div class="chips"><span>📁 אימפריית הנשיא - אתגר ברקת!</span></div></div>
+
+<div class="sec"><h2>Bareket Army</h2><div class="cnt">59 תמונות וסרטונים</div><div class="chips"><span>📁 שישית</span><span>📁 חמישית</span></div></div>
+
+<div class="sec"><h2>שישית</h2><div class="cnt">146 תמונות וסרטונים</div><div class="chips"><span>📁 67- העקרב והקרקל משתלטים על החולות</span><span>📁 גיבושים וכיף</span><span>📁 מפעלים</span></div></div>
+
+<div class="sec"><h2>חמישית</h2><div class="cnt">81 תמונות וסרטונים</div><div class="chips"><span>📁 אתגר ברקת באים מהיסוד</span><span>📁 גיבושים וכיף</span><span>📁 תמונות גדוד ברקת</span><span>📁 מפעלים בגדוד ברקת</span><span>📁 זולה של החיים</span></div></div>
+
+<!-- כפתור חזרה לדף הבית -->
+<a href="index.html" class="back-btn">⬅ חזרה להתחלה</a>
+
+</body>
+</html>
