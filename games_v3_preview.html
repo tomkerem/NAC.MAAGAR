@@ -284,7 +284,7 @@ img{-webkit-user-drag:none}
 })();
 function $(id){return document.getElementById(id)}
 var NAMES=["שחקן 1","שחקן 2","שחקן 3","שחקן 4"];
-var COLORS=["#ff2222","#f5f5f5","#a30d0d","#9a9a9a"];
+var COLORS=["#ff2d2d","#3b9dff","#ffd02e","#35d05a"];
 var PADPOS=["bl","tr","tl","br"]; /* 2P diagonal first */
 var TAPS_WIN=25;
 
@@ -767,7 +767,7 @@ GAMES[5].build=function(st){
     el.innerHTML=bullTop(COLORS[i]);
     var sh=document.createElement('div');sh.className='sumoShadow';
     st.appendChild(sh);st.appendChild(el);
-    this.b.push({x:cx+Math.cos(a)*R*0.45,y:cy+Math.sin(a)*R*0.45,vx:0,vy:0,face:a,spin:(i%2?1:-1)*(1.1+Math.random()*.5),hold:false,out:false,el:el,sh:sh});
+    this.b.push({x:cx+Math.cos(a)*R*0.74,y:cy+Math.sin(a)*R*0.74,vx:0,vy:0,face:a,spin:(i%2?1:-1)*(1.1+Math.random()*.5),hold:false,out:false,el:el,sh:sh});
   }
   var g=this;
   physLoop(function(dt){g.step(dt);});
@@ -780,14 +780,14 @@ GAMES[5].step=function(dt){
   this.b.forEach(function(b,i){
     if(b.out)return;
     if(b.hold){
-      b.vx+=Math.cos(b.face)*560*dt;b.vy+=Math.sin(b.face)*560*dt;
+      b.vx+=Math.cos(b.face)*470*dt;b.vy+=Math.sin(b.face)*470*dt;
     }else{
       b.face+=b.spin*dt;
     }
     b.vx*=Math.pow(0.14,dt);b.vy*=Math.pow(0.14,dt);
     b.x+=b.vx*dt;b.y+=b.vy*dt;
     var sp=Math.hypot(b.vx,b.vy);
-    if(sp>420){b.vx*=420/sp;b.vy*=420/sp;}
+    if(sp>380){b.vx*=380/sp;b.vy*=380/sp;}
   });
   /* bull-bull collisions */
   for(var i=0;i<this.b.length;i++)for(var j=i+1;j<this.b.length;j++){
@@ -798,7 +798,9 @@ GAMES[5].step=function(dt){
       var nx=dx/d,ny=dy/d,ov=(min-d)/2;
       a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
       var p=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
-      a.vx-=p*nx*1.08;a.vy-=p*ny*1.08;b.vx+=p*nx*1.08;b.vy+=p*ny*1.08;
+      a.vx-=p*nx*0.9;a.vy-=p*ny*0.9;b.vx+=p*nx*0.9;b.vy+=p*ny*0.9;
+      var sp2a=Math.hypot(a.vx,a.vy);if(sp2a>430){a.vx*=430/sp2a;a.vy*=430/sp2a;}
+      var sp2b=Math.hypot(b.vx,b.vy);if(sp2b>430){b.vx*=430/sp2b;b.vy*=430/sp2b;}
     }
   }
   this.b.forEach(function(b,i){
@@ -950,7 +952,7 @@ GAMES[6].draw=function(){
   /* bikes */
   var g=this;
   this.bikes.forEach(function(bk,i){
-    ctx.save();ctx.translate(bk.x,bk.y);ctx.rotate(bk.hd+Math.PI/2);
+    ctx.save();ctx.translate(bk.x,bk.y);ctx.rotate(bk.hd+Math.PI/2);ctx.scale(1.45,1.45);
     /* rear wheel, frame, front wheel, rider */
     ctx.fillStyle='#111';
     ctx.fillRect(-3.5,10,7,15);ctx.fillRect(-3.5,-25,7,15);
@@ -973,9 +975,9 @@ GAMES[6].draw=function(){
   this.bikes.forEach(function(bk,i){
     var lx=(W-20)-i*66;
     ctx.fillStyle='rgba(10,0,0,.8)';ctx.strokeStyle=COLORS[i];ctx.lineWidth=2;
-    ctx.beginPath();ctx.rect(lx-46,10,56,22);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.rect(lx-46,54,56,22);ctx.fill();ctx.stroke();
     ctx.fillStyle='#fff';ctx.font='800 12px Arial';ctx.textAlign='center';
-    ctx.fillText((i+1)+' • '+(Math.min(bk.lap+1,2))+'/2',lx-18,25);
+    ctx.fillText((i+1)+' • '+(Math.min(bk.lap+1,2))+'/2',lx-18,69);
   });
 };
 GAMES[6].start=function(){
