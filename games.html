@@ -150,6 +150,7 @@ img{-webkit-user-drag:none}
 .winSub{margin-top:4px;font-size:clamp(20px,6.5vw,34px);font-weight:900;color:#fff;-webkit-text-stroke:1.2px #140000;text-shadow:0 3px 0 #140000}
 .confetti{position:absolute;top:-26px;border-radius:2px;opacity:.95;animation:confFall linear forwards}
 @keyframes confFall{to{transform:translateY(118vh) rotate(760deg)}}
+.screen.preWin>*{visibility:hidden}
 </style>
 </head>
 <body>
@@ -388,6 +389,7 @@ function endRound(winnerIdx,detail){
   $("resBody").innerHTML=h;
   $("resNext").textContent="עוד סיבוב";
   $("resNext").onclick=function(){startGame(curGame);};
+  $("s_result").classList.add("preWin");
   show("s_result");
   winFx(winnerIdx);
 }
@@ -420,7 +422,8 @@ function winFx(winnerIdx){
     }
   }
   document.body.appendChild(fx);
-  setTimeout(function(){fx.style.transition='opacity .5s';fx.style.opacity='0';setTimeout(function(){fx.remove();},520);},3400);
+  fx.style.pointerEvents='auto';
+  setTimeout(function(){var r=document.getElementById('s_result');if(r)r.classList.remove('preWin');fx.style.transition='opacity .5s';fx.style.opacity='0';setTimeout(function(){fx.remove();},520);},3400);
 }
 function finishAll(){show("s_home");}
 /* ============ game 1: bull race - horizontal lanes ============ */
