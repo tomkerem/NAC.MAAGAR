@@ -1,0 +1,48 @@
+name: cleanup-archive
+on:
+  push:
+    paths:
+      - '.github/workflows/cleanup.yml'
+permissions:
+  contents: write
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - name: Remove blocked-source placeholders and shrink large images
+        run: |
+          git config user.name "archive-bot"; git config user.email "archive-bot@users.noreply.github.com"
+          python3 - <<'PY'
+          import json,glob,os
+          from PIL import Image
+          no=set(json.load(open('manifest/noaccess.json')))
+          n=0
+          for f in glob.glob('archive/a/*'):
+              b=os.path.basename(f)
+              if b.rsplit('.',1)[0] in no and not b.endswith('.html'):
+                  os.remove(f); n+=1
+          print('removed',n)
+          s0=s1=c=0
+          for f in glob.glob('archive/a/*.jpg'):
+              sz=os.path.getsize(f)
+              if sz<110000: continue
+              try:
+                  im=Image.open(f).convert('RGB'); im.thumbnail((1000,1000))
+                  tmp=f+'.tmp'; im.save(tmp,'JPEG',quality=60,optimize=True)
+                  if os.path.getsize(tmp)<sz*0.85:
+                      s0+=sz; s1+=os.path.getsize(tmp); os.replace(tmp,f); c+=1
+                  else: os.remove(tmp)
+              except Exception as e:
+                  print('skip',f,e)
+          print('recompressed',c,s0/1e6,'->',s1/1e6,'MB')
+          PY
+          git add -A archive
+          git commit -m "cleanup: remove blocked placeholders, shrink large images" || echo none
+          git pull --rebase origin main || true
+          git push origin HEAD:main
+          du -sh archive
