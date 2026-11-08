@@ -503,7 +503,7 @@ GAMES[0].build=function(st){
     lane.innerHTML='<div class="laneStripe"></div><div class="finish"></div>'
       +'<div class="laneFill"></div>'
       +'<div class="laneLabel" style="color:'+COLORS[i]+'"><bdi>'+NAMES[i]+'</bdi></div>'
-      +'<div class="racer2"><span class="bullEmoji redbull">🐂</span><div class="tag" style="background:'+COLORS[i]+';'+(COLORS[i]==='#f5f5f5'?'color:#000;':'')+'">'+(i+1)+'</div></div>';
+      +'<div class="racer2"><div style="width:46px;height:46px">'+bullTop(COLORS[i])+'</div><div class="tag" style="background:'+COLORS[i]+';'+(COLORS[i]==='#f5f5f5'?'color:#000;':'')+'">'+(i+1)+'</div></div>';
     st.appendChild(lane);
     this.racers.push(lane.querySelector('.racer2'));
     this.fills.push(lane.querySelector('.laneFill'));
