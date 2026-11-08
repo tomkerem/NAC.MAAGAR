@@ -2,73 +2,110 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>NA-C GAMES - מאגר הנשיא</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NA-C GAMES</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Secular One',sans-serif;touch-action:none;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
-.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000;text-align:center;padding:16px}
-.screen.on{display:flex;animation:screenIn .38s ease-out}
-@keyframes screenIn{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
-.screen.on>.animItem{animation:itemIn .45s ease-out both}
-.screen.on>.animItem:nth-child(1){animation-delay:.04s}
-.screen.on>.animItem:nth-child(2){animation-delay:.10s}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{height:100%;overflow:hidden;background:#000}
+body{font-family:'Segoe UI',Arial,sans-serif;color:#fff;touch-action:none;position:fixed;inset:0}
+button{font-family:inherit;touch-action:manipulation}
+/* ---------- screens ---------- */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;background:#000}
+.screen.on{display:flex}
+.screen.on>.animItem{animation:itemIn .45s cubic-bezier(.2,1.3,.4,1) both}
+.screen.on>.animItem:nth-child(2){animation-delay:.08s}
 .screen.on>.animItem:nth-child(3){animation-delay:.16s}
-.screen.on>.animItem:nth-child(4){animation-delay:.22s}
-.screen.on>.animItem:nth-child(5){animation-delay:.28s}
-.screen.on>.animItem:nth-child(6){animation-delay:.34s}
-.screen.on>.animItem:nth-child(7){animation-delay:.40s}
-@keyframes itemIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-h1{color:red;font-size:44px;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0 22px #500}
-.sub{color:#fff;font-size:18px;margin-bottom:26px}
-.btn{display:block;width:min(320px,84vw);margin:10px auto;padding:16px;border:2px solid red;border-radius:14px;background:#000;color:#fff;font-family:inherit;font-size:24px;cursor:pointer;transition:transform .12s,background .12s,color .12s;animation:itemIn .45s ease-out both}
-.btn:active{background:red;color:#000;transform:scale(.95)}
-.btn.small{font-size:18px;padding:10px;width:auto;display:inline-block;margin:14px 6px 0}
-.trophy{font-size:78px;line-height:1;margin-bottom:10px;display:inline-block;animation:trophyBounce 1.1s ease-in-out infinite}
-@keyframes trophyBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.06)}}
-/* arena */
-#arena{position:fixed;inset:0;display:none;background:#000}
-#arena.on{display:block;animation:screenIn .3s ease-out}
-.zone{position:absolute;width:50%;height:50%;border:2px solid #400;overflow:hidden;transition:background .12s,border-color .12s}
-.zone .inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
-.zone .pname{font-size:20px;color:#fff;opacity:.85}
-.zone .pscore{font-size:44px;color:red}
-.zone .pscore.pop{animation:pop .22s ease-out}
-@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.35);color:#fff}100%{transform:scale(1)}}
-.zone .hint{font-size:15px;color:#999}
-.zone.rot .inner{transform:rotate(180deg)}
-.zone[data-c="0"]{left:0;top:0}
-.zone[data-c="1"]{right:0;top:0}
-.zone[data-c="2"]{left:0;bottom:0}
-.zone[data-c="3"]{right:0;bottom:0}
-.zone.flash{background:#3a0000;border-color:red}
-.centerHud{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;text-align:center;pointer-events:none}
-#cd{font-size:96px;color:red;text-shadow:0 0 26px #600;display:inline-block}
-#cd.tick{animation:cdPulse .7s ease-out}
-@keyframes cdPulse{0%{transform:scale(1.7);opacity:0}35%{transform:scale(1);opacity:1}100%{transform:scale(.92)}}
-#roundLbl{position:absolute;top:6px;left:50%;transform:translateX(-50%);color:#888;font-size:14px;z-index:5;pointer-events:none}
-#timerLbl{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);color:#aaa;font-size:16px;z-index:5;pointer-events:none}
-#exitBtn{position:absolute;top:6px;left:6px;z-index:6;background:#000;border:1px solid #600;color:#f88;border-radius:8px;padding:4px 10px;font-family:inherit;font-size:14px;cursor:pointer}
-/* reaction */
-.bigSignal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:130px;height:130px;border-radius:50%;background:#111;border:3px solid #333;z-index:4;pointer-events:none;transition:background .06s,border-color .06s,box-shadow .06s}
-.bigSignal.go{background:red;border-color:#fff;box-shadow:0 0 42px #f00;animation:sigGo .28s ease-out}
-@keyframes sigGo{0%{transform:translate(-50%,-50%) scale(.4)}100%{transform:translate(-50%,-50%) scale(1)}}
-/* timing bar */
-.tbar{position:relative;width:86%;height:26px;border:2px solid #f88;border-radius:13px;background:#111;overflow:hidden}
-.tbar .target{position:absolute;top:0;bottom:0;left:42.5%;width:15%;background:#3a0000;border-right:2px solid red;border-left:2px solid red}
-.tbar .mark{position:absolute;top:0;bottom:0;width:4px;background:#fff;box-shadow:0 0 8px #fff}
+.screen.on>.animItem:nth-child(4){animation-delay:.24s}
+.screen.on>.animItem:nth-child(5){animation-delay:.32s}
+.screen.on>.animItem:nth-child(6){animation-delay:.4s}
+@keyframes itemIn{from{opacity:0;transform:translateY(18px) scale(.92)}to{opacity:1;transform:none}}
+h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-spacing:1px}
+.sub{color:#bbb;font-size:15px;margin-top:-8px}
+.btn{width:min(78vw,320px);padding:15px;border:2px solid #ff2222;border-radius:16px;background:linear-gradient(180deg,#1c0000,#000);color:#fff;font-size:19px;font-weight:700;cursor:pointer;box-shadow:0 0 16px rgba(255,0,0,.28);transition:transform .12s,box-shadow .2s}
+.btn:active{transform:scale(.94);box-shadow:0 0 26px rgba(255,0,0,.55)}
+.btn.small{width:auto;padding:9px 20px;font-size:15px;border-color:#771111;color:#bbb;background:#0c0000;box-shadow:none}
+/* ---------- icon pattern background ---------- */
+.patternBg{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.5}
+.patternBg span{position:absolute;font-size:26px;opacity:.13;filter:grayscale(60%) brightness(.8)}
+/* ---------- player select cards (reference layout) ---------- */
+.trophyTop,.plaqueTop{width:100px;height:124px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 22px rgba(255,30,30,.4));animation:trophyBob 2.6s ease-in-out infinite}
+@keyframes trophyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.cardsRow{display:flex;gap:14px;justify-content:center;width:100%}
+.pcard{flex:1;max-width:120px;aspect-ratio:1/1.08;border-radius:20px;border:4px solid #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-weight:900;box-shadow:0 6px 0 rgba(0,0,0,.55),0 0 20px rgba(255,0,0,.25);transition:transform .12s;position:relative;overflow:hidden}
+.pcard:active{transform:translateY(4px) scale(.96);box-shadow:0 2px 0 rgba(0,0,0,.55)}
+.pcard .bigP{font-size:34px;color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.45);letter-spacing:-1px}
+.pcard .pawns{font-size:15px;letter-spacing:3px;opacity:.9}
+.pcard.c2{background:linear-gradient(180deg,#e01313,#7a0505)}
+.pcard.c3{background:linear-gradient(180deg,#8f8f8f,#3a3a3a)}
+.pcard.c4{background:linear-gradient(180deg,#3d3d3d,#0d0d0d)}
+.pcard::after{content:"";position:absolute;top:0;left:0;right:0;height:38%;background:linear-gradient(180deg,rgba(255,255,255,.28),transparent);border-radius:14px 14px 0 0;pointer-events:none}
+/* ---------- arena ---------- */
+#s_arena{padding:0;background:radial-gradient(circle at 50% 50%,#160000 0%,#000 72%)}
+#stage{position:absolute;inset:0}
+#hudTop{position:absolute;top:8px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:30;pointer-events:none}
+#hudTop>*{pointer-events:auto}
+#gameTitle{color:#ff5555;font-size:15px;font-weight:700;text-shadow:0 0 10px rgba(255,0,0,.5)}
+#timerPill{background:#100000;border:2px solid #ff2222;border-radius:999px;padding:4px 14px;font-size:15px;font-weight:700;color:#fff;min-width:56px;text-align:center;box-shadow:0 0 12px rgba(255,0,0,.3)}
+#exitBtn{background:#100000;border:2px solid #ff2222;color:#ff6666;border-radius:999px;padding:4px 12px;font-size:14px;cursor:pointer}
+/* corner pads */
+.pad{position:absolute;width:76px;height:76px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;z-index:25;border:3px solid;background:rgba(20,0,0,.72);backdrop-filter:blur(2px);transition:transform .1s,box-shadow .15s}
+.pad .pn{font-size:11px;font-weight:700;color:#fff;line-height:1}
+.pad .pnum{font-size:22px;font-weight:900;line-height:1.1}
+.pad:active,.pad.hit{transform:scale(.85)}
+.pad.tl{top:46px;right:12px}
+.pad.tr{top:46px;left:12px}
+.pad.bl{bottom:14px;right:12px}
+.pad.br{bottom:14px;left:12px}
+.pad.flash{animation:padFlash .3s}
+@keyframes padFlash{0%{box-shadow:0 0 0 0 rgba(255,255,255,.9)}100%{box-shadow:0 0 0 26px rgba(255,255,255,0)}}
+.pad.shake{animation:padShake .4s}
+@keyframes padShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* countdown */
+#cdOverlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:40;pointer-events:none}
+#cdOverlay.on{display:flex}
+#cdNum{font-size:110px;font-weight:900;color:#ff2222;text-shadow:0 0 44px rgba(255,0,0,.9);animation:cdPop .7s ease-out both}
+@keyframes cdPop{0%{transform:scale(2.2);opacity:0}30%{transform:scale(1);opacity:1}80%{opacity:1}100%{opacity:0}}
+/* race scene */
+.raceTrack{position:absolute;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);border-radius:6px}
+.racer{position:absolute;font-size:34px;transition:transform .18s ease-out;z-index:10;filter:drop-shadow(0 0 6px rgba(255,0,0,.8))}
+.racer .tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:900;color:#fff;background:#a00;border-radius:8px;padding:1px 6px;border:1.5px solid #fff}
+.centerGoal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:52px;z-index:5;animation:trophyBob 2s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(255,190,0,.6))}
+.progBar{position:absolute;border-radius:4px;z-index:6}
+/* tug scene */
+#ropeWrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:78%;z-index:8}
+#ropeLine{position:relative;height:10px;border-radius:5px;background:repeating-linear-gradient(45deg,#c11,#801010 8px,#c11 16px);box-shadow:0 0 12px rgba(255,0,0,.5)}
+#ropeKnot{position:absolute;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#ff2222;border:3px solid #fff;box-shadow:0 0 16px #f00;transition:left .16s ease-out;z-index:2}
+#ropeKnot::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#7a0000}
+.tugSide{position:absolute;top:calc(50% + 26px);font-size:14px;font-weight:800;color:#ccc;width:50%;text-align:center}
+.tugEmoji{position:absolute;top:calc(50% - 46px);font-size:30px;transition:left .16s ease-out,right .16s ease-out;filter:drop-shadow(0 0 6px rgba(255,0,0,.7))}
+/* reaction scene */
+#sigWrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:14px;z-index:8}
+#sigLight{width:110px;height:110px;border-radius:50%;background:#1c0000;border:5px solid #400;transition:background .08s,border-color .08s,box-shadow .08s;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#733}
+#sigLight.go{background:#ff1a1a;border-color:#fff;box-shadow:0 0 60px rgba(255,20,20,.95),0 0 120px rgba(255,0,0,.5);color:#fff}
+#sigLight.go::before{content:"";position:absolute;width:110px;height:110px;border-radius:50%;border:3px solid rgba(255,60,60,.8);animation:ringOut 1s ease-out infinite}
+@keyframes ringOut{from{transform:scale(1);opacity:1}to{transform:scale(2.1);opacity:0}}
+#sigText{font-size:17px;color:#bbb;font-weight:700}
+/* timing gauges */
+.gauge{position:absolute;width:96px;height:96px;z-index:12}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .gv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:19px;color:#fff;text-shadow:0 0 8px #000}
+.gauge .gl{font-size:10px;color:#bbb;font-weight:700}
+.gauge.locked{animation:padFlash .35s}
 /* target rush */
-.tgt{position:absolute;width:56px;height:56px;border-radius:50%;background:red;border:3px solid #fff;box-shadow:0 0 16px #f00;pointer-events:none;animation:tgtIn .18s ease-out}
-@keyframes tgtIn{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
-/* tug */
-.tugWrap{position:relative;width:88%;height:34px;border:2px solid #f88;border-radius:17px;background:#111;overflow:visible}
-.tugWrap .mark{position:absolute;top:-7px;width:20px;height:44px;border-radius:8px;background:red;border:2px solid #fff;margin-right:-11px;box-shadow:0 0 10px #f00;transition:right .15s}
-.msg{font-size:16px;color:#fff;max-width:90%;line-height:1.5}
-.scoreLine{font-size:22px;margin:4px;animation:itemIn .4s ease-out both}
-.scoreLine b,.msg b{color:red;unicode-bidi:isolate}
+.liveTgt{position:absolute;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;color:#fff;border:3.5px solid #fff;cursor:pointer;z-index:15;animation:tgtPop .2s cubic-bezier(.2,1.6,.4,1) both;box-shadow:0 0 18px rgba(255,0,0,.6)}
+@keyframes tgtPop{from{transform:scale(.15);opacity:0}to{transform:scale(1);opacity:1}}
+.burst{position:absolute;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;border:4px solid #fff;z-index:14;animation:burstOut .38s ease-out both;pointer-events:none}
+@keyframes burstOut{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+.miniScore{position:absolute;bottom:96px;left:0;right:0;display:flex;justify-content:center;gap:18px;z-index:20;pointer-events:none}
+.miniScore div{background:rgba(15,0,0,.8);border:2px solid;border-radius:12px;padding:3px 12px;font-size:14px;font-weight:800}
+/* result/final */
+.bigTitle{font-size:30px;color:#ff2222;text-shadow:0 0 20px rgba(255,0,0,.7);text-align:center;animation:itemIn .45s both}
+.msg{font-size:16px;color:#fff;max-width:92%;line-height:1.6;text-align:center}
+.msg b{color:#ff3333;unicode-bidi:isolate}
+.scoreLine{font-size:22px;margin:3px;animation:itemIn .4s ease-out both}
+.scoreLine b{color:#ff3333;unicode-bidi:isolate}
+.trophy{font-size:80px;animation:trophyIn .8s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes trophyIn{0%{transform:scale(0) rotate(-30deg);opacity:0}70%{transform:scale(1.25) rotate(6deg)}100%{transform:scale(1) rotate(0);opacity:1}}
 /* splash opening */
 #splash{position:fixed;inset:0;z-index:60;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;cursor:pointer;transition:opacity .45s}
 #splash.hide{opacity:0;pointer-events:none}
@@ -78,10 +115,8 @@ h1{color:red;font-size:44px;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0
 #splashHint{color:#f66;font-size:15px;animation:hintBlink 1.4s ease-in-out infinite}
 @keyframes hintBlink{0%,100%{opacity:.25}50%{opacity:1}}
 @media (prefers-reduced-motion: reduce){
-
-  .screen.on,.screen.on>.animItem,.btn,.scoreLine{animation:none}
-  .trophy{animation:none}
-  #splashLogo,#splashHint{animation:none}
+  .screen.on>.animItem,.btn,.scoreLine,.trophy,.trophyTop,.centerGoal,#splashLogo,#splashHint,.patternBg span{animation:none !important}
+  .racer,#ropeKnot,.tugEmoji{transition:none}
 }
 </style>
 </head>
@@ -95,178 +130,240 @@ h1{color:red;font-size:44px;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0
 
 <!-- HOME -->
 <div class="screen on" id="s_home">
-  <h1 class="animItem">NA-C GAMES</h1>
+  <div class="patternBg" data-pattern></div>
+  <img class="animItem" src="games-logo.jpg" alt="234 NA-C GAMES" style="width:min(64vw,250px);border-radius:16px;filter:drop-shadow(0 0 22px rgba(255,0,0,.5))">
   <div class="sub animItem">משחקי שבט הנשיא על מסך אחד</div>
-  <button class="btn" data-go="s_mode" data-mode="free">משחק חופשי</button>
-  <button class="btn" data-go="s_mode" data-mode="tour">טורניר 🏆</button>
-  <button class="btn small" onclick="location.href='index.html'">⬅ חזרה להתחלה</button>
+  <button class="btn animItem" data-go="s_mode" data-mode="free">משחק חופשי</button>
+  <button class="btn animItem" data-go="s_mode" data-mode="tour">טורניר 🏆</button>
+  <button class="btn small animItem" onclick="location.href='index.html'">⬅ חזרה להתחלה</button>
 </div>
 
-<!-- PLAYERS -->
+<!-- PLAYERS (reference layout: trophy + big cards) -->
 <div class="screen" id="s_mode">
-  <h1 class="animItem">כמה שחקנים?</h1>
+  <div class="patternBg" data-pattern></div>
+  <div class="plaqueTop animItem">
+    <svg viewBox="0 0 100 128" width="100" height="128" aria-label="מגן שבט 2028">
+      <defs>
+        <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4a2c1a"/><stop offset="1" stop-color="#241105"/>
+        </linearGradient>
+      </defs>
+      <rect x="30" y="120" width="40" height="8" rx="1.5" fill="#1c0d04"/>
+      <path d="M50 4 L92 16 V64 Q92 100 50 120 Q8 100 8 64 V16 Z" fill="url(#wood)" stroke="#170b03" stroke-width="3"/>
+      <path d="M50 8 L88 19 V63 Q88 96 50 115 Q12 96 12 63 V19 Z" fill="none" stroke="#5d3a20" stroke-width="1.5"/>
+      <g transform="translate(50 48)">
+        <path d="M0 -26 C 7 -18 7 -8 0 0 C -7 -8 -7 -18 0 -26 Z" fill="#0a7a3f"/>
+        <path d="M-17 -14 C -7 -13 -4 -2 -9 7 C -15 4 -21 -5 -17 -14 Z" fill="#0a7a3f"/>
+        <path d="M17 -14 C 7 -13 4 -2 9 7 C 15 4 21 -5 17 -14 Z" fill="#0a7a3f"/>
+        <circle cx="0" cy="-25" r="5.5" fill="#d61f26"/>
+        <circle cx="-16" cy="-13" r="5.5" fill="#d61f26"/>
+        <circle cx="16" cy="-13" r="5.5" fill="#d61f26"/>
+        <rect x="-13" y="6" width="26" height="8" rx="3.5" fill="#c9a227" stroke="#8a6a12" stroke-width="1"/>
+        <path d="M0 14 L 4 22 L -4 22 Z" fill="#c9a227" stroke="#8a6a12" stroke-width="1"/>
+      </g>
+      <rect x="22" y="92" width="56" height="20" rx="2" fill="#ececec" stroke="#a8a8a8" stroke-width="1.5"/>
+      <text x="50" y="107" text-anchor="middle" font-size="14" font-weight="900" fill="#111" font-family="Arial,sans-serif">2028</text>
+    </svg>
+  </div>
+  <div class="cardsRow animItem">
+    <div class="pcard c2" data-n="2"><div class="bigP">2P</div><div class="pawns">♟♟</div></div>
+    <div class="pcard c3" data-n="3"><div class="bigP">3P</div><div class="pawns">♟♟♟</div></div>
+    <div class="pcard c4" data-n="4"><div class="bigP">4P</div><div class="pawns">♟♟♟♟</div></div>
+  </div>
   <div class="sub animItem">כל שחקן מקבל פינה במסך</div>
-  <button class="btn" data-n="2">2P</button>
-  <button class="btn" data-n="3">3P</button>
-  <button class="btn" data-n="4">4P</button>
-  <button class="btn small" data-go="s_home">⬅ חזרה</button>
+  <button class="btn small animItem" data-go="s_home">⬅ חזרה</button>
 </div>
 
 <!-- TOURNAMENT LENGTH -->
 <div class="screen" id="s_rounds">
-  <h1 class="animItem">בחר טורניר</h1>
-  <div class="sub animItem">כל סיבוב הוא מיני־משחק אחר</div>
-  <button class="btn" data-r="3">3 סיבובים</button>
-  <button class="btn" data-r="5">5 סיבובים</button>
-  <button class="btn" data-r="7">7 סיבובים</button>
-  <button class="btn small" data-go="s_mode">⬅ חזרה</button>
+  <div class="patternBg" data-pattern></div>
+  <h1 class="animItem">כמה סיבובים?</h1>
+  <button class="btn animItem" data-rounds="3">3 סיבובים</button>
+  <button class="btn animItem" data-rounds="5">5 סיבובים</button>
+  <button class="btn animItem" data-rounds="7">7 סיבובים</button>
+  <button class="btn small animItem" data-go="s_mode">⬅ חזרה</button>
 </div>
 
-<!-- FREE PLAY PICK -->
+<!-- PICK GAME -->
 <div class="screen" id="s_pick">
-  <h1 class="animItem">בחר משחק</h1>
-  <div id="pickList"></div>
-  <button class="btn small" data-go="s_mode">⬅ חזרה</button>
+  <div class="patternBg" data-pattern></div>
+  <h1 class="animItem">איזה משחק?</h1>
+  <div id="pickList" style="display:flex;flex-direction:column;gap:12px;align-items:center;width:100%"></div>
+  <button class="btn small animItem" data-go="s_mode">⬅ חזרה</button>
 </div>
 
 <!-- ROUND INTRO -->
 <div class="screen" id="s_intro">
+  <div class="patternBg" data-pattern></div>
   <div class="sub animItem" id="introRound"></div>
   <h1 class="animItem" id="introName"></h1>
-  <div class="msg animItem" id="introHow"></div>
-  <div class="sub animItem" style="margin-top:26px">מוכנים?</div>
-  <button class="btn" id="introGo">יוצאים לדרך</button>
+  <div class="msg animItem" id="introDesc"></div>
+  <button class="btn animItem" id="introGo">יוצאים לדרך!</button>
 </div>
 
-<!-- RESULT -->
+<!-- ARENA -->
+<div class="screen" id="s_arena">
+  <div id="stage"></div>
+  <div id="hudTop">
+    <button id="exitBtn">✕ יציאה</button>
+    <div id="gameTitle"></div>
+    <div id="timerPill"><span id="timerIcon">⏱</span> <span id="timerNum"></span></div>
+  </div>
+  <div id="cdOverlay"><div id="cdNum"></div></div>
+</div>
+
+<!-- ROUND RESULT -->
 <div class="screen" id="s_result">
-  <h1 class="animItem" id="resTitle"></h1>
-  <div id="resBody" class="animItem"></div>
+  <div class="patternBg" data-pattern></div>
+  <div class="bigTitle" id="resTitle"></div>
+  <div id="resBody" style="display:flex;flex-direction:column;align-items:center"></div>
   <button class="btn" id="resNext"></button>
 </div>
 
 <!-- FINAL -->
 <div class="screen" id="s_final">
+  <div class="patternBg" data-pattern></div>
   <div class="trophy">🏆</div>
-  <h1 class="animItem" id="winTitle"></h1>
-  <div id="winBody" class="animItem"></div>
-  <button class="btn" data-go="s_home">עוד פעם</button>
+  <div class="bigTitle" id="winTitle"></div>
+  <div id="winBody" style="display:flex;flex-direction:column;align-items:center"></div>
+  <button class="btn" id="againBtn">עוד פעם</button>
   <button class="btn small" onclick="location.href='index.html'">⬅ חזרה לאתר</button>
 </div>
 
-<!-- ARENA -->
-<div id="arena">
-  <div id="roundLbl"></div>
-  <div id="timerLbl"></div>
-  <button id="exitBtn">✕ יציאה</button>
-  <div class="zone rot" data-c="0"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
-  <div class="zone rot" data-c="1"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
-  <div class="zone" data-c="2"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
-  <div class="zone" data-c="3"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
-  <div class="centerHud"><div id="cd"></div></div>
-  <div class="bigSignal" id="signal" style="display:none"></div>
-</div>
-
 <script>
-(function(){
 "use strict";
-var $=function(id){return document.getElementById(id)};
+function $(id){return document.getElementById(id)}
+var NAMES=["שחקן 1","שחקן 2","שחקן 3","שחקן 4"];
+var COLORS=["#ff2222","#f5f5f5","#a30d0d","#9a9a9a"];
+var PADPOS=["bl","tr","tl","br"]; /* 2P diagonal first */
+var TAPS_WIN=25;
 
-/* splash: tap to skip, auto-dismiss */
-var splashEl=$("splash");
-var splashGone=false;
+/* splash */
+var splashEl=$("splash"),splashGone=false;
 function closeSplash(){if(splashGone)return;splashGone=true;splashEl.classList.add("hide");setTimeout(function(){splashEl.remove()},520);}
 splashEl.addEventListener("pointerdown",closeSplash);
 setTimeout(closeSplash,3400);
 
-var screens=["s_home","s_mode","s_rounds","s_pick","s_intro","s_result","s_final"];
-var mode="free",numPlayers=2,totalRounds=3,roundIdx=0,points=[],lastGame=-1,cur=0;
-var NAMES=["שחקן 1","שחקן 2","שחקן 3","שחקן 4"];
-var ASSIGN={2:[2,1],3:[2,1,0],4:[2,1,0,3]};
-var raf=null,timers=[],tapHandler=null;
+/* icon pattern backgrounds (original, emoji glyphs only) */
+(function(){
+  var glyphs=["🐂","🦂","🐍","🐱","🏆","🎮","⚡","🔥"];
+  document.querySelectorAll("[data-pattern]").forEach(function(p){
+    var cols=6,rows=10;
+    for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){
+      var s=document.createElement("span");
+      s.textContent=glyphs[(r*cols+c)%glyphs.length];
+      s.style.left=((c+.5*(r%2))/cols*100)+"%";
+      s.style.top=(r/rows*100)+"%";
+      p.appendChild(s);
+    }
+  });
+})();
 
-function stopLoop(){if(raf)cancelAnimationFrame(raf);raf=null;timers.forEach(clearTimeout);timers=[];tapHandler=null;}
-function later(fn,ms){var id=setTimeout(fn,ms);timers.push(id);}
-function show(id){screens.forEach(function(s){$(s).classList.toggle("on",s===id)});$("arena").classList.remove("on");stopLoop();}
+/* state + navigation */
+var mode="free",numPlayers=2,totalRounds=3,roundIdx=0,points=[0,0,0,0],curGame=null,raf=null,timers=[];
+var screens=["s_home","s_mode","s_rounds","s_pick","s_intro","s_arena","s_result","s_final"];
+function show(id){screens.forEach(function(s){$(s).classList.toggle("on",s===id)});}
+function stopLoop(){if(raf)cancelAnimationFrame(raf);raf=null;timers.forEach(clearTimeout);timers=[];}
+function later(fn,ms){timers.push(setTimeout(fn,ms));}
 
-document.querySelectorAll("[data-go]").forEach(function(b){b.addEventListener("click",function(){
-  if(b.dataset.mode)mode=b.dataset.mode;
-  show(b.dataset.go);
-})});
-$("s_mode").querySelectorAll("[data-n]").forEach(function(b){b.addEventListener("click",function(){
-  numPlayers=+b.dataset.n;
-  points=[];for(var i=0;i<numPlayers;i++)points.push(0);
-  roundIdx=0;lastGame=-1;
-  if(mode==="tour")show("s_rounds");
-  else{buildPick();show("s_pick");}
-})});
-$("s_rounds").querySelectorAll("[data-r]").forEach(function(b){b.addEventListener("click",function(){
-  totalRounds=+b.dataset.r;roundIdx=0;startRound();
-})});
-$("introGo").addEventListener("click",function(){runGame(GAMES[cur].key)});
-$("exitBtn").addEventListener("click",function(){show("s_home");});
+document.querySelectorAll("[data-go]").forEach(function(b){
+  b.addEventListener("click",function(){
+    if(b.dataset.mode)mode=b.dataset.mode;
+    show(b.dataset.go);
+  });
+});
+document.querySelectorAll(".pcard").forEach(function(c){
+  c.addEventListener("click",function(){
+    numPlayers=+c.dataset.n;
+    if(mode==="tour")show("s_rounds");else{buildPick();show("s_pick");}
+  });
+});
+document.querySelectorAll("[data-rounds]").forEach(function(b){
+  b.addEventListener("click",function(){totalRounds=+b.dataset.rounds;buildPick();show("s_pick");});
+});
+$("exitBtn").addEventListener("click",function(){stopLoop();show("s_home");});
+$("againBtn").addEventListener("click",function(){show("s_home");});
 
-/* one delegated multitouch handler for the whole arena */
-$("arena").addEventListener("pointerdown",function(ev){
-  var z=ev.target.closest?ev.target.closest(".zone"):null;
-  if(!z||!tapHandler)return;
-  ev.preventDefault();
-  var c=+z.dataset.c;
-  var pi=ASSIGN[numPlayers].indexOf(c);
-  if(pi<0)return;
-  tapHandler(pi,z,ev);
-},{passive:false});
-
+/* game registry */
 var GAMES=[
- {key:"taprace",name:"מירוץ לחיצות",how:"מי שלוחץ הכי הרבה על הפינה שלו ב־8 שניות מנצח."},
- {key:"reaction",name:"תגובת שיא",how:"חכו שהעיגול יהפוך לאדום ואז לחצו על הפינה שלכם. מי שלוחץ מוקדם יוצא מהסיבוב."},
- {key:"timing",name:"עצירת זמן",how:"הסמן רץ על הפס. לחצו כשהוא בדיוק באזור האדום. הכי קרוב למרכז מנצח."},
- {key:"target",name:"מטרה נודדת",how:"מטרה אדומה קופצת בפינה שלכם. מי שפוגע הכי הרבה פעמים ב־10 שניות מנצח."},
- {key:"tug",name:"מלחמת חבל",how:"לחצו מהר כדי למשוך את הסמן לצד שלכם. מי שמוביל בפער גדול - מנצח."}
+ {id:"race",name:"מירוץ שורים",desc:"לחצו על הכפתור בפינה שלכם שוב ושוב - השור שלכם רץ לגביע שבמרכז! 8 שניות, הכי רחוק מנצח."},
+ {id:"react",name:"תגובת שיא",desc:"חכו שהמנורה תידלק באדום... ואז לחצו ראשונים! מי שלוחץ מוקדם מודח מהסיבוב."},
+ {id:"timing",name:"עצירת זמן",desc:"המד שלכם עולה ויורד - לחצו בדיוק כשהוא בקטע האדום! הכי קרוב למרכז מנצח."},
+ {id:"targets",name:"מטרה נודדת",desc:"מטרה בצבע שלכם קופצת על המסך - לחצו עליה! 10 שניות, הכי הרבה פגיעות מנצח."},
+ {id:"tug",name:"מלחמת חבל",desc:"לחצו מהר כדי למשוך את החבל לצד שלכם! 15 שניות או עד שאחד קובע."}
 ];
 function buildPick(){
-  var p=$("pickList");p.innerHTML="";
-  GAMES.forEach(function(g,i){var b=document.createElement("button");b.className="btn";b.textContent=g.name;
-    b.addEventListener("click",function(){totalRounds=1;roundIdx=0;cur=i;showIntro()});p.appendChild(b)});
+  var w=$("pickList");w.innerHTML="";
+  GAMES.forEach(function(g,gi){
+    var b=document.createElement("button");b.className="btn animItem";b.textContent=g.name;
+    b.addEventListener("click",function(){points=[0,0,0,0];roundIdx=0;startGame(gi);});
+    w.appendChild(b);
+  });
 }
-function pickGame(){
-  if(mode==="free")return cur;
-  var i;do{i=Math.floor(Math.random()*GAMES.length)}while(i===lastGame&&GAMES.length>1);
-  lastGame=i;return i;
+function pickRoundGame(){
+  var gi;
+  do{gi=Math.floor(Math.random()*GAMES.length)}while(curGame===gi&&GAMES.length>1);
+  startGame(gi);
 }
-function startRound(){cur=pickGame();showIntro();}
-function showIntro(){
-  var g=GAMES[cur];
+function startGame(gi){
+  curGame=gi;
+  var g=GAMES[gi];
   $("introRound").textContent=mode==="tour"?("סיבוב "+(roundIdx+1)+" מתוך "+totalRounds):"משחק חופשי";
   $("introName").textContent=g.name;
-  $("introHow").textContent=g.how;
+  $("introDesc").textContent=g.desc;
   show("s_intro");
 }
-function zones(){return ASSIGN[numPlayers].map(function(c){return document.querySelector('.zone[data-c="'+c+'"]')});}
-function setupArena(label){
+$("introGo").addEventListener("click",function(){buildArena();show("s_arena");countdown(function(){GAMES[curGame].start();});});
+
+/* ---------- arena scaffolding ---------- */
+var pads=[];
+function buildArena(){
   stopLoop();
-  document.querySelectorAll(".zone").forEach(function(z){z.style.display="none";z.classList.remove("flash");
-    z.querySelector(".garea").innerHTML="";z.querySelector(".hint").textContent="";z.querySelector(".pscore").textContent="";});
-  var old=$("arena").querySelectorAll(".tgt");for(var k=0;k<old.length;k++)old[k].remove();
-  $("signal").style.display="none";$("signal").className="bigSignal";
-  $("cd").textContent="";$("cd").className="";
-  $("roundLbl").textContent=label;$("timerLbl").textContent="";
-  var act=zones();
-  act.forEach(function(z,i){z.style.display="block";z.querySelector(".pname").textContent=NAMES[i];});
-  return act;
+  var st=$("stage");st.innerHTML="";
+  document.querySelectorAll(".pad").forEach(function(p){p.remove()});
+  pads=[];
+  var ar=$("s_arena");
+  for(var i=0;i<numPlayers;i++){
+    (function(i){
+      var p=document.createElement("div");
+      p.className="pad "+PADPOS[i];
+      p.style.borderColor=COLORS[i];
+      p.style.boxShadow="0 0 14px "+COLORS[i]+"55";
+      p.innerHTML='<div class="pnum" style="color:'+COLORS[i]+'">'+(i+1)+'</div><div class="pn">'+NAMES[i]+'</div>';
+      p.addEventListener("pointerdown",function(e){e.preventDefault();if(GAMES[curGame].tap)GAMES[curGame].tap(i);});
+      ar.appendChild(p);pads.push(p);
+    })(i);
+  }
+  $("gameTitle").textContent=GAMES[curGame].name;
+  $("timerNum").textContent="";
+  $("timerPill").style.display="none";
+  GAMES[curGame].build($("stage"));
 }
 function countdown(cb){
-  var n=3;
-  function tick(){var cd=$("cd");cd.textContent=n>0?n:"";cd.classList.remove("tick");void cd.offsetWidth;cd.classList.add("tick");}
-  tick();
-  var iv=setInterval(function(){n--;if(n<0){clearInterval(iv);$("cd").textContent="";$("cd").className="";cb();}else tick();},750);
-  timers.push(iv);
+  var o=$("cdOverlay"),n=$("cdNum");o.classList.add("on");
+  var seq=["3","2","1"];var k=0;
+  (function step(){
+    if(k<seq.length){n.textContent=seq[k];n.style.animation="none";void n.offsetWidth;n.style.animation="";k++;later(step,750);}
+    else{o.classList.remove("on");cb();}
+  })();
 }
-function setTimer(t){$("timerLbl").textContent=t>0?("⏱ "+Math.ceil(t)):"";}
-function bump(z){z.classList.add("flash");setTimeout(function(){z.classList.remove("flash")},80);}
-function setScore(z,v){var s=z.querySelector(".pscore");s.textContent=v;s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");}
-
+function startTimer(sec,onTick,onEnd){
+  $("timerPill").style.display="";
+  var left=sec;$("timerNum").textContent=left;
+  (function tick(){
+    later(function(){
+      left--;$("timerNum").textContent=left;
+      if(onTick)onTick(left);
+      if(left>0)tick();else if(onEnd)onEnd();
+    },1000);
+  })();
+}
 function perPlayer(arr){return arr.map(function(c,i){return "<bdi>"+NAMES[i]+"</bdi> <b>"+c+"</b>"}).join(" · ")}
+function flashPad(i){pads[i].classList.remove("flash");void pads[i].offsetWidth;pads[i].classList.add("flash");}
+function shakePad(i){pads[i].classList.remove("shake");void pads[i].offsetWidth;pads[i].classList.add("shake");}
+function padCenter(i){var r=pads[i].getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2};}
+
+/* ---------- round end / results ---------- */
 function endRound(winnerIdx,detail){
   stopLoop();
   if(winnerIdx!=null&&winnerIdx>=0)points[winnerIdx]++;
@@ -279,7 +376,7 @@ function endRound(winnerIdx,detail){
   $("resNext").textContent=isLast?(mode==="tour"?"לתוצאות הטורניר 🏆":"לתפריט"):("לסיבוב הבא ("+(roundIdx+2)+"/"+totalRounds+")");
   $("resNext").onclick=function(){
     if(isLast){finishAll();}
-    else{roundIdx++;startRound();}
+    else{roundIdx++;pickRoundGame();}
   };
   show("s_result");
 }
@@ -292,157 +389,209 @@ function finishAll(){
   $("winBody").innerHTML=h;
   show("s_final");
 }
-
-/* game 1: tap race */
-function gTapRace(){
-  var act=setupArena("מירוץ לחיצות");
-  var counts=act.map(function(){return 0}),live=false;
-  act.forEach(function(z,i){z.querySelector(".hint").textContent="לחצו מהר!";setScore(z,0);});
-  tapHandler=function(pi,z){if(!live)return;counts[pi]++;setScore(z,counts[pi]);bump(z);};
-  countdown(function(){
-    live=true;var t0=performance.now();
-    (function loop(){var t=8-(performance.now()-t0)/1000;setTimer(t);
-      if(t<=0){setTimer(0);
-        var mx=Math.max.apply(null,counts),w=counts.indexOf(mx),tie=counts.filter(function(c){return c===mx}).length>1;
-        endRound(tie?null:w,"תוצאות: "+perPlayer(counts));return;}
-      raf=requestAnimationFrame(loop);})();
-  });
-}
-
-/* game 2: reaction */
-function gReaction(){
-  var act=setupArena("תגובת שיא");
-  var state="wait",alive=act.map(function(){return true}),goAt=0;
-  act.forEach(function(z){z.querySelector(".hint").textContent="חכו לאדום...";});
-  tapHandler=function(pi,z){
-    if(!alive[pi])return;
-    if(state==="wait"){alive[pi]=false;z.querySelector(".hint").textContent="מוקדם מדי! ✗";z.classList.add("flash");}
-    else if(state==="go"){
-      state="done";var ms=Math.round(performance.now()-goAt);bump(z);
-      endRound(pi,"זמן תגובה: "+ms+"ms");
-    }
-  };
-  countdown(function(){
-    $("signal").style.display="block";
-    later(function(){
-      if(state!=="wait")return;
-      state="go";goAt=performance.now();$("signal").classList.add("go");
-    },1200+Math.random()*2600);
-    later(function(){if(state==="wait"){state="done";endRound(null,"אף אחד לא לחץ.");}},12000);
-  });
-}
-
-/* game 3: timing */
-function gTiming(){
-  var act=setupArena("עצירת זמן");
-  var bars=[],stopped=act.map(function(){return false}),pos=act.map(function(){return Math.random()*20}),dir=act.map(function(){return 1});
-  var live=false,done=0;
-  act.forEach(function(z,i){
-    z.querySelector(".garea").innerHTML='<div class="tbar"><div class="target"></div><div class="mark" style="right:0"></div></div>';
-    z.querySelector(".hint").textContent="לחצו באזור האדום";
-    bars.push(z.querySelector(".mark"));
-  });
-  function finish(){
-    var best=-1,bd=1e9;
-    pos.forEach(function(p,i){var d=Math.abs(p-50);if(d<bd){bd=d;best=i}});
-    var hit=bd<=7.5;
-    endRound(hit?best:null,hit?("סטייה מהמרכז: "+bd.toFixed(1)+"%"):"אף אחד לא פגע באזור.");
+/* ============ game 1: bull race ============ */
+GAMES[0].build=function(st){
+  st.innerHTML='<div class="centerGoal">🏆</div>';
+  this.taps=[];this.racers=[];this.over=false;
+  var W=innerWidth,H=innerHeight,cx=W/2,cy=H/2;
+  for(var i=0;i<numPlayers;i++){
+    this.taps.push(0);
+    var pc=padCenter(i);
+    var dx=cx-pc.x,dy=cy-pc.y,len=Math.hypot(dx,dy)-70;
+    var track=document.createElement("div");
+    track.className="raceTrack";
+    track.style.width=len+"px";track.style.height="8px";
+    track.style.left=pc.x+"px";track.style.top=(pc.y-4)+"px";
+    track.style.transformOrigin="0 50%";
+    track.style.transform="rotate("+(Math.atan2(dy,dx)*180/Math.PI)+"deg)";
+    st.appendChild(track);
+    var r=document.createElement("div");
+    r.className="racer";
+    r.style.filter="sepia(.7) saturate(5) hue-rotate(-35deg) drop-shadow(0 0 7px rgba(255,0,0,.9))";
+    if(dx<0)r.style.transform="scaleX(-1)";
+    r.innerHTML='🐂<div class="tag" style="background:'+COLORS[i]+';'+(COLORS[i]==="#f5f5f5"?'color:#000;':'')+'">'+(i+1)+'</div>';
+    st.appendChild(r);
+    this.racers.push({el:r,sx:pc.x,sy:pc.y,dx:dx,dy:dy,len:len});
+    this.place(i);
   }
-  tapHandler=function(pi,z){
-    if(!live||stopped[pi])return;
-    stopped[pi]=true;done++;
-    var d=Math.abs(pos[pi]-50);
-    z.querySelector(".hint").textContent=d<=7.5?"פגיעה! ✓":"פספוס";
-    if(d<=7.5)z.classList.add("flash");
-    if(done>=act.length){live=false;finish();}
-  };
-  countdown(function(){
-    live=true;var last=performance.now();
-    (function loop(now){
-      var dt=(now-last)/1000;last=now;
-      for(var i=0;i<bars.length;i++){
-        if(stopped[i])continue;
-        pos[i]+=dir[i]*dt*80;
-        if(pos[i]>=100){pos[i]=100;dir[i]=-1}
-        if(pos[i]<=0){pos[i]=0;dir[i]=1}
-        bars[i].style.right="calc("+pos[i]+"% - 2px)";
-      }
-      if(live)raf=requestAnimationFrame(loop);
-    })(performance.now());
-  });
-}
+};
+GAMES[0].place=function(i){
+  var r=this.racers[i],p=Math.min(this.taps[i]/TAPS_WIN,1);
+  var x=r.sx+r.dx*p* (r.len/(r.len+70)) -17, y=r.sy+r.dy*p*(r.len/(r.len+70))-30;
+  r.el.style.left=x+"px";r.el.style.top=y+"px";
+};
+GAMES[0].tap=function(i){
+  if(this.over)return;
+  this.taps[i]++;this.place(i);flashPad(i);
+  var lead=Math.max.apply(null,this.taps);
+  if(lead>=TAPS_WIN){this.over=true;later(function(){},0);this.finish();}
+};
+GAMES[0].start=function(){
+  var g=this;
+  startTimer(8,null,function(){if(!g.over){g.over=true;g.finish();}});
+};
+GAMES[0].finish=function(){
+  var mx=Math.max.apply(null,this.taps),win=this.taps.indexOf(mx);
+  var tie=this.taps.filter(function(t){return t===mx}).length>1;
+  endRound(tie?null:win,"מכות שור: "+perPlayer(this.taps));
+};
 
-/* game 4: target rush */
-function gTarget(){
-  var act=setupArena("מטרה נודדת");
-  var hits=act.map(function(){return 0}),live=false,tgs=[];
-  act.forEach(function(z,i){
-    z.querySelector(".hint").textContent="פגעו במטרה!";setScore(z,0);
-    var tg=document.createElement("div");tg.className="tgt";z.appendChild(tg);tgs.push(tg);
-    var zw=z.clientWidth,zh=z.clientHeight;
-    tg.dataset.jx=zw;tg.dataset.jy=zh;
-    jump(tg,z);
-  });
-  function jump(tg,z){
-    var zw=z.clientWidth,zh=z.clientHeight;
-    tg.style.left=(12+Math.random()*Math.max(20,zw-84))+"px";
-    tg.style.top=(12+Math.random()*Math.max(20,zh-84))+"px";
-    tg.style.animation="none";void tg.offsetWidth;tg.style.animation="";
-  }
-  tapHandler=function(pi,z,ev){
-    if(!live)return;
-    var r=tgs[pi].getBoundingClientRect();
-    if(ev.clientX>=r.left-14&&ev.clientX<=r.right+14&&ev.clientY>=r.top-14&&ev.clientY<=r.bottom+14){
-      hits[pi]++;setScore(z,hits[pi]);bump(z);jump(tgs[pi],z);
+/* ============ game 2: reaction ============ */
+GAMES[1].build=function(st){
+  st.innerHTML='<div id="sigWrap"><div id="sigLight">🐂</div><div id="sigText">חכו לאדום...</div></div>';
+  this.go=false;this.done=false;this.out=[];
+};
+GAMES[1].start=function(){
+  var g=this;
+  later(function(){
+    if(g.done)return;
+    g.go=true;
+    var l=$("sigLight");l.classList.add("go");
+    $("sigText").textContent="עכשיו!!!";
+    g.t0=performance.now();
+  },1200+Math.random()*2600);
+};
+GAMES[1].tap=function(i){
+  if(this.done||this.out.indexOf(i)>=0)return;
+  var g=this;
+  if(!this.go){
+    this.out.push(i);shakePad(i);
+    $("sigText").textContent=NAMES[i]+" לחץ מוקדם מדי!";
+    if(this.out.length>=numPlayers-0&&numPlayers===this.out.length){g.done=true;endRound(null,"כולם לחצו מוקדם!");}
+    else if(this.out.length===numPlayers-1){
+      var last=-1;for(var k=0;k<numPlayers;k++)if(g.out.indexOf(k)<0)last=k;
+      g.done=true;
+      endRound(last,"כולם נשרו - "+NAMES[last]+" נשאר אחרון!");
     }
-  };
-  countdown(function(){
-    live=true;var t0=performance.now();
-    (function loop(){var t=10-(performance.now()-t0)/1000;setTimer(t);
-      if(t<=0){setTimer(0);
-        var mx=Math.max.apply(null,hits),w=hits.indexOf(mx),tie=hits.filter(function(c){return c===mx}).length>1;
-        endRound(tie?null:w,"פגיעות: "+perPlayer(hits));return;}
-      raf=requestAnimationFrame(loop);})();
-  });
-}
+    return;
+  }
+  this.done=true;
+  flashPad(i);
+  var ms=Math.round(performance.now()-this.t0);
+  endRound(i,"זמן תגובה: <b>"+ms+"ms</b>");
+};
 
-/* game 5: tug of war */
-function gTug(){
-  var act=setupArena("מלחמת חבל");
-  var taps=act.map(function(){return 0}),live=false,marks=[];
-  act.forEach(function(z,i){
-    z.querySelector(".garea").innerHTML='<div class="tugWrap"><div class="mark" style="right:calc(50% - 0px)"></div></div>';
-    marks.push(z.querySelector(".mark"));
-    z.querySelector(".hint").textContent="לחצו מהר!";setScore(z,0);
-  });
-  tapHandler=function(pi,z){if(!live)return;taps[pi]++;setScore(z,taps[pi]);bump(z);};
-  countdown(function(){
-    live=true;var t0=performance.now();
-    (function loop(){
-      var t=15-(performance.now()-t0)/1000;setTimer(t);
-      var mx=Math.max.apply(null,taps),mn=Math.min.apply(null,taps);
-      var lead=taps.indexOf(mx),spread=mx-mn;
-      var shift=Math.min(42,spread*2.5);
-      marks.forEach(function(m){m.style.right="calc("+(50-shift)+"% - 10px)"});
-      act.forEach(function(z,i){z.querySelector(".hint").textContent=spread>0?("מוביל: "+NAMES[lead]):"לחצו מהר!";});
-      if(spread>=18||t<=0){
-        setTimer(0);
-        if(mx===0||spread===0){endRound(null,"שוויון מושלם!");return;}
-        var tie=taps.filter(function(c){return c===mx}).length>1;
-        endRound(tie?null:lead,"לחיצות: "+perPlayer(taps));return;
-      }
-      raf=requestAnimationFrame(loop);
-    })();
-  });
-}
+/* ============ game 3: timing gauges ============ */
+GAMES[2].build=function(st){
+  this.vals=[];this.locked=[];this.els=[];this.running=false;
+  for(var i=0;i<numPlayers;i++){
+    this.vals.push(0);this.locked.push(false);
+    var pc=padCenter(i);
+    var gx=pc.x+(innerWidth/2-pc.x)*0.32-48, gy=pc.y+(innerHeight/2-pc.y)*0.32-48;
+    var g=document.createElement("div");
+    g.className="gauge";
+    g.style.left=gx+"px";g.style.top=gy+"px";
+    g.innerHTML='<svg width="96" height="96"><circle cx="48" cy="48" r="40" stroke="#2a0000" stroke-width="10" fill="rgba(10,0,0,.75)"/>'
+      +'<circle class="arc" cx="48" cy="48" r="40" stroke="'+COLORS[i]+'" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>'
+      +'</svg><div class="gv"><div class="gl">'+NAMES[i]+'</div><div class="vv">0%</div></div>';
+    st.appendChild(g);
+    this.els.push(g);
+  }
+};
+GAMES[2].start=function(){
+  this.running=true;var g=this,t0=performance.now();
+  (function loop(){
+    if(!g.running)return;
+    var t=(performance.now()-t0)/1500;
+    for(var i=0;i<numPlayers;i++){
+      if(g.locked[i])continue;
+      var v=(1-Math.cos(t*Math.PI*2+ i*1.3))/2*100; /* 0..100 oscillate, offset per player */
+      g.vals[i]=v;
+      var arc=g.els[i].querySelector(".arc");
+      arc.setAttribute("stroke-dashoffset",(251.3*(1-v/100)).toFixed(1));
+      g.els[i].querySelector(".vv").textContent=Math.round(v)+"%";
+    }
+    g.rafId=requestAnimationFrame(loop);
+  })();
+};
+GAMES[2].tap=function(i){
+  if(!this.running||this.locked[i])return;
+  this.locked[i]=true;flashPad(i);
+  this.els[i].classList.add("locked");
+  this.els[i].querySelector(".vv").textContent=Math.round(this.vals[i])+"%";
+  if(this.locked.slice(0,numPlayers).every(Boolean)){this.running=false;this.finish();}
+};
+GAMES[2].finish=function(){
+  var best=-1,bd=1e9;
+  for(var i=0;i<numPlayers;i++){var d=Math.abs(this.vals[i]-50);if(d<bd){bd=d;best=i;}}
+  endRound(best,"סטייה מהמרכז: <b>"+bd.toFixed(1)+"%</b> · "+perPlayer(this.vals.map(function(v){return Math.round(v)+"%"})));
+};
 
-function runGame(key){
-  stopLoop();
-  screens.forEach(function(s){$(s).classList.remove("on")});
-  $("arena").classList.add("on");
-  ({taprace:gTapRace,reaction:gReaction,timing:gTiming,target:gTarget,tug:gTug})[key]();
-}
-})();
+/* ============ game 4: target rush ============ */
+GAMES[3].build=function(st){
+  this.hits=[];this.tgts=[];this.over=false;this.st=st;
+  for(var i=0;i<numPlayers;i++){
+    this.hits.push(0);
+    var t=document.createElement("div");
+    t.className="liveTgt";
+    t.style.background=COLORS[i];
+    if(COLORS[i]==="#f5f5f5")t.style.color="#000";
+    t.textContent=(i+1);
+    (function(i,t){t.addEventListener("pointerdown",function(e){e.preventDefault();e.stopPropagation();GAMES[3].hit(i,t);});})(i,t);
+    st.appendChild(t);
+    this.tgts.push(t);
+    this.move(i);
+  }
+  var ms=document.createElement("div");ms.className="miniScore";ms.id="tugScores";
+  for(var i=0;i<numPlayers;i++)ms.innerHTML+='<div style="border-color:'+COLORS[i]+'">'+NAMES[i]+' <bdi>0</bdi></div>';
+  st.appendChild(ms);
+};
+GAMES[3].move=function(i){
+  var W=innerWidth,H=innerHeight;
+  var x=W*0.22+Math.random()*W*0.56, y=H*0.24+Math.random()*H*0.5;
+  this.tgts[i].style.left=x+"px";this.tgts[i].style.top=y+"px";
+};
+GAMES[3].hit=function(i,t){
+  if(this.over)return;
+  this.hits[i]++;
+  var b=document.createElement("div");b.className="burst";
+  b.style.left=t.style.left;b.style.top=t.style.top;
+  this.st.appendChild(b);setTimeout(function(){b.remove()},400);
+  this.move(i);
+  t.style.animation="none";void t.offsetWidth;t.style.animation="";
+  this.st.querySelectorAll("#tugScores div bdi")[i].textContent=this.hits[i];
+};
+GAMES[3].start=function(){
+  var g=this;
+  startTimer(10,null,function(){g.over=true;
+    var mx=Math.max.apply(null,g.hits),win=g.hits.indexOf(mx);
+    var tie=g.hits.filter(function(h){return h===mx}).length>1;
+    endRound(tie?null:win,"פגיעות: "+perPlayer(g.hits));
+  });
+};
+
+/* ============ game 5: tug of war ============ */
+GAMES[4].build=function(st){
+  st.innerHTML='<div id="ropeWrap"><div id="ropeLine"><div id="ropeKnot"></div></div></div>'
+    +'<div class="tugEmoji" id="bullL" style="left:6%">🐂</div>'
+    +'<div class="tugEmoji" id="bullR" style="right:6%">🐂</div>'
+    +'<div class="miniScore" id="tugScores"></div>';
+  this.taps=[];this.over=false;
+  for(var i=0;i<numPlayers;i++)this.taps.push(0);
+  var ms=$("tugScores");
+  for(var i=0;i<numPlayers;i++)ms.innerHTML+='<div style="border-color:'+COLORS[i]+'">'+NAMES[i]+' <bdi>0</bdi></div>';
+  $("ropeKnot").style.left="50%";
+};
+GAMES[4].tap=function(i){
+  if(this.over)return;
+  this.taps[i]++;flashPad(i);
+  document.querySelectorAll("#tugScores div bdi")[i].textContent=this.taps[i];
+  var sorted=this.taps.map(function(t,ix){return[t,ix]}).sort(function(a,b){return b[0]-a[0]});
+  var lead=sorted[0][1],spread=sorted[0][0]-(sorted[1]?sorted[1][0]:0);
+  /* knot toward leader's side: left pads = tl,bl (x<mid) pull left */
+  var pc=padCenter(lead),dir=pc.x<innerWidth/2?-1:1;
+  $("ropeKnot").style.left=(50+dir*Math.min(spread*4.2,36))+"%";
+  if(spread>=18){this.over=true;endRound(lead,"משיכה מכרעת! "+perPlayer(this.taps));}
+};
+GAMES[4].start=function(){
+  var g=this;
+  startTimer(15,null,function(){
+    if(g.over)return;g.over=true;
+    var sorted=g.taps.map(function(t,ix){return[t,ix]}).sort(function(a,b){return b[0]-a[0]});
+    var tie=sorted[0][0]===(sorted[1]?sorted[1][0]:-1);
+    endRound(tie?null:sorted[0][1],"לחיצות: "+perPlayer(g.taps));
+  });
+};
 </script>
 </body>
 </html>
