@@ -16,7 +16,7 @@ UNRES=json.load(open("manifest/shortcuts_unres.json")) if os.path.exists("manife
 HAVE=set(open("/tmp/assets.txt").read().split()) if os.path.exists("/tmp/assets.txt") else set()
 A=os.path.join(OUT,"archive"); AA=os.path.join(A,"a"); os.makedirs(AA,exist_ok=True)
 REL=os.path.join(OUT,"_release"); os.makedirs(REL,exist_ok=True)
-CAT={"מדיה וצ׳ופרים":"media","גלופות וסמלים":"glupot","קטלוג השבט":"catalog","פנאטיות":"fanatia","הדרכה":"hadracha","מחנאות":"machanot","ג׳ינגלים":"jingles"}
+CAT={"מדיה וצ׳ופרים":"media","גלופות וסמלים":"glupot","קטלוג השבט":"catalog","פנאטיות":"fanatia","הדרכה":"hadracha","מחנאות":"machanot","ג׳ינגלים":"jingles","ברקת הנשיא":"bareket"}
 def ext_of(name,mime):
     e=os.path.splitext(name)[1].lower().lstrip(".")
     return re.sub(r'[^a-z0-9]','',e)[:5] or {"image/jpeg":"jpg","video/mp4":"mp4","application/vnd.google-apps.spreadsheet":"xlsx","application/vnd.google-apps.presentation":"pptx"}.get(mime,"bin")
