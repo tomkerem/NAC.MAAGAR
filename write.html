@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כתיבת פעולות - מאגר הנשיא</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+<style>
+body{background:#000;color:red;text-align:center;font-family:'Secular One',sans-serif;padding:20px 10px 40px;margin:0}
+.tile{display:block;max-width:600px;margin:0 auto 14px;border:2px solid red;border-radius:12px;overflow:hidden;background:#000}
+.tile img{display:block;width:100%;height:auto}
+.box{max-width:600px;margin:14px auto;border:2px solid red;border-radius:12px;padding:14px;background:#111;text-align:right;color:#fff}
+.box h2{color:red;margin:0 0 8px;font-size:20px;text-align:center}
+textarea{width:100%;box-sizing:border-box;min-height:260px;background:#000;color:#fff;border:2px solid red;border-radius:8px;padding:10px;font-family:inherit;font-size:16px;line-height:1.5;direction:rtl;resize:vertical}
+.chk{list-style:none;padding:0;margin:0}
+.chk li{padding:6px 0;font-size:17px}
+.chk li.ok{color:#5be37d}
+.chk li.no{color:#ff8a8a}
+button{font-family:inherit;font-size:18px;background:red;color:#000;border:0;border-radius:8px;padding:12px 22px;margin-top:10px;cursor:pointer}
+button:disabled{opacity:.5}
+.small{font-size:14px;color:#ccc;line-height:1.5}
+.status{margin-top:10px;font-size:16px}
+.err{color:#ff8a8a}
+.good{color:#5be37d}
+details{margin-top:8px;color:#ccc;font-size:14px}
+details pre{white-space:pre-wrap;background:#000;border:1px solid #600;border-radius:6px;padding:8px;color:#ddd;font-family:inherit}
+.back-btn{display:inline-block;margin-top:20px;color:red;text-decoration:none;font-size:18px;border:2px solid red;padding:10px 20px;border-radius:8px}
+ul.sug{padding-right:20px;margin:6px 0}
+ul.sug li{margin:6px 0}
+</style>
+</head>
+<body>
+<a class="tile" href="index.html"><img src="bg-writing.jpg" alt="כתיבת פעולות"></a>
+
+<div class="box">
+<h2>כותבים פעולה</h2>
+<p class="small">כותבים חופשי, בלי טופס. צריך בפעולה: מטרת הפעולה, מסגרת הפעולה, משחק פתיחה ולפחות 6 הפעלות. הרשימה למטה מתעדכנת תוך כדי כתיבה, ו"בדיקה עם AI" נותנת משוב אמיתי והצעות לפי פעולות מהמאגר.</p>
+<textarea id="draft" placeholder="למשל:&#10;מטרת הפעולה: ...&#10;מסגרת הפעולה: ...&#10;משחק פתיחה: ...&#10;הפעלה 1: ...&#10;הפעלה 2: ..."></textarea>
+</div>
+
+<div class="box">
+<h2>מה כבר יש בפעולה</h2>
+<ul class="chk" id="chk">
+<li id="c_goal" class="no">✗ מטרת הפעולה</li>
+<li id="c_fw" class="no">✗ מסגרת הפעולה</li>
+<li id="c_open" class="no">✗ משחק פתיחה</li>
+<li id="c_acts" class="no">✗ הפעלות: 0 מתוך 6</li>
+</ul>
+<p class="small">כותבים כל הפעלה בשורה חדשה שמתחילה ב"הפעלה 1:", "הפעלה 2:" וכן הלאה. זו בדיקה מקומית בלבד, והמשוב המלא מגיע מה-AI.</p>
+<button id="go">בדיקה עם AI</button>
+<div class="status" id="status"></div>
+</div>
+
+<div class="box" id="res" style="display:none"><h2>משוב</h2><div id="resbody"></div></div>
+
+<div class="box">
+<h2>מה נשלח ל-AI</h2>
+<p class="small">בלחיצה על "בדיקה עם AI" נשלחים רק: הטקסט שכתבת, ועד 3 קטעים קצרים מפעולות והדרכות ציבוריות שהועתקו למאגר. אין תמונות, אין קבצים חסומים ואין מסמכים אישיים. לפי מדיניות Cloudflare הטקסט אינו נשמר ואינו משמש לאימון. התשובות מוגבלות במכסה חינמית יומית, וכשהיא נגמרת ה-AI לא עונה עד שהיא מתחדשת.</p>
+<details id="exd"><summary>הקטעים שיישלחו עכשיו</summary><div id="exlist" class="small">אין עדיין, מתחילים לכתוב.</div></details>
+</div>
+
+<a class="back-btn" href="index.html">חזרה לדף הבית</a>
+
+<script>
+var WORKER="https://nac-maagar-ai.tomkerem42.workers.dev/";
+var $=function(i){return document.getElementById(i)};
+var INDEX=null,DF={},AVG=0;
+var PRE=["וכש","ולכ","וש","וה","וב","ול","ומ","וכ","כש","לכ","מה","שה","ה","ו","ב","ל","מ","כ","ש"];
+function stem(w){for(var i=0;i<PRE.length;i++){var p=PRE[i];if(w.length>p.length+2&&w.indexOf(p)===0)return w.slice(p.length)}return w}
+function tok(s){return (s.toLowerCase().match(/[\u0590-\u05ffa-z0-9]+/g)||[]).map(stem).filter(function(w){return w.length>1})}
+function loadIndex(){return fetch("assets/activity-index.json").then(function(r){return r.json()}).then(function(d){
+ INDEX=d.map(function(c){var t=tok(c.t+" "+c.x),tf={};t.forEach(function(w){tf[w]=(tf[w]||0)+1});return{t:c.t,x:c.x,tf:tf,len:t.length}});
+ var tot=0;INDEX.forEach(function(c){tot+=c.len;Object.keys(c.tf).forEach(function(w){DF[w]=(DF[w]||0)+1})});AVG=tot/INDEX.length;
+ update()})}
+function retrieve(text){
+ if(!INDEX)return[];var q=tok(text.slice(-1500));if(!q.length)return[];var N=INDEX.length,k1=1.4,b=.75;
+ var sc=INDEX.map(function(c){var s=0;q.forEach(function(w){var f=c.tf[w];if(!f)return;var idf=Math.log(1+(N-(DF[w]||0)+.5)/((DF[w]||0)+.5));s+=idf*f*(k1+1)/(f+k1*(1-b+b*c.len/AVG))});return{c:c,s:s}});
+ sc.sort(function(a,b){return b.s-a.s});
+ var out=[],seen={};for(var i=0;i<sc.length&&out.length<3;i++){if(sc[i].s<=0)break;var c=sc[i].c;if(seen[c.t])continue;seen[c.t]=1;out.push({title:c.t,text:c.x.slice(0,1200)})}
+ return out}
+function check(t){
+ var goal=/מטרת הפעולה|מטרה|מטרות/.test(t);
+ var fw=/מסגרת/.test(t);
+ var open=/משחק פתיחה|משחק הפתיחה|פתיחה|משחק היכרות|חימום/.test(t);
+ var set={},re=/(?:^|\n)\s*(?:הפעלה|הפעלת|הפעלות)\s*(?:מספר\s*)?(\d+|[א-ת]{1,6})?\s*[:.\-–)]/g,m,n=0;
+ while((m=re.exec(t))){n++;}
+ return{goal:goal,fw:fw,open:open,acts:n}}
+function setc(id,ok,txt){var e=$(id);e.className=ok?"ok":"no";e.textContent=(ok?"✓ ":"✗ ")+txt}
+function update(){
+ var t=$("draft").value,c=check(t);
+ setc("c_goal",c.goal,"מטרת הפעולה");setc("c_fw",c.fw,"מסגרת הפעולה");setc("c_open",c.open,"משחק פתיחה");
+ setc("c_acts",c.acts>=6,"הפעלות: "+c.acts+" מתוך 6");
+ var ex=retrieve(t);
+ $("exlist").innerHTML=ex.length?"":"אין עדיין, מתחילים לכתוב.";
+ ex.forEach(function(e){var d=document.createElement("div");d.innerHTML="<b></b><pre></pre>";d.firstChild.textContent=e.title;d.lastChild.textContent=e.text;$("exlist").appendChild(d)});
+ return{c:c,ex:ex}}
+$("draft").addEventListener("input",update);
+var ERR={limit_ip:"הגעת למכסה היומית שלך. אפשר לנסות שוב מחר.",limit_daily:"המכסה החינמית היומית של ה-AI נגמרה. היא מתחדשת מחר, וה-AI לא יענה עד אז.",draft_too_short:"הטקסט קצר מדי. כותבים עוד קצת ואז בודקים.",ai_unavailable:"ה-AI לא זמין כרגע. נסו שוב עוד רגע.",bad_model_output:"ה-AI החזיר תשובה לא תקינה. נסו שוב.",forbidden:"הבקשה נחסמה."};
+function esc(s){var d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
+$("go").addEventListener("click",function(){
+ var u=update(),t=$("draft").value;
+ if(t.trim().length<20){$("status").className="status err";$("status").textContent=ERR.draft_too_short;return}
+ var btn=$("go");btn.disabled=true;$("status").className="status";$("status").textContent="ה-AI קורא ובודק... זה יכול לקחת עד חצי דקה.";
+ var ctl=new AbortController(),to=setTimeout(function(){ctl.abort()},75000);
+ fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({draft:t,excerpts:u.ex}),signal:ctl.signal})
+ .then(function(r){return r.json().then(function(j){return{s:r.status,j:j}})})
+ .then(function(o){
+  if(!o.j.ok){$("status").className="status err";$("status").textContent=ERR[o.j.error]||"משהו השתבש, נסו שוב.";return}
+  var r=o.j.result,both=r.complete===true&&u.c.goal&&u.c.fw&&u.c.open&&u.c.acts>=6;
+  $("status").className="status "+(both?"good":"");
+  $("status").textContent=both?"הפעולה מלאה: גם הבדיקה המקומית וגם ה-AI מאשרים.":"עוד לא מלאה. הנה מה שחסר.";
+  var h="<p>"+esc(r.feedback)+"</p>";
+  h+="<p class='small'>ה-AI זיהה: מטרה "+(r.goal?"✓":"✗")+" | מסגרת "+(r.framework?"✓":"✗")+" | משחק פתיחה "+(r.opening_game?"✓":"✗")+" | הפעלות "+esc(r.activities)+"</p>";
+  if(r.suggestions&&r.suggestions.length){h+="<b>הצעות:</b><ul class='sug'>"+r.suggestions.map(function(s){return"<li>"+esc(s)+"</li>"}).join("")+"</ul>"}
+  if(r.used_archive&&r.used_archive.length){h+="<p class='small'>קטעים מהמאגר שהיוו השראה: "+r.used_archive.map(esc).join(", ")+"</p>"}
+  $("resbody").innerHTML=h;$("res").style.display="block";$("res").scrollIntoView({behavior:"smooth"});
+ })
+ .catch(function(e){$("status").className="status err";$("status").textContent=e&&e.name==="AbortError"?"ה-AI לא ענה בזמן. נסו שוב.":"אין חיבור ל-AI כרגע."})
+ .then(function(){clearTimeout(to);btn.disabled=false})});
+loadIndex().catch(function(){$("exlist").textContent="אינדקס המאגר לא נטען."});
+</script>
+</body>
+</html>
