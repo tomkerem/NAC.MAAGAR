@@ -1,4 +1,7 @@
 {
- "stats": {},
+ "stats": {
+  "img": 91,
+  "docs": 1
+ },
  "fails": []
 }
