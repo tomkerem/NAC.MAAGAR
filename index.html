@@ -66,6 +66,26 @@
         .dot-red { background-color: red; }
         .dot-black { background-color: black; border: 2px solid red; box-sizing: border-box; }
 
+
+        /* אנימציית פתיחה: הכותרת והקטגוריות מופיעות בהדרגה */
+        @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+        h1, body > p, .tile, .jingle-card { animation: rise .55s ease-out both; }
+        body > p { animation-delay: .18s; }
+        .tile:nth-of-type(1)  { animation-delay: .30s; }
+        .tile:nth-of-type(2)  { animation-delay: .42s; }
+        .tile:nth-of-type(3)  { animation-delay: .54s; }
+        .tile:nth-of-type(4)  { animation-delay: .66s; }
+        .tile:nth-of-type(5)  { animation-delay: .78s; }
+        .tile:nth-of-type(6)  { animation-delay: .90s; }
+        .tile:nth-of-type(7)  { animation-delay: 1.02s; }
+        .tile:nth-of-type(8)  { animation-delay: 1.14s; }
+        .tile:nth-of-type(9)  { animation-delay: 1.26s; }
+        .tile:nth-of-type(10) { animation-delay: 1.38s; }
+        .jingle-card { animation-delay: 1.55s; }
+        @media (prefers-reduced-motion: reduce) {
+            h1, body > p, .tile, .jingle-card { animation: none; }
+        }
+
         body {
             background: #000 url('bg-home.jpg?v=2') center/cover no-repeat fixed;
         }
