@@ -52,8 +52,8 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
 .pad .pn{font-size:11px;font-weight:700;color:#fff;line-height:1}
 .pad .pnum{font-size:22px;font-weight:900;line-height:1.1}
 .pad:active,.pad.hit{transform:scale(.85)}
-.pad.tl{top:46px;right:12px}
-.pad.tr{top:46px;left:12px}
+.pad.tl{top:62px;right:12px}
+.pad.tr{top:62px;left:12px}
 .pad.bl{bottom:14px;right:12px}
 .pad.br{bottom:14px;left:12px}
 .pad.flash{animation:padFlash .3s}
@@ -65,40 +65,56 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
 #cdOverlay.on{display:flex}
 #cdNum{font-size:110px;font-weight:900;color:#ff2222;text-shadow:0 0 44px rgba(255,0,0,.9);animation:cdPop .7s ease-out both}
 @keyframes cdPop{0%{transform:scale(2.2);opacity:0}30%{transform:scale(1);opacity:1}80%{opacity:1}100%{opacity:0}}
-/* race scene */
-.raceTrack{position:absolute;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);border-radius:6px}
+/* shared arena glow */
+.arenaGlow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:78vmin;height:78vmin;border-radius:50%;background:radial-gradient(circle,rgba(255,20,20,.16),transparent 65%);pointer-events:none}
+/* race scene: horizontal lanes */
+.lane{position:absolute;left:14px;right:14px;border-radius:16px;background:linear-gradient(180deg,#220404,#070000);border:2px solid;overflow:hidden}
+.laneStripe{position:absolute;top:50%;left:0;right:0;height:2px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 18px,transparent 18px 38px)}
+.finish{position:absolute;top:0;bottom:0;left:0;width:16px;background:repeating-conic-gradient(#eee 0 25%,#151515 0 50%);background-size:16px 16px;border-right:2px solid #fff}
+.laneLabel{position:absolute;top:7px;right:12px;font-size:14px;font-weight:800;text-shadow:0 0 8px #000;z-index:9}
+.laneFill{position:absolute;top:0;bottom:0;right:0;width:0;background:linear-gradient(90deg,transparent,rgba(255,30,30,.32));border-left:2px solid rgba(255,90,90,.75);transition:width .16s ease-out}
+.racer2{position:absolute;bottom:6px;right:8px;font-size:44px;z-index:8;transition:right .16s ease-out}
+.racer2 .tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:900;color:#fff;background:#a00;border-radius:8px;padding:1px 7px;border:1.5px solid #fff;z-index:9}
 .redbull{filter:sepia(.7) saturate(5) hue-rotate(-35deg) drop-shadow(0 0 7px rgba(255,0,0,.9))}
-.racer{position:absolute;font-size:34px;transition:transform .18s ease-out;z-index:10;filter:drop-shadow(0 0 6px rgba(255,0,0,.8))}
-.racer .tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:900;color:#fff;background:#a00;border-radius:8px;padding:1px 6px;border:1.5px solid #fff}
-.centerGoal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:52px;z-index:5;animation:trophyBob 2s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(255,190,0,.6))}
-.progBar{position:absolute;border-radius:4px;z-index:6}
+.bounce{animation:bullBounce .24s}
+@keyframes bullBounce{0%,100%{transform:scaleX(-1) translateY(0)}50%{transform:scaleX(-1) translateY(-10px)}}
+.bullEmoji{transform:scaleX(-1);display:inline-block}
+.puff{position:absolute;font-size:20px;animation:puffUp .42s ease-out both;z-index:7;pointer-events:none}
+@keyframes puffUp{from{opacity:.9;transform:translateY(0) scale(.6)}to{opacity:0;transform:translateY(-20px) scale(1.35)}}
 /* tug scene */
-#ropeWrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:78%;z-index:8}
-#ropeLine{position:relative;height:10px;border-radius:5px;background:repeating-linear-gradient(45deg,#c11,#801010 8px,#c11 16px);box-shadow:0 0 12px rgba(255,0,0,.5)}
-#ropeKnot{position:absolute;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#ff2222;border:3px solid #fff;box-shadow:0 0 16px #f00;transition:left .16s ease-out;z-index:2}
-#ropeKnot::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#7a0000}
-.tugSide{position:absolute;top:calc(50% + 26px);font-size:14px;font-weight:800;color:#ccc;width:50%;text-align:center}
-.tugEmoji{position:absolute;top:calc(50% - 46px);font-size:30px;transition:left .16s ease-out,right .16s ease-out;filter:drop-shadow(0 0 6px rgba(255,0,0,.7))}
+.tugStage{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:88%;height:190px;border-radius:24px;background:radial-gradient(ellipse at 50% 60%,#260404,#050000 75%);border:2px solid rgba(255,40,40,.4);box-shadow:inset 0 0 46px rgba(255,0,0,.14)}
+#ropeLine{position:absolute;top:50%;left:6%;right:6%;height:12px;margin-top:-6px;border-radius:6px;background:repeating-linear-gradient(45deg,#d11,#7a0d0d 9px,#d11 18px);box-shadow:0 0 16px rgba(255,0,0,.55)}
+#ropeKnot{position:absolute;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:#ff2222;border:3px solid #fff;box-shadow:0 0 18px #f00;transition:left .16s ease-out;z-index:2}
+#ropeKnot::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#7a0000}
+.tugEmoji{position:absolute;top:50%;font-size:56px;margin-top:-42px;z-index:3;transition:none}
+.tugL{left:2%;transform:rotate(-10deg)}
+.tugR{right:2%;transform:scaleX(-1) rotate(-10deg)}
+.meter{position:absolute;top:50%;transform:translateY(-50%);width:18px;height:46%;background:#140000;border:2px solid #551111;border-radius:10px;overflow:hidden;z-index:10}
+.meterFill{position:absolute;bottom:0;left:0;right:0;height:0;transition:height .15s ease-out;box-shadow:0 0 10px currentColor}
 /* reaction scene */
-#sigWrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:14px;z-index:8}
-#sigLight{width:110px;height:110px;border-radius:50%;background:#1c0000;border:5px solid #400;transition:background .08s,border-color .08s,box-shadow .08s;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#733}
-#sigLight.go{background:#ff1a1a;border-color:#fff;box-shadow:0 0 60px rgba(255,20,20,.95),0 0 120px rgba(255,0,0,.5);color:#fff}
-#sigLight.go::before{content:"";position:absolute;width:110px;height:110px;border-radius:50%;border:3px solid rgba(255,60,60,.8);animation:ringOut 1s ease-out infinite}
+#sigWrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:16px;z-index:8}
+.sigBox{width:96px;padding:16px 0;border-radius:24px;background:linear-gradient(180deg,#1e1e1e,#050505);border:3px solid #3a3a3a;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 0 30px rgba(0,0,0,.9),0 0 18px rgba(255,0,0,.25)}
+.lamp{width:54px;height:54px;border-radius:50%;background:#161616;border:2px solid #000;position:relative;transition:background .1s,box-shadow .1s}
+.lamp.wait{background:#4a3a00;box-shadow:0 0 18px rgba(255,210,0,.5)}
+.lamp.go{background:#ff1a1a;border-color:#fff;box-shadow:0 0 46px rgba(255,20,20,.95),0 0 100px rgba(255,0,0,.5)}
+.lamp.go::before{content:"";position:absolute;inset:-2px;border-radius:50%;border:3px solid rgba(255,60,60,.8);animation:ringOut 1s ease-out infinite}
 @keyframes ringOut{from{transform:scale(1);opacity:1}to{transform:scale(2.1);opacity:0}}
-#sigText{font-size:17px;color:#bbb;font-weight:700}
+#sigText{font-size:17px;color:#bbb;font-weight:700;text-shadow:0 0 8px #000}
 /* timing gauges */
-.gauge{position:absolute;width:96px;height:96px;z-index:12}
+.gauge{position:absolute;width:100px;height:100px;z-index:12}
 .gauge svg{transform:rotate(-90deg)}
-.gauge .gv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:19px;color:#fff;text-shadow:0 0 8px #000}
-.gauge .gl{font-size:10px;color:#bbb;font-weight:700}
+.gauge .gv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#fff;text-shadow:0 0 8px #000}
+.gauge .gl{font-size:11px;color:#bbb;font-weight:700}
 .gauge.locked{animation:padFlash .35s}
 /* target rush */
-.liveTgt{position:absolute;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;color:#fff;border:3.5px solid #fff;cursor:pointer;z-index:15;animation:tgtPop .2s cubic-bezier(.2,1.6,.4,1) both;box-shadow:0 0 18px rgba(255,0,0,.6)}
+.field{position:absolute;top:15%;bottom:17%;left:8%;right:8%;border:2.5px solid rgba(255,40,40,.55);border-radius:24px;background:radial-gradient(circle at 50% 50%,rgba(90,0,0,.3),transparent 78%);box-shadow:inset 0 0 44px rgba(255,0,0,.16)}
+.liveTgt{position:absolute;width:68px;height:68px;margin:-34px 0 0 -34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;border:3.5px solid #fff;cursor:pointer;z-index:15;animation:tgtPop .2s cubic-bezier(.2,1.6,.4,1) both,tgtPulse 1.2s ease-in-out .2s infinite}
 @keyframes tgtPop{from{transform:scale(.15);opacity:0}to{transform:scale(1);opacity:1}}
-.burst{position:absolute;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;border:4px solid #fff;z-index:14;animation:burstOut .38s ease-out both;pointer-events:none}
+@keyframes tgtPulse{0%,100%{box-shadow:0 0 14px rgba(255,0,0,.5)}50%{box-shadow:0 0 30px rgba(255,30,30,.95)}}
+.burst{position:absolute;width:68px;height:68px;margin:-34px 0 0 -34px;border-radius:50%;border:4px solid #fff;z-index:14;animation:burstOut .38s ease-out both;pointer-events:none}
 @keyframes burstOut{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
 .miniScore{position:absolute;bottom:110px;left:84px;right:84px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;z-index:20;pointer-events:none}
-.miniScore div{background:rgba(15,0,0,.8);border:2px solid;border-radius:12px;padding:3px 12px;font-size:14px;font-weight:800}
+.miniScore div{background:rgba(15,0,0,.85);border:2px solid;border-radius:12px;padding:3px 12px;font-size:14px;font-weight:800}
 /* result/final */
 .bigTitle{font-size:30px;color:#ff2222;text-shadow:0 0 20px rgba(255,0,0,.7);text-align:center;animation:itemIn .45s both}
 .msg{font-size:16px;color:#fff;max-width:92%;line-height:1.6;text-align:center}
@@ -390,42 +406,46 @@ function finishAll(){
   $("winBody").innerHTML=h;
   show("s_final");
 }
-/* ============ game 1: bull race ============ */
+/* ============ game 1: bull race - horizontal lanes ============ */
 GAMES[0].build=function(st){
-  st.innerHTML='<div class="centerGoal">🏆</div>';
-  this.taps=[];this.racers=[];this.over=false;
-  var W=innerWidth,H=innerHeight,cx=W/2,cy=H/2;
+  st.innerHTML='<div class="arenaGlow"></div>';
+  this.taps=[];this.racers=[];this.fills=[];this.over=false;
+  var H=innerHeight,W=innerWidth;
+  var top=104,bottom=H-128,areaH=bottom-top;
+  var laneH=Math.min(84,(areaH-(numPlayers-1)*12)/numPlayers);
+  var totalH=numPlayers*laneH+(numPlayers-1)*12;
+  var y0=top+(areaH-totalH)/2;
+  this.laneW=W-28;
   for(var i=0;i<numPlayers;i++){
     this.taps.push(0);
-    var pc=padCenter(i);
-    var dx=cx-pc.x,dy=cy-pc.y,len=Math.hypot(dx,dy)-70;
-    var track=document.createElement("div");
-    track.className="raceTrack";
-    track.style.width=len+"px";track.style.height="8px";
-    track.style.left=pc.x+"px";track.style.top=(pc.y-4)+"px";
-    track.style.transformOrigin="0 50%";
-    track.style.transform="rotate("+(Math.atan2(dy,dx)*180/Math.PI)+"deg)";
-    st.appendChild(track);
-    var r=document.createElement("div");
-    r.className="racer";
-    r.classList.add("redbull");
-    if(dx<0)r.style.transform="scaleX(-1)";
-    r.innerHTML='🐂<div class="tag" style="background:'+COLORS[i]+';'+(COLORS[i]==="#f5f5f5"?'color:#000;':'')+'">'+(i+1)+'</div>';
-    st.appendChild(r);
-    this.racers.push({el:r,sx:pc.x,sy:pc.y,dx:dx,dy:dy,len:len});
+    var lane=document.createElement('div');
+    lane.className='lane';lane.style.borderColor=COLORS[i];
+    lane.style.height=laneH+'px';lane.style.top=(y0+i*(laneH+12))+'px';
+    lane.style.boxShadow='0 0 16px '+COLORS[i]+'44';
+    lane.innerHTML='<div class="laneStripe"></div><div class="finish"></div>'
+      +'<div class="laneFill"></div>'
+      +'<div class="laneLabel" style="color:'+COLORS[i]+'"><bdi>'+NAMES[i]+'</bdi></div>'
+      +'<div class="racer2"><span class="bullEmoji redbull">🐂</span><div class="tag" style="background:'+COLORS[i]+';'+(COLORS[i]==='#f5f5f5'?'color:#000;':'')+'">'+(i+1)+'</div></div>';
+    st.appendChild(lane);
+    this.racers.push(lane.querySelector('.racer2'));
+    this.fills.push(lane.querySelector('.laneFill'));
     this.place(i);
   }
 };
 GAMES[0].place=function(i){
-  var r=this.racers[i],p=Math.min(this.taps[i]/TAPS_WIN,1);
-  var x=r.sx+r.dx*p* (r.len/(r.len+70)) -17, y=r.sy+r.dy*p*(r.len/(r.len+70))-30;
-  r.el.style.left=x+"px";r.el.style.top=y+"px";
+  var p=Math.min(this.taps[i]/TAPS_WIN,1);
+  this.racers[i].style.right=(8+p*(this.laneW-78))+'px';
+  this.fills[i].style.width=(p*100)+'%';
 };
 GAMES[0].tap=function(i){
   if(this.over)return;
   this.taps[i]++;this.place(i);flashPad(i);
-  var lead=Math.max.apply(null,this.taps);
-  if(lead>=TAPS_WIN){this.over=true;later(function(){},0);this.finish();}
+  var r=this.racers[i],b=r.querySelector('.bullEmoji');
+  b.classList.remove('bounce');void b.offsetWidth;b.classList.add('bounce');
+  var pf=document.createElement('div');pf.className='puff';pf.textContent='💨';
+  pf.style.bottom='4px';pf.style.right=(parseInt(r.style.right)+46)+'px';
+  r.parentElement.appendChild(pf);setTimeout(function(){pf.remove()},440);
+  if(this.taps[i]>=TAPS_WIN){this.over=true;this.finish();}
 };
 GAMES[0].start=function(){
   var g=this;
@@ -437,17 +457,19 @@ GAMES[0].finish=function(){
   endRound(tie?null:win,"מכות שור: "+perPlayer(this.taps));
 };
 
-/* ============ game 2: reaction ============ */
+/* ============ game 2: reaction - signal box ============ */
 GAMES[1].build=function(st){
-  st.innerHTML='<div id="sigWrap"><div id="sigLight">🐂</div><div id="sigText">חכו לאדום...</div></div>';
+  st.innerHTML='<div class="arenaGlow"></div><div id="sigWrap"><div class="sigBox"><div class="lamp" id="lampWait"></div><div class="lamp" id="lampGo"></div></div><div id="sigText">חכו לאדום...</div></div>';
   this.go=false;this.done=false;this.out=[];
 };
 GAMES[1].start=function(){
+  $("lampWait").classList.add("wait");
   var g=this;
   later(function(){
     if(g.done)return;
     g.go=true;
-    var l=$("sigLight");l.classList.add("go");
+    $("lampWait").classList.remove("wait");
+    $("lampGo").classList.add("go");
     $("sigText").textContent="עכשיו!!!";
     g.t0=performance.now();
   },1200+Math.random()*2600);
@@ -458,7 +480,7 @@ GAMES[1].tap=function(i){
   if(!this.go){
     this.out.push(i);shakePad(i);
     $("sigText").textContent=NAMES[i]+" לחץ מוקדם מדי!";
-    if(this.out.length>=numPlayers-0&&numPlayers===this.out.length){g.done=true;endRound(null,"כולם לחצו מוקדם!");}
+    if(this.out.length===numPlayers){g.done=true;endRound(null,"כולם לחצו מוקדם!");}
     else if(this.out.length===numPlayers-1){
       var last=-1;for(var k=0;k<numPlayers;k++)if(g.out.indexOf(k)<0)last=k;
       g.done=true;
@@ -474,16 +496,19 @@ GAMES[1].tap=function(i){
 
 /* ============ game 3: timing gauges ============ */
 GAMES[2].build=function(st){
+  st.innerHTML='<div class="arenaGlow"></div>';
   this.vals=[];this.locked=[];this.els=[];this.running=false;
   for(var i=0;i<numPlayers;i++){
     this.vals.push(0);this.locked.push(false);
     var pc=padCenter(i);
-    var gx=pc.x+(innerWidth/2-pc.x)*0.32-48, gy=pc.y+(innerHeight/2-pc.y)*0.32-48;
+    var gx=pc.x+(innerWidth/2-pc.x)*0.3-50, gy=pc.y+(innerHeight/2-pc.y)*0.3-50;
     var g=document.createElement("div");
     g.className="gauge";
     g.style.left=gx+"px";g.style.top=gy+"px";
-    g.innerHTML='<svg width="96" height="96"><circle cx="48" cy="48" r="40" stroke="#2a0000" stroke-width="10" fill="rgba(10,0,0,.75)"/>'
-      +'<circle class="arc" cx="48" cy="48" r="40" stroke="'+COLORS[i]+'" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>'
+    g.innerHTML='<svg width="100" height="100">'
+      +'<circle cx="50" cy="50" r="41" stroke="#200000" stroke-width="12" fill="rgba(12,0,0,.8)"/>'
+      +'<circle cx="50" cy="50" r="41" stroke="#6a0000" stroke-width="14" fill="none" stroke-dasharray="25.8 231.9" stroke-dashoffset="-116"/>'
+      +'<circle class="arc" cx="50" cy="50" r="41" stroke="'+COLORS[i]+'" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="257.6" stroke-dashoffset="257.6"/>'
       +'</svg><div class="gv"><div class="gl">'+NAMES[i]+'</div><div class="vv">0%</div></div>';
     st.appendChild(g);
     this.els.push(g);
@@ -496,10 +521,10 @@ GAMES[2].start=function(){
     var t=(performance.now()-t0)/1500;
     for(var i=0;i<numPlayers;i++){
       if(g.locked[i])continue;
-      var v=(1-Math.cos(t*Math.PI*2+ i*1.3))/2*100; /* 0..100 oscillate, offset per player */
+      var v=(1-Math.cos(t*Math.PI*2+ i*1.3))/2*100;
       g.vals[i]=v;
       var arc=g.els[i].querySelector(".arc");
-      arc.setAttribute("stroke-dashoffset",(251.3*(1-v/100)).toFixed(1));
+      arc.setAttribute("stroke-dashoffset",(257.6*(1-v/100)).toFixed(1));
       g.els[i].querySelector(".vv").textContent=Math.round(v)+"%";
     }
     g.rafId=requestAnimationFrame(loop);
@@ -518,8 +543,9 @@ GAMES[2].finish=function(){
   endRound(best,"סטייה מהמרכז: <b>"+bd.toFixed(1)+"%</b> · "+perPlayer(this.vals.map(function(v){return Math.round(v)+"%"})));
 };
 
-/* ============ game 4: target rush ============ */
+/* ============ game 4: target rush - framed field ============ */
 GAMES[3].build=function(st){
+  st.innerHTML='<div class="field"></div>';
   this.hits=[];this.tgts=[];this.over=false;this.st=st;
   for(var i=0;i<numPlayers;i++){
     this.hits.push(0);
@@ -539,7 +565,7 @@ GAMES[3].build=function(st){
 };
 GAMES[3].move=function(i){
   var W=innerWidth,H=innerHeight;
-  var x=W*0.22+Math.random()*W*0.56, y=H*0.24+Math.random()*H*0.5;
+  var x=W*0.15+Math.random()*W*0.7, y=H*0.2+Math.random()*H*0.55;
   this.tgts[i].style.left=x+"px";this.tgts[i].style.top=y+"px";
 };
 GAMES[3].hit=function(i,t){
@@ -561,11 +587,13 @@ GAMES[3].start=function(){
   });
 };
 
-/* ============ game 5: tug of war ============ */
+/* ============ game 5: tug of war - stage + meters ============ */
 GAMES[4].build=function(st){
-  st.innerHTML='<div id="ropeWrap"><div id="ropeLine"><div id="ropeKnot"></div></div></div>'
-    +'<div class="tugEmoji redbull" id="bullL" style="left:6%">🐂</div>'
-    +'<div class="tugEmoji redbull" id="bullR" style="right:6%;transform:scaleX(-1)">🐂</div>'
+  st.innerHTML='<div class="arenaGlow"></div>'
+    +'<div class="meter" style="right:10px"><div class="meterFill" id="fillR" style="background:#ff2222;color:#ff2222"></div></div>'
+    +'<div class="meter" style="left:10px"><div class="meterFill" id="fillL" style="background:#f5f5f5;color:#f5f5f5"></div></div>'
+    +'<div class="tugStage"><div id="ropeLine"><div id="ropeKnot"></div></div>'
+    +'<div class="tugEmoji redbull tugL">🐂</div><div class="tugEmoji redbull tugR">🐂</div></div>'
     +'<div class="miniScore" id="tugScores"></div>';
   this.taps=[];this.over=false;
   for(var i=0;i<numPlayers;i++)this.taps.push(0);
@@ -577,10 +605,14 @@ GAMES[4].tap=function(i){
   if(this.over)return;
   this.taps[i]++;flashPad(i);
   document.querySelectorAll("#tugScores div bdi")[i].textContent=this.taps[i];
+  var W=innerWidth;
+  var rt=0,lt=0;
+  for(var k=0;k<numPlayers;k++){if(padCenter(k).x>=W/2)rt+=this.taps[k];else lt+=this.taps[k];}
+  $("fillR").style.height=Math.min(rt/18*100,100)+"%";
+  $("fillL").style.height=Math.min(lt/18*100,100)+"%";
   var sorted=this.taps.map(function(t,ix){return[t,ix]}).sort(function(a,b){return b[0]-a[0]});
   var lead=sorted[0][1],spread=sorted[0][0]-(sorted[1]?sorted[1][0]:0);
-  /* knot toward leader's side: left pads = tl,bl (x<mid) pull left */
-  var pc=padCenter(lead),dir=pc.x<innerWidth/2?-1:1;
+  var pc=padCenter(lead),dir=pc.x<W/2?-1:1;
   $("ropeKnot").style.left=(50+dir*Math.min(spread*4.2,36))+"%";
   if(spread>=18){this.over=true;endRound(lead,"משיכה מכרעת! "+perPlayer(this.taps));}
 };
