@@ -313,7 +313,7 @@ function startGame(gi){
   $("introDesc").textContent=g.desc;
   show("s_intro");
 }
-$("introGo").addEventListener("click",function(){buildArena();show("s_arena");countdown(function(){GAMES[curGame].start();});});
+$("introGo").addEventListener("click",function(){show("s_arena");buildArena();countdown(function(){GAMES[curGame].start();});});
 
 /* ---------- arena scaffolding ---------- */
 var pads=[];
