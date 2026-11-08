@@ -1,0 +1,46 @@
+name: relocate-large
+on:
+  push:
+    paths:
+      - '.github/workflows/relocate.yml'
+permissions:
+  contents: write
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move large non-image files to release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REPO=${{ github.repository }}
+          git config user.name "archive-bot"; git config user.email "archive-bot@users.noreply.github.com"
+          mkdir -p /tmp/up; : > /tmp/map.txt
+          find archive/a -type f ! -name '*.jpg' ! -name '*.html' -size +2000k | while read -r f; do
+            n=$(basename "$f"); cp "$f" /tmp/up/"$n"; echo "$n" >> /tmp/map.txt
+          done
+          echo "moving $(wc -l < /tmp/map.txt) files"
+          gh release view media >/dev/null 2>&1 || gh release create media --title media --notes "archive media"
+          for f in /tmp/up/*; do gh release upload media "$f" --clobber || echo "UPLOAD FAIL $f"; done
+          python3 - <<'PY'
+          import re,glob,os,subprocess
+          names=[l.strip() for l in open('/tmp/map.txt') if l.strip()]
+          have=subprocess.run(['gh','release','view','media','--json','assets','-q','.assets[].name'],capture_output=True,text=True).stdout.split()
+          ok=[n for n in names if n in have]
+          print('uploaded ok',len(ok),'of',len(names))
+          files=glob.glob('archive/*.html')+glob.glob('archive/a/*.html')
+          for fp in files:
+              s=open(fp,encoding='utf-8').read(); o=s
+              for n in ok:
+                  if n in s:
+                      url='https://github.com/${{ github.repository }}/releases/download/media/'+n
+                      s=re.sub(r'(?:\.\./)?a/'+re.escape(n),url,s)
+              if s!=o: open(fp,'w',encoding='utf-8').write(s)
+          for n in ok: os.remove('archive/a/'+n)
+          PY
+          git add -A archive
+          git commit -m "relocate large non-image files to release assets" || echo none
+          git pull --rebase origin main || true
+          git push origin HEAD:main
+          du -sh archive
