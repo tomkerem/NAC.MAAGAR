@@ -25,6 +25,8 @@ jobs:
           echo "job file: $JOB"
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "archive media"
           git config user.name "archive-bot"; git config user.email "archive-bot@users.noreply.github.com"
+          gh release view "$TAG" --json assets -q ".assets[].name" > /tmp/assets.txt || true
+          wc -l /tmp/assets.txt
           N=0
           while IFS= read -r PREFIX; do
             [ -z "$PREFIX" ] && continue
