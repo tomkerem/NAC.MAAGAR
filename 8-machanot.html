@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחנאות - מאגר הנשיא</title>
+
+    <!-- הפונט השבטי -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: black;
+            color: red;
+            text-align: center;
+            font-family: 'Secular One', sans-serif;
+            padding: 30px 10px;
+        }
+
+        .jingle-card {
+            border: 2px solid red;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #111;
+        }
+
+        iframe {
+            border-radius: 8px;
+            border: 2px solid red;
+            max-width: 100%;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: red;
+            text-decoration: none;
+            font-size: 18px;
+            border: 2px solid red;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .back-btn:hover {
+            color: black;
+            background-color: red;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            vertical-align: -3px;
+            margin: 0 4px;
+        }
+
+        .dot-red { background-color: red; }
+        .dot-black { background-color: black; border: 2px solid red; box-sizing: border-box; }
+
+        body {
+            background: #000 url('bg-machanot.jpg') center/cover no-repeat fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            z-index: -1;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding-top: 155px;
+                background:
+                    linear-gradient(to bottom, rgba(0,0,0,0) 35%, #000 70%),
+                    url('bg-machanot.jpg') top center / 100% auto no-repeat,
+                    #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>מחנאות</h1>
+<p>שבט הנשיא</p>
+
+<div class="jingle-card">
+    <h2>כל הקבצים בדרייב</h2>
+    <p><a href="https://drive.google.com/drive/folders/1o4d33eJsMSPh7OrVz1einQERVB8OgrGX" target="_blank" style="color: white;">פתח בדרייב ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>סקצ&#x27;אפ</h2>
+    <p><a href="https://drive.google.com/drive/folders/1nUzG6d_pkZsJpkc-jZoKhNHa1RcvWuAs" target="_blank" style="color: white;">פתח בדרייב ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>מתקנים</h2>
+    <p><a href="https://drive.google.com/drive/folders/1w83Swhxs-OgEFvSENmS5EWevGFGVs6Z4" target="_blank" style="color: white;">פתח בדרייב ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>בניה מחנאית</h2>
+    <p><a href="https://drive.google.com/drive/folders/1jEcG7SuG96rlh1quFxZc61YcD0pftLPM" target="_blank" style="color: white;">פתח בדרייב ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>המדריך לאחראי האולטימטיבי</h2>
+    <p><a href="https://drive.google.com/drive/folders/1LLqoJvtmYWMNA1WCocqpOqiadlrzkzL-" target="_blank" style="color: white;">פתח בדרייב ↗</a></p>
+</div>
+
+<!-- כפתור חזרה לדף הבית -->
+<a href="index.html" class="back-btn">⬅ חזרה להתחלה</a>
+
+</body>
+</html>

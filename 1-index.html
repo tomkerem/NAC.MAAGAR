@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דף הבית - מאגר הנשיא</title>
+
+    <!-- הפונט השבטי -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: black;
+            color: red;
+            text-align: center;
+            font-family: 'Secular One', sans-serif;
+            padding: 30px 10px;
+        }
+
+        .jingle-card {
+            border: 2px solid red;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #111;
+        }
+
+        iframe {
+            border-radius: 8px;
+            border: 2px solid red;
+            max-width: 100%;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: red;
+            text-decoration: none;
+            font-size: 18px;
+            border: 2px solid red;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .back-btn:hover {
+            color: black;
+            background-color: red;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            vertical-align: -3px;
+            margin: 0 4px;
+        }
+
+        .dot-red { background-color: red; }
+        .dot-black { background-color: black; border: 2px solid red; box-sizing: border-box; }
+
+        body {
+            background: #000 url('bg-home.jpg') center/cover no-repeat fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            z-index: -1;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding-top: 58vw;
+                background:
+                    linear-gradient(to bottom, rgba(0,0,0,0) 35%, #000 70%),
+                    url('bg-home.jpg') top center / 100% auto no-repeat,
+                    #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>מאגר הנשיא <span class="dot dot-red"></span><span class="dot dot-black"></span></h1>
+<p>שבט הנשיא</p>
+
+<div class="jingle-card">
+    <h2>מדיה וצ׳ופרים</h2>
+    <p><a href="media.html" target="_blank" style="color: white;">פתח את הקטגוריה ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>גלופות וסמלים</h2>
+    <p><a href="glupot.html" target="_blank" style="color: white;">פתח את הקטגוריה ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>קטלוג השבט</h2>
+    <p><a href="catalog.html" target="_blank" style="color: white;">פתח את הקטגוריה ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>פנאטיות</h2>
+    <p><a href="fanatia.html" target="_blank" style="color: white;">פתח את הקטגוריה ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>הדרכה</h2>
+    <p><a href="hadracha.html" target="_blank" style="color: white;">פתח את הקטגוריה ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>מחנאות</h2>
+    <p><a href="machanot.html" target="_blank" style="color: white;">פתח את הקטגוריה ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>ג׳ינגלים</h2>
+    <p><a href="jingles.html" target="_blank" style="color: white;">פתח את הקטגוריה ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>מציאת הפלנגה שלך</h2>
+    <p><a href="falanga.html" target="_blank" style="color: white;">פתח את הכלי ↗</a></p>
+</div>
+
+<div class="jingle-card">
+    <h2>המאגר המלא בדרייב</h2>
+    <p><a href="https://drive.google.com/drive/folders/1dll27LVHeCJN7zw61ZwFHglrnHM8Q0gD" target="_blank" style="color: white;">פתח בדרייב ↗</a></p>
+</div>
+
+</body>
+</html>
