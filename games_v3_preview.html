@@ -758,7 +758,7 @@ GAMES[3].start=function(){
 GAMES[5].build=function(st){
   var W=innerWidth,H=innerHeight;
   var R=Math.min(W,H)*0.335, cx=W/2, cy=H/2+6;
-  this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;
+  this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;this.go=false;this.go=false;
   st.innerHTML='<div class="sumoRing" style="width:'+(R*2)+'px;height:'+(R*2)+'px"></div>';
   this.b=[];
   for(var i=0;i<numPlayers;i++){
@@ -775,7 +775,7 @@ GAMES[5].build=function(st){
 GAMES[5].tap=function(i){var b=this.b[i];if(b&&!b.out){b.hold=true;flashPad(i);}};
 GAMES[5].release=function(i){var b=this.b[i];if(b)b.hold=false;};
 GAMES[5].step=function(dt){
-  if(this.over)return;
+  if(this.over||!this.go)return;
   var g=this,alive=[];
   this.b.forEach(function(b,i){
     if(b.out)return;
@@ -824,7 +824,7 @@ GAMES[5].step=function(dt){
     later(function(){endRound(w,w!=null?"השור של "+NAMES[w]+" דחף את כולם החוצה!":"כולם נפלו יחד!");},700);}
 };
 GAMES[5].start=function(){
-  var g=this;
+  var g=this;g.go=true;
   startTimer(40,null,function(){
     if(g.over)return;g.over=true;
     var best=null,bd=1e9;
@@ -837,7 +837,7 @@ GAMES[5].start=function(){
 /* ============ bicycle race: winding circuit + corner steering wheels ============ */
 GAMES[6].build=function(st){
   var W=innerWidth,H=innerHeight,dpr=Math.min(devicePixelRatio||1,2);
-  this.st=st;this.over=false;
+  this.st=st;this.over=false;this.go=false;
   st.innerHTML='<canvas id="bikeCv" style="position:absolute;inset:0;width:100%;height:100%"></canvas>';
   var cv=st.querySelector('#bikeCv');
   cv.width=W*dpr;cv.height=H*dpr;
@@ -887,14 +887,14 @@ GAMES[6].build=function(st){
     var back=(si-14-i*10+this.N)%this.N;
     var p0=pts[back],p1=pts[(back+1)%N];
     var tx=p1[0]-p0[0],ty=p1[1]-p0[1],tl2=Math.hypot(tx,ty);tx/=tl2;ty/=tl2;
-    var lat=(i-(numPlayers-1)/2)*26;
+    var lat=(i-(numPlayers-1)/2)*12;
     this.bikes.push({idx:back,prog:0,lap:0,x:p0[0]-ty*lat,y:p0[1]+tx*lat,hd:Math.atan2(ty,tx),sp:0,lat:lat,dust:0});
   }
   var g=this;
   physLoop(function(dt){g.step(dt);});
 };
 GAMES[6].step=function(dt){
-  if(this.over)return;
+  if(this.over||!this.go)return;
   var g=this,N=this.N;
   this.bikes.forEach(function(bk,i){
     var wh=g.wheels[i];
@@ -981,7 +981,7 @@ GAMES[6].draw=function(){
   });
 };
 GAMES[6].start=function(){
-  var g=this;
+  var g=this;g.go=true;
   startTimer(75,null,function(){
     if(g.over)return;g.over=true;
     var best=0,bp=-1;
@@ -995,7 +995,7 @@ GAMES[6].start=function(){
 GAMES[7].build=function(st){
   var W=innerWidth,H=innerHeight;
   var cx=W/2,cy=H/2+10,R=Math.min(W,H)*0.345;
-  this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;
+  this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;this.go=false;this.go=false;
   this.th=0;this.omega=0.9;this.laps=0;
   st.innerHTML='<div class="monsterWrap"><svg viewBox="0 0 120 110">'
     +'<ellipse cx="60" cy="66" rx="46" ry="40" fill="#17171c" stroke="#000" stroke-width="4"/>'
@@ -1024,7 +1024,7 @@ GAMES[7].tap=function(i){
   b.jump=0;flashPad(i);
 };
 GAMES[7].step=function(dt){
-  if(this.over)return;
+  if(this.over||!this.go)return;
   var g=this;
   var prev=this.th;
   this.th+=this.omega*dt;
@@ -1058,7 +1058,7 @@ GAMES[7].step=function(dt){
     later(function(){endRound(w,w!=null?"השור של "+NAMES[w]+" שרד את המפלצת!":"המפלצת גמאה את כולם!");},650);}
 };
 GAMES[7].start=function(){
-  var g=this;
+  var g=this;g.go=true;
   startTimer(90,null,function(){
     if(g.over)return;g.over=true;
     var survivors=g.b.map(function(b,i){return b.out?-1:i}).filter(function(i){return i>=0});
@@ -1071,7 +1071,7 @@ GAMES[7].start=function(){
 GAMES[8].build=function(st){
   var W=innerWidth,H=innerHeight;
   var cx=W/2,cy=H/2+10,R=Math.min(W,H)*0.34;
-  this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;
+  this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;this.go=false;this.go=false;
   st.innerHTML='<div class="sandPit"></div>'
     +'<div id="sawBlade"><svg viewBox="0 0 100 100">'
     +'<g fill="#cfd3d8" stroke="#55585e" stroke-width="3">'
@@ -1097,7 +1097,7 @@ GAMES[8].tap=function(i){
   var pe=pads[i];setTimeout(function(){pe.classList.remove('cooling')},1500);
 };
 GAMES[8].step=function(dt){
-  if(this.over)return;
+  if(this.over||!this.go)return;
   var g=this;
   var alive=[];
   this.b.forEach(function(b,i){
@@ -1110,14 +1110,7 @@ GAMES[8].step=function(dt){
   });
   /* saw chases the closest live bull ahead of it */
   if(alive.length){
-    var best=null,bd=99;
-    alive.forEach(function(i){var b=g.b[i];
-      var d=((b.a-g.sawA)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-      var dd=Math.min(d,Math.PI*2-d);
-      if(dd<bd){bd=dd;best=b.a;}});
-    var dir=((best-g.sawA)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-    dir=dir>Math.PI?-1:1;
-    g.sawA+=dir*g.sawW*dt;
+    g.sawA+=g.sawW*dt; /* forward chase only - no head-on reversals */
   }
   g.sawW=Math.min(g.sawW+dt*0.012,2.6);
   /* draw + collisions */
@@ -1142,7 +1135,7 @@ GAMES[8].step=function(dt){
     later(function(){endRound(w,w!=null?NAMES[w]+" ברח מהמסור!":"המסור תפס את כולם!");},650);}
 };
 GAMES[8].start=function(){
-  var g=this;
+  var g=this;g.go=true;
   startTimer(90,null,function(){
     if(g.over)return;g.over=true;
     var survivors=g.b.map(function(b,i){return b.out?-1:i}).filter(function(i){return i>=0});
