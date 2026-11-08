@@ -9,32 +9,39 @@ permissions:
 jobs:
   migrate:
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install pillow pillow-heif
-      - name: Run migration job
+      - name: Run migration jobs
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
           JOB=$(ls jobs/*.txt | sort | tail -n 1)
-          PREFIX=$(sed -n 1p "$JOB"); TAG=$(sed -n 2p "$JOB"); LIMIT=$(sed -n 3p "$JOB"); LIMIT=${LIMIT:-1000000}
-          echo "job file: $JOB tag: $TAG"
-          python pipeline/migrate.py "$PREFIX" "$TAG" /tmp/out "$LIMIT" || true
-          mkdir -p archive
-          cp -r /tmp/out/archive/. archive/
-          cp /tmp/out/report.json "archive/report-$TAG.json"
-          if ls /tmp/out/_release/* >/dev/null 2>&1; then
-            gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "archive media"
-            gh release upload "$TAG" /tmp/out/_release/* --clobber
-          fi
-          du -sh archive
+          TAG=media
+          echo "job file: $JOB"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "archive media"
           git config user.name "archive-bot"; git config user.email "archive-bot@users.noreply.github.com"
-          git add archive
-          git commit -m "archive: $TAG" || echo "nothing to commit"
-          git pull --rebase origin main || true
-          git push origin HEAD:main
+          N=0
+          while IFS= read -r PREFIX; do
+            [ -z "$PREFIX" ] && continue
+            N=$((N+1))
+            echo "=== job $N: $PREFIX"
+            rm -rf /tmp/out; mkdir -p /tmp/out
+            [ -d archive ] && cp -r archive /tmp/out/
+            python pipeline/migrate.py "$PREFIX" "$TAG" /tmp/out 1000000 || echo "migrate failed"
+            mkdir -p archive
+            cp -r /tmp/out/archive/. archive/
+            cp /tmp/out/report.json "archive/report-$(printf %03d $N).json" || true
+            if ls /tmp/out/_release/* >/dev/null 2>&1; then
+              gh release upload "$TAG" /tmp/out/_release/* --clobber || echo "release upload had errors"
+            fi
+            git add archive
+            git commit -m "archive: $PREFIX" || echo "nothing to commit"
+            git pull --rebase origin main || true
+            git push origin HEAD:main || echo "push failed"
+            du -sh archive
+          done < "$JOB"
