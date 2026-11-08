@@ -186,6 +186,15 @@ img{-webkit-user-drag:none}
 @keyframes sawSpin{to{transform:rotate(360deg)}}
 .pad.cooling{opacity:.45;filter:grayscale(.4)}
 
+/* short-viewport (phone landscape): menu screens scroll + compress */
+@media (max-height:480px){
+  #s_home,#s_mode,#s_pick,#s_result,#s_final{justify-content:flex-start;overflow-y:auto;padding:12px 20px;gap:10px}
+  #s_pick h1,#s_home h1{font-size:24px;margin:0}
+  #pickList{gap:8px}
+  #s_pick .btn{padding:10px 14px;font-size:16px}
+  .pcard{max-width:96px}
+}
+
 </style>
 </head>
 <body>
