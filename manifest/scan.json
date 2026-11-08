@@ -1,0 +1,17 @@
+{
+ "repo_files_scanned": 7237,
+ "repo_bad": [
+  "archive/a/0BxczrtXDxJ0sQUtoYmJEMjFEblk.docx"
+ ],
+ "release_scanned": 722,
+ "release_bad": [
+  [
+   "0BxczrtXDxJ0sejQ2NF9oNEhkSVlFU3ZJZU5MUWRrdmU5LXRR.docx",
+   "920254"
+  ],
+  [
+   "0BxczrtXDxJ0sUHhYallVSU9Ea3M.docx",
+   "919940"
+  ]
+ ]
+}
