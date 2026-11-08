@@ -68,14 +68,30 @@ h1{color:red;font-size:44px;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0
 .tugWrap .mark{position:absolute;top:-7px;width:20px;height:44px;border-radius:8px;background:red;border:2px solid #fff;margin-right:-11px;box-shadow:0 0 10px #f00;transition:right .15s}
 .msg{font-size:16px;color:#fff;max-width:90%;line-height:1.5}
 .scoreLine{font-size:22px;margin:4px;animation:itemIn .4s ease-out both}
-.scoreLine b{color:red}
+.scoreLine b,.msg b{color:red;unicode-bidi:isolate}
+/* splash opening */
+#splash{position:fixed;inset:0;z-index:60;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;cursor:pointer;transition:opacity .45s}
+#splash.hide{opacity:0;pointer-events:none}
+#splashLogo{width:min(86vw,400px);height:auto;border-radius:18px;filter:drop-shadow(0 0 34px rgba(255,0,0,.55));animation:logoIn 1.1s cubic-bezier(.2,1.4,.4,1) both,logoPulse 2.2s ease-in-out 1.15s infinite}
+@keyframes logoIn{0%{transform:scale(.25) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes logoPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 26px rgba(255,0,0,.45))}50%{transform:scale(1.035);filter:drop-shadow(0 0 46px rgba(255,0,0,.72))}}
+#splashHint{color:#f66;font-size:15px;animation:hintBlink 1.4s ease-in-out infinite}
+@keyframes hintBlink{0%,100%{opacity:.25}50%{opacity:1}}
 @media (prefers-reduced-motion: reduce){
+
   .screen.on,.screen.on>.animItem,.btn,.scoreLine{animation:none}
   .trophy{animation:none}
+  #splashLogo,#splashHint{animation:none}
 }
 </style>
 </head>
 <body>
+
+<!-- SPLASH OPENING -->
+<div id="splash">
+  <img id="splashLogo" src="games-logo.jpg" alt="234 NA-C GAMES">
+  <div id="splashHint">געו במסך כדי להתחיל</div>
+</div>
 
 <!-- HOME -->
 <div class="screen on" id="s_home">
@@ -155,6 +171,14 @@ h1{color:red;font-size:44px;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0
 (function(){
 "use strict";
 var $=function(id){return document.getElementById(id)};
+
+/* splash: tap to skip, auto-dismiss */
+var splashEl=$("splash");
+var splashGone=false;
+function closeSplash(){if(splashGone)return;splashGone=true;splashEl.classList.add("hide");setTimeout(function(){splashEl.remove()},520);}
+splashEl.addEventListener("pointerdown",closeSplash);
+setTimeout(closeSplash,3400);
+
 var screens=["s_home","s_mode","s_rounds","s_pick","s_intro","s_result","s_final"];
 var mode="free",numPlayers=2,totalRounds=3,roundIdx=0,points=[],lastGame=-1,cur=0;
 var NAMES=["שחקן 1","שחקן 2","שחקן 3","שחקן 4"];
@@ -242,6 +266,7 @@ function setTimer(t){$("timerLbl").textContent=t>0?("⏱ "+Math.ceil(t)):"";}
 function bump(z){z.classList.add("flash");setTimeout(function(){z.classList.remove("flash")},80);}
 function setScore(z,v){var s=z.querySelector(".pscore");s.textContent=v;s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");}
 
+function perPlayer(arr){return arr.map(function(c,i){return "<bdi>"+NAMES[i]+"</bdi> <b>"+c+"</b>"}).join(" · ")}
 function endRound(winnerIdx,detail){
   stopLoop();
   if(winnerIdx!=null&&winnerIdx>=0)points[winnerIdx]++;
@@ -249,7 +274,7 @@ function endRound(winnerIdx,detail){
   $("resTitle").textContent=winnerIdx==null?"תיקו!":(NAMES[winnerIdx]+" לוקח את הסיבוב!");
   var h="";
   if(detail)h+='<div class="msg" style="margin-bottom:14px">'+detail+"</div>";
-  if(mode==="tour"){for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine">'+NAMES[i]+': <b>'+points[i]+"</b></div>";}
+  if(mode==="tour"){for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine"><bdi>'+NAMES[i]+'</bdi>: <b>'+points[i]+"</b></div>";}
   $("resBody").innerHTML=h;
   $("resNext").textContent=isLast?(mode==="tour"?"לתוצאות הטורניר 🏆":"לתפריט"):("לסיבוב הבא ("+(roundIdx+2)+"/"+totalRounds+")");
   $("resNext").onclick=function(){
@@ -263,7 +288,7 @@ function finishAll(){
   var mx=Math.max.apply(null,points),winners=[];
   points.forEach(function(p,i){if(p===mx)winners.push(NAMES[i])});
   $("winTitle").textContent=winners.length>1?"תיקו בצמרת!":winners[0]+" מנצח!";
-  var h="";for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine">'+NAMES[i]+': <b>'+points[i]+"</b></div>";
+  var h="";for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine"><bdi>'+NAMES[i]+'</bdi>: <b>'+points[i]+"</b></div>";
   $("winBody").innerHTML=h;
   show("s_final");
 }
@@ -279,7 +304,7 @@ function gTapRace(){
     (function loop(){var t=8-(performance.now()-t0)/1000;setTimer(t);
       if(t<=0){setTimer(0);
         var mx=Math.max.apply(null,counts),w=counts.indexOf(mx),tie=counts.filter(function(c){return c===mx}).length>1;
-        endRound(tie?null:w,"תוצאות: "+counts.join(" | "));return;}
+        endRound(tie?null:w,"תוצאות: "+perPlayer(counts));return;}
       raf=requestAnimationFrame(loop);})();
   });
 }
@@ -376,7 +401,7 @@ function gTarget(){
     (function loop(){var t=10-(performance.now()-t0)/1000;setTimer(t);
       if(t<=0){setTimer(0);
         var mx=Math.max.apply(null,hits),w=hits.indexOf(mx),tie=hits.filter(function(c){return c===mx}).length>1;
-        endRound(tie?null:w,"פגיעות: "+hits.join(" | "));return;}
+        endRound(tie?null:w,"פגיעות: "+perPlayer(hits));return;}
       raf=requestAnimationFrame(loop);})();
   });
 }
@@ -404,7 +429,7 @@ function gTug(){
         setTimer(0);
         if(mx===0||spread===0){endRound(null,"שוויון מושלם!");return;}
         var tie=taps.filter(function(c){return c===mx}).length>1;
-        endRound(tie?null:lead,"לחיצות: "+taps.join(" | "));return;
+        endRound(tie?null:lead,"לחיצות: "+perPlayer(taps));return;
       }
       raf=requestAnimationFrame(loop);
     })();
