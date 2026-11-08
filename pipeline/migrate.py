@@ -19,7 +19,7 @@ REL=os.path.join(OUT,"_release"); os.makedirs(REL,exist_ok=True)
 CAT={"מדיה וצ׳ופרים":"media","גלופות וסמלים":"glupot","קטלוג השבט":"catalog","פנאטיות":"fanatia","הדרכה":"hadracha","מחנאות":"machanot","ג׳ינגלים":"jingles"}
 def ext_of(name,mime):
     e=os.path.splitext(name)[1].lower().lstrip(".")
-    return re.sub(r'[^a-z0-9]','',e)[:5] or {"image/jpeg":"jpg","video/mp4":"mp4"}.get(mime,"bin")
+    return re.sub(r'[^a-z0-9]','',e)[:5] or {"image/jpeg":"jpg","video/mp4":"mp4","application/vnd.google-apps.spreadsheet":"xlsx","application/vnd.google-apps.presentation":"pptx"}.get(mime,"bin")
 # folder ids: stable slug from path
 def slug(path): return "f"+hashlib.md5(path.encode()).hexdigest()[:10]
 idpath={r["id"]:r["path"] for r in rows}
@@ -37,13 +37,15 @@ for r in rows:
     children[parent].append(r)
 selids={r["id"] for r in sel}
 site=lambda r: ("a/%s.%s"%(r["id"],ext_of(r["path"].rsplit("/",1)[1],r["mime"])))
+GEXP={"application/vnd.google-apps.spreadsheet":"https://docs.google.com/spreadsheets/d/%s/export?format=xlsx","application/vnd.google-apps.presentation":"https://docs.google.com/presentation/d/%s/export/pptx"}
 fails=[];stats=collections.Counter()
 def dl(url,dest,tries=4):
     for t in range(tries):
         p=subprocess.run(["curl","-sL","--fail","-m","900","-o",dest,url],capture_output=True)
         if p.returncode==0 and os.path.getsize(dest)>0:
             with open(dest,"rb") as f: head=f.read(200)
-            if head.lstrip()[:15].lower().startswith(b"<!doctype html") and not dest.endswith(".html"):
+            hl=head.lstrip().lower()
+            if (hl.startswith(b"<!doctype") or hl.startswith(b"<html") or b"accounts.google" in hl) and not dest.endswith(".html"):
                 pass_ = False
             else: pass_=True
             if pass_: return True
@@ -121,7 +123,10 @@ def proc(r):
                 else: fails.append(p)
             else:
                 if os.path.exists(dest): return
-                if gdl(i,dest): stats["files"]+=1
+                if m in GEXP:
+                    if dl(GEXP[m]%i,dest): stats["files"]+=1
+                    else: fails.append(p)
+                elif gdl(i,dest): stats["files"]+=1
                 else: fails.append(p)
     except Exception as e: fails.append(p+" (%s)"%e)
 files=[r for r in sel if r["mime"] not in("application/vnd.google-apps.folder",)]
