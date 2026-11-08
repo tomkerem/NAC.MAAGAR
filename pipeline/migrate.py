@@ -166,7 +166,7 @@ for fp in sorted(folders):
         else:
             if int(k["size"])<=BIG and not os.path.exists(os.path.join(AA,os.path.basename(site(k)))): continue
             href=rel_url(k) if int(k["size"])>BIG else "a/"+os.path.basename(site(k))
-            body+='<div class="card"><a href="%s">⬇ %s</a><div class="sub">%.1f MB</div></div>'%(href,html.escape(n),k["size"]/1e6)
+            body+='<div class="card"><a href="%s">⬇ %s</a><div class="sub">%s</div></div>'%(href,html.escape(n),(("%.1f MB"%(int(k["size"])/1e6)) if int(k["size"])>=1e6 else ("%d KB"%max(1,round(int(k["size"])/1e3)))) if int(k["size"])>0 else "")
     if imgs: body+='<div class="grid">%s</div>'%"".join(imgs)
     title=name_of(fp) if fp!="/" else "הארכיון"
     back='<a href="../index.html">מאגר הנשיא</a>'
