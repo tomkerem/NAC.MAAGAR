@@ -884,7 +884,7 @@ GAMES[6].build=function(st){
   }
   /* fit course vertically: keep start-line sprites fully on screen */
   var mnY=1e9,mxY=-1e9;for(var k=0;k<N;k++){if(pts[k][1]<mnY)mnY=pts[k][1];if(pts[k][1]>mxY)mxY=pts[k][1];}
-  var yT=Math.max(26,H*0.07),yB=H-Math.max(46,H*0.12);
+  var yT=Math.max(36,H*0.09),yB=H-Math.max(48,H*0.12);
   for(var k=0;k<N;k++){pts[k][1]=yT+(pts[k][1]-mnY)/(mxY-mnY)*(yB-yT);}
   for(var k=1;k<=N;k++){var a=pts[k-1],b=pts[k%N];cum.push(cum[k-1]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
   this.pts=pts;this.cum=cum;this.N=N;this.total=cum[N];
@@ -951,7 +951,7 @@ GAMES[6].step=function(dt){
     if(lat>g.roadW*0.62){bk.sp=Math.max(bk.sp-260*dt,46);bk.dust+=dt;}
     bk.x=nx;bk.y=ny;
     /* respawn when far off course: back on the track at nearest point */
-    if(lat>g.roadW*2.5||nx<-16||nx>g.W+16||ny<-16||ny>g.H+16){var rp=g.pts[bk.idx],rp2=g.pts[(bk.idx+1)%N];bk.x=rp[0];bk.y=rp[1];bk.hd=Math.atan2(rp2[1]-rp[1],rp2[0]-rp[0]);bk.sp=40;}
+    if(lat>g.roadW*2.5||nx<-8||nx>g.W+8||ny<-8||ny>g.H-24){var rp=g.pts[bk.idx],rp2=g.pts[(bk.idx+1)%N];bk.x=rp[0];bk.y=rp[1];bk.hd=Math.atan2(rp2[1]-rp[1],rp2[0]-rp[0]);bk.sp=40;}
     bk.lap=Math.floor(bk.prog/g.total);
     if(bk.prog>=g.total*2&&!g.over){
       g.over=true;
@@ -1035,7 +1035,7 @@ GAMES[6].draw=function(){
   });
   /* lap HUD chips */
   this.bikes.forEach(function(bk,i){
-    var lx=12,ly=H/2-((g.bikes.length-1)*30)/2+i*30+22;
+    var lx=12,ly=(H<480)?(170+i*30):(H/2-((g.bikes.length-1)*30)/2+i*30+22);
     ctx.fillStyle='rgba(10,0,0,.8)';ctx.strokeStyle=COLORS[i];ctx.lineWidth=2;
     ctx.beginPath();ctx.rect(lx,ly,56,22);ctx.fill();ctx.stroke();
     ctx.fillStyle='#fff';ctx.font='800 12px Arial';ctx.textAlign='center';
