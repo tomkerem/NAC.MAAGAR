@@ -1042,7 +1042,7 @@ GAMES[7].step=function(dt){
   var alive=[];
   this.b.forEach(function(b,i){
     if(b.out)return;
-    if(b.jump>=0){b.jump+=dt/0.55;if(b.jump>=1)b.jump=-1;}
+    if(b.jump>=0){b.jump+=dt/0.7;if(b.jump>=1)b.jump=-1;}
     var air=b.jump>=0?Math.sin(b.jump*Math.PI):0;
     var x=g.cx+Math.cos(b.a)*g.R,y=g.cy+Math.sin(b.a)*g.R;
     b.el.style.transform='translate('+(x-30)+'px,'+(y-30-air*44)+'px) rotate('+(b.a*180/Math.PI+90)+'deg) scale('+(1+air*0.28)+')';
@@ -1050,7 +1050,7 @@ GAMES[7].step=function(dt){
     /* hit test when grounded */
     if(air<0.25){
       var d=Math.abs(((g.th-b.a)%(Math.PI*2)+Math.PI*3)%(Math.PI*2)-Math.PI);
-      if(d<0.19){
+      if(d<0.10){
         b.out=true;alive.push(-1);
         b.el.style.transition='transform .6s cubic-bezier(.3,-0.5,.6,1),opacity .6s';
         b.el.style.transform='translate('+(x-30+Math.cos(b.a)*70)+'px,'+(y-30+Math.sin(b.a)*70)+'px) rotate(720deg) scale(.3)';
