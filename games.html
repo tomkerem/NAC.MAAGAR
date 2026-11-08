@@ -950,6 +950,8 @@ GAMES[6].step=function(dt){
     var lat=Math.sqrt(bd);
     if(lat>g.roadW*0.62){bk.sp=Math.max(bk.sp-260*dt,46);bk.dust+=dt;}
     bk.x=nx;bk.y=ny;
+    /* respawn when far off course: back on the track at nearest point */
+    if(lat>g.roadW*2.5){var rp=g.pts[bk.idx],rp2=g.pts[(bk.idx+1)%N];bk.x=rp[0];bk.y=rp[1];bk.hd=Math.atan2(rp2[1]-rp[1],rp2[0]-rp[0]);bk.sp=40;}
     bk.lap=Math.floor(bk.prog/g.total);
     if(bk.prog>=g.total*2&&!g.over){
       g.over=true;
