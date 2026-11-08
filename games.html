@@ -193,6 +193,15 @@ img{-webkit-user-drag:none}
   #pickList{gap:8px}
   #s_pick .btn{padding:10px 14px;font-size:16px}
   .pcard{max-width:96px}
+  #s_result,#s_final{gap:8px;padding:8px 16px}
+  #s_result .bigTitle,#s_final .bigTitle{font-size:22px;line-height:1.1;margin:0}
+  #s_final .trophy{font-size:40px;margin:0}
+  #s_result .msg,#s_final .msg{font-size:13px;line-height:1.35;margin-bottom:4px!important}
+  #s_result .chipCol,#s_final .chipCol{gap:4px;margin:2px 0 4px}
+  #s_result .pchip,#s_final .pchip{padding:5px 12px;width:min(56vw,250px)}
+  #s_result .pchip .pcVal,#s_final .pchip .pcVal{font-size:16px}
+  #s_result .btn,#s_final .btn{padding:9px;font-size:15px;width:min(52vw,240px)}
+  #s_result .btn.small,#s_final .btn.small{padding:6px 16px;font-size:13px}
 }
 @media (max-height:480px){
   .pad{width:56px;height:56px}
@@ -873,6 +882,10 @@ GAMES[6].build=function(st){
     var x=cx+Math.cos(th)*r*1.28,y=cy+Math.sin(th)*r*0.86;
     pts.push([x,y]);
   }
+  /* fit course vertically: keep start-line sprites fully on screen */
+  var mnY=1e9,mxY=-1e9;for(var k=0;k<N;k++){if(pts[k][1]<mnY)mnY=pts[k][1];if(pts[k][1]>mxY)mxY=pts[k][1];}
+  var yT=Math.max(26,H*0.07),yB=H-Math.max(46,H*0.12);
+  for(var k=0;k<N;k++){pts[k][1]=yT+(pts[k][1]-mnY)/(mxY-mnY)*(yB-yT);}
   for(var k=1;k<=N;k++){var a=pts[k-1],b=pts[k%N];cum.push(cum[k-1]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
   this.pts=pts;this.cum=cum;this.N=N;this.total=cum[N];
   this.roadW=Math.min(W,H)*0.115;
