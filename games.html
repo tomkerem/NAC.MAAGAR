@@ -1035,11 +1035,11 @@ GAMES[6].draw=function(){
   });
   /* lap HUD chips */
   this.bikes.forEach(function(bk,i){
-    var lx=(W-20)-i*66;
+    var lx=12,ly=H/2-((g.bikes.length-1)*30)/2+i*30;
     ctx.fillStyle='rgba(10,0,0,.8)';ctx.strokeStyle=COLORS[i];ctx.lineWidth=2;
-    ctx.beginPath();ctx.rect(lx-46,54,56,22);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.rect(lx,ly,56,22);ctx.fill();ctx.stroke();
     ctx.fillStyle='#fff';ctx.font='800 12px Arial';ctx.textAlign='center';
-    ctx.fillText((i+1)+' • '+(Math.min(bk.lap+1,2))+'/2',lx-18,69);
+    ctx.fillText((i+1)+' • '+(Math.min(bk.lap+1,2))+'/2',lx+28,ly+15);
   });
 };
 GAMES[6].start=function(){
@@ -1134,7 +1134,7 @@ GAMES[7].start=function(){
 GAMES[8].build=function(st){
   var W=innerWidth,H=innerHeight;
   document.getElementById('s_arena').style.background='radial-gradient(circle at 50% 42%,#5d4930 0%,#33270f 58%,#150e04 100%)';
-  var cx=W/2,cy=H/2+10,R=Math.min(W,H)*(W>H?0.42:0.34);
+  var cx=W/2,cy=H/2+10,R=Math.min(W,H)*(W>H?0.42:0.41);
   this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;this.go=false;this.go=false;
   st.innerHTML='<div class="sandPit"></div>'
     +'<div id="sawBlade"><svg viewBox="0 0 100 100">'
