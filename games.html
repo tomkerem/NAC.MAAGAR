@@ -1,77 +1,423 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NA-C GAMES - מאגר הנשיא</title>
-
-    <!-- הפונט השבטי -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: black;
-            color: red;
-            text-align: center;
-            font-family: 'Secular One', sans-serif;
-            padding: 30px 10px;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 30px;
-            color: red;
-            text-decoration: none;
-            font-size: 18px;
-            border: 2px solid red;
-            padding: 10px 20px;
-            border-radius: 8px;
-        }
-
-        .back-btn:hover {
-            color: black;
-            background-color: red;
-        }
-
-        body {
-            background: #000 url('bg-games.jpg') center/cover no-repeat fixed;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: -1;
-        }
-
-        @media (max-width: 600px) {
-            body::before { display: none; }
-            body {
-                padding-top: 155px;
-                background:
-                    linear-gradient(to bottom, rgba(0,0,0,0) 62%, #000 98%),
-                    url('bg-games.jpg') top center / 100% auto no-repeat,
-                    #000;
-            }
-        }
-
-.sec{border:2px solid red;border-radius:12px;background:rgba(17,17,17,.92);max-width:700px;margin:18px auto;padding:14px}
-.sec h2{margin:4px 0 6px}.sec h2 a{color:red;text-decoration:none}
-.cnt{color:#ccc;font-size:14px;margin-bottom:10px}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NA-C GAMES - מאגר הנשיא</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Secular One',sans-serif;touch-action:none;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000;text-align:center;padding:16px}
+.screen.on{display:flex;animation:screenIn .38s ease-out}
+@keyframes screenIn{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+.screen.on>.animItem{animation:itemIn .45s ease-out both}
+.screen.on>.animItem:nth-child(1){animation-delay:.04s}
+.screen.on>.animItem:nth-child(2){animation-delay:.10s}
+.screen.on>.animItem:nth-child(3){animation-delay:.16s}
+.screen.on>.animItem:nth-child(4){animation-delay:.22s}
+.screen.on>.animItem:nth-child(5){animation-delay:.28s}
+.screen.on>.animItem:nth-child(6){animation-delay:.34s}
+.screen.on>.animItem:nth-child(7){animation-delay:.40s}
+@keyframes itemIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+h1{color:red;font-size:44px;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0 22px #500}
+.sub{color:#fff;font-size:18px;margin-bottom:26px}
+.btn{display:block;width:min(320px,84vw);margin:10px auto;padding:16px;border:2px solid red;border-radius:14px;background:#000;color:#fff;font-family:inherit;font-size:24px;cursor:pointer;transition:transform .12s,background .12s,color .12s;animation:itemIn .45s ease-out both}
+.btn:active{background:red;color:#000;transform:scale(.95)}
+.btn.small{font-size:18px;padding:10px;width:auto;display:inline-block;margin:14px 6px 0}
+.trophy{font-size:78px;line-height:1;margin-bottom:10px;display:inline-block;animation:trophyBounce 1.1s ease-in-out infinite}
+@keyframes trophyBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.06)}}
+/* arena */
+#arena{position:fixed;inset:0;display:none;background:#000}
+#arena.on{display:block;animation:screenIn .3s ease-out}
+.zone{position:absolute;width:50%;height:50%;border:2px solid #400;overflow:hidden;transition:background .12s,border-color .12s}
+.zone .inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.zone .pname{font-size:20px;color:#fff;opacity:.85}
+.zone .pscore{font-size:44px;color:red}
+.zone .pscore.pop{animation:pop .22s ease-out}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.35);color:#fff}100%{transform:scale(1)}}
+.zone .hint{font-size:15px;color:#999}
+.zone.rot .inner{transform:rotate(180deg)}
+.zone[data-c="0"]{left:0;top:0}
+.zone[data-c="1"]{right:0;top:0}
+.zone[data-c="2"]{left:0;bottom:0}
+.zone[data-c="3"]{right:0;bottom:0}
+.zone.flash{background:#3a0000;border-color:red}
+.centerHud{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;text-align:center;pointer-events:none}
+#cd{font-size:96px;color:red;text-shadow:0 0 26px #600;display:inline-block}
+#cd.tick{animation:cdPulse .7s ease-out}
+@keyframes cdPulse{0%{transform:scale(1.7);opacity:0}35%{transform:scale(1);opacity:1}100%{transform:scale(.92)}}
+#roundLbl{position:absolute;top:6px;left:50%;transform:translateX(-50%);color:#888;font-size:14px;z-index:5;pointer-events:none}
+#timerLbl{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);color:#aaa;font-size:16px;z-index:5;pointer-events:none}
+#exitBtn{position:absolute;top:6px;left:6px;z-index:6;background:#000;border:1px solid #600;color:#f88;border-radius:8px;padding:4px 10px;font-family:inherit;font-size:14px;cursor:pointer}
+/* reaction */
+.bigSignal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:130px;height:130px;border-radius:50%;background:#111;border:3px solid #333;z-index:4;pointer-events:none;transition:background .06s,border-color .06s,box-shadow .06s}
+.bigSignal.go{background:red;border-color:#fff;box-shadow:0 0 42px #f00;animation:sigGo .28s ease-out}
+@keyframes sigGo{0%{transform:translate(-50%,-50%) scale(.4)}100%{transform:translate(-50%,-50%) scale(1)}}
+/* timing bar */
+.tbar{position:relative;width:86%;height:26px;border:2px solid #f88;border-radius:13px;background:#111;overflow:hidden}
+.tbar .target{position:absolute;top:0;bottom:0;left:42.5%;width:15%;background:#3a0000;border-right:2px solid red;border-left:2px solid red}
+.tbar .mark{position:absolute;top:0;bottom:0;width:4px;background:#fff;box-shadow:0 0 8px #fff}
+/* target rush */
+.tgt{position:absolute;width:56px;height:56px;border-radius:50%;background:red;border:3px solid #fff;box-shadow:0 0 16px #f00;pointer-events:none;animation:tgtIn .18s ease-out}
+@keyframes tgtIn{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+/* tug */
+.tugWrap{position:relative;width:88%;height:34px;border:2px solid #f88;border-radius:17px;background:#111;overflow:visible}
+.tugWrap .mark{position:absolute;top:-7px;width:20px;height:44px;border-radius:8px;background:red;border:2px solid #fff;margin-right:-11px;box-shadow:0 0 10px #f00;transition:right .15s}
+.msg{font-size:16px;color:#fff;max-width:90%;line-height:1.5}
+.scoreLine{font-size:22px;margin:4px;animation:itemIn .4s ease-out both}
+.scoreLine b{color:red}
+@media (prefers-reduced-motion: reduce){
+  .screen.on,.screen.on>.animItem,.btn,.scoreLine{animation:none}
+  .trophy{animation:none}
+}
 </style>
 </head>
 <body>
 
-<h1>NA-C GAMES</h1>
-<p>שבט הנשיא</p>
+<!-- HOME -->
+<div class="screen on" id="s_home">
+  <h1 class="animItem">NA-C GAMES</h1>
+  <div class="sub animItem">משחקי שבט הנשיא על מסך אחד</div>
+  <button class="btn" data-go="s_mode" data-mode="free">משחק חופשי</button>
+  <button class="btn" data-go="s_mode" data-mode="tour">טורניר 🏆</button>
+  <button class="btn small" onclick="location.href='index.html'">⬅ חזרה להתחלה</button>
+</div>
 
-<div class="sec"><div class="cnt" style="margin:0">התכנים של NA-C GAMES בדרך, בקרוב כאן.</div></div>
+<!-- PLAYERS -->
+<div class="screen" id="s_mode">
+  <h1 class="animItem">כמה שחקנים?</h1>
+  <div class="sub animItem">כל שחקן מקבל פינה במסך</div>
+  <button class="btn" data-n="2">2P</button>
+  <button class="btn" data-n="3">3P</button>
+  <button class="btn" data-n="4">4P</button>
+  <button class="btn small" data-go="s_home">⬅ חזרה</button>
+</div>
 
-<!-- כפתור חזרה לדף הבית -->
-<a href="index.html" class="back-btn">⬅ חזרה להתחלה</a>
+<!-- TOURNAMENT LENGTH -->
+<div class="screen" id="s_rounds">
+  <h1 class="animItem">בחר טורניר</h1>
+  <div class="sub animItem">כל סיבוב הוא מיני־משחק אחר</div>
+  <button class="btn" data-r="3">3 סיבובים</button>
+  <button class="btn" data-r="5">5 סיבובים</button>
+  <button class="btn" data-r="7">7 סיבובים</button>
+  <button class="btn small" data-go="s_mode">⬅ חזרה</button>
+</div>
 
+<!-- FREE PLAY PICK -->
+<div class="screen" id="s_pick">
+  <h1 class="animItem">בחר משחק</h1>
+  <div id="pickList"></div>
+  <button class="btn small" data-go="s_mode">⬅ חזרה</button>
+</div>
+
+<!-- ROUND INTRO -->
+<div class="screen" id="s_intro">
+  <div class="sub animItem" id="introRound"></div>
+  <h1 class="animItem" id="introName"></h1>
+  <div class="msg animItem" id="introHow"></div>
+  <div class="sub animItem" style="margin-top:26px">מוכנים?</div>
+  <button class="btn" id="introGo">יוצאים לדרך</button>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="s_result">
+  <h1 class="animItem" id="resTitle"></h1>
+  <div id="resBody" class="animItem"></div>
+  <button class="btn" id="resNext"></button>
+</div>
+
+<!-- FINAL -->
+<div class="screen" id="s_final">
+  <div class="trophy">🏆</div>
+  <h1 class="animItem" id="winTitle"></h1>
+  <div id="winBody" class="animItem"></div>
+  <button class="btn" data-go="s_home">עוד פעם</button>
+  <button class="btn small" onclick="location.href='index.html'">⬅ חזרה לאתר</button>
+</div>
+
+<!-- ARENA -->
+<div id="arena">
+  <div id="roundLbl"></div>
+  <div id="timerLbl"></div>
+  <button id="exitBtn">✕ יציאה</button>
+  <div class="zone rot" data-c="0"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
+  <div class="zone rot" data-c="1"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
+  <div class="zone" data-c="2"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
+  <div class="zone" data-c="3"><div class="inner"><div class="pname"></div><div class="pscore"></div><div class="garea"></div><div class="hint"></div></div></div>
+  <div class="centerHud"><div id="cd"></div></div>
+  <div class="bigSignal" id="signal" style="display:none"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var screens=["s_home","s_mode","s_rounds","s_pick","s_intro","s_result","s_final"];
+var mode="free",numPlayers=2,totalRounds=3,roundIdx=0,points=[],lastGame=-1,cur=0;
+var NAMES=["שחקן 1","שחקן 2","שחקן 3","שחקן 4"];
+var ASSIGN={2:[2,1],3:[2,1,0],4:[2,1,0,3]};
+var raf=null,timers=[],tapHandler=null;
+
+function stopLoop(){if(raf)cancelAnimationFrame(raf);raf=null;timers.forEach(clearTimeout);timers=[];tapHandler=null;}
+function later(fn,ms){var id=setTimeout(fn,ms);timers.push(id);}
+function show(id){screens.forEach(function(s){$(s).classList.toggle("on",s===id)});$("arena").classList.remove("on");stopLoop();}
+
+document.querySelectorAll("[data-go]").forEach(function(b){b.addEventListener("click",function(){
+  if(b.dataset.mode)mode=b.dataset.mode;
+  show(b.dataset.go);
+})});
+$("s_mode").querySelectorAll("[data-n]").forEach(function(b){b.addEventListener("click",function(){
+  numPlayers=+b.dataset.n;
+  points=[];for(var i=0;i<numPlayers;i++)points.push(0);
+  roundIdx=0;lastGame=-1;
+  if(mode==="tour")show("s_rounds");
+  else{buildPick();show("s_pick");}
+})});
+$("s_rounds").querySelectorAll("[data-r]").forEach(function(b){b.addEventListener("click",function(){
+  totalRounds=+b.dataset.r;roundIdx=0;startRound();
+})});
+$("introGo").addEventListener("click",function(){runGame(GAMES[cur].key)});
+$("exitBtn").addEventListener("click",function(){show("s_home");});
+
+/* one delegated multitouch handler for the whole arena */
+$("arena").addEventListener("pointerdown",function(ev){
+  var z=ev.target.closest?ev.target.closest(".zone"):null;
+  if(!z||!tapHandler)return;
+  ev.preventDefault();
+  var c=+z.dataset.c;
+  var pi=ASSIGN[numPlayers].indexOf(c);
+  if(pi<0)return;
+  tapHandler(pi,z,ev);
+},{passive:false});
+
+var GAMES=[
+ {key:"taprace",name:"מירוץ לחיצות",how:"מי שלוחץ הכי הרבה על הפינה שלו ב־8 שניות מנצח."},
+ {key:"reaction",name:"תגובת שיא",how:"חכו שהעיגול יהפוך לאדום ואז לחצו על הפינה שלכם. מי שלוחץ מוקדם יוצא מהסיבוב."},
+ {key:"timing",name:"עצירת זמן",how:"הסמן רץ על הפס. לחצו כשהוא בדיוק באזור האדום. הכי קרוב למרכז מנצח."},
+ {key:"target",name:"מטרה נודדת",how:"מטרה אדומה קופצת בפינה שלכם. מי שפוגע הכי הרבה פעמים ב־10 שניות מנצח."},
+ {key:"tug",name:"מלחמת חבל",how:"לחצו מהר כדי למשוך את הסמן לצד שלכם. מי שמוביל בפער גדול - מנצח."}
+];
+function buildPick(){
+  var p=$("pickList");p.innerHTML="";
+  GAMES.forEach(function(g,i){var b=document.createElement("button");b.className="btn";b.textContent=g.name;
+    b.addEventListener("click",function(){totalRounds=1;roundIdx=0;cur=i;showIntro()});p.appendChild(b)});
+}
+function pickGame(){
+  if(mode==="free")return cur;
+  var i;do{i=Math.floor(Math.random()*GAMES.length)}while(i===lastGame&&GAMES.length>1);
+  lastGame=i;return i;
+}
+function startRound(){cur=pickGame();showIntro();}
+function showIntro(){
+  var g=GAMES[cur];
+  $("introRound").textContent=mode==="tour"?("סיבוב "+(roundIdx+1)+" מתוך "+totalRounds):"משחק חופשי";
+  $("introName").textContent=g.name;
+  $("introHow").textContent=g.how;
+  show("s_intro");
+}
+function zones(){return ASSIGN[numPlayers].map(function(c){return document.querySelector('.zone[data-c="'+c+'"]')});}
+function setupArena(label){
+  stopLoop();
+  document.querySelectorAll(".zone").forEach(function(z){z.style.display="none";z.classList.remove("flash");
+    z.querySelector(".garea").innerHTML="";z.querySelector(".hint").textContent="";z.querySelector(".pscore").textContent="";});
+  var old=$("arena").querySelectorAll(".tgt");for(var k=0;k<old.length;k++)old[k].remove();
+  $("signal").style.display="none";$("signal").className="bigSignal";
+  $("cd").textContent="";$("cd").className="";
+  $("roundLbl").textContent=label;$("timerLbl").textContent="";
+  var act=zones();
+  act.forEach(function(z,i){z.style.display="block";z.querySelector(".pname").textContent=NAMES[i];});
+  return act;
+}
+function countdown(cb){
+  var n=3;
+  function tick(){var cd=$("cd");cd.textContent=n>0?n:"";cd.classList.remove("tick");void cd.offsetWidth;cd.classList.add("tick");}
+  tick();
+  var iv=setInterval(function(){n--;if(n<0){clearInterval(iv);$("cd").textContent="";$("cd").className="";cb();}else tick();},750);
+  timers.push(iv);
+}
+function setTimer(t){$("timerLbl").textContent=t>0?("⏱ "+Math.ceil(t)):"";}
+function bump(z){z.classList.add("flash");setTimeout(function(){z.classList.remove("flash")},80);}
+function setScore(z,v){var s=z.querySelector(".pscore");s.textContent=v;s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");}
+
+function endRound(winnerIdx,detail){
+  stopLoop();
+  if(winnerIdx!=null&&winnerIdx>=0)points[winnerIdx]++;
+  var isLast=(mode==="tour")?(roundIdx>=totalRounds-1):true;
+  $("resTitle").textContent=winnerIdx==null?"תיקו!":(NAMES[winnerIdx]+" לוקח את הסיבוב!");
+  var h="";
+  if(detail)h+='<div class="msg" style="margin-bottom:14px">'+detail+"</div>";
+  if(mode==="tour"){for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine">'+NAMES[i]+': <b>'+points[i]+"</b></div>";}
+  $("resBody").innerHTML=h;
+  $("resNext").textContent=isLast?(mode==="tour"?"לתוצאות הטורניר 🏆":"לתפריט"):("לסיבוב הבא ("+(roundIdx+2)+"/"+totalRounds+")");
+  $("resNext").onclick=function(){
+    if(isLast){finishAll();}
+    else{roundIdx++;startRound();}
+  };
+  show("s_result");
+}
+function finishAll(){
+  if(mode==="free"){show("s_home");return;}
+  var mx=Math.max.apply(null,points),winners=[];
+  points.forEach(function(p,i){if(p===mx)winners.push(NAMES[i])});
+  $("winTitle").textContent=winners.length>1?"תיקו בצמרת!":winners[0]+" מנצח!";
+  var h="";for(var i=0;i<numPlayers;i++)h+='<div class="scoreLine">'+NAMES[i]+': <b>'+points[i]+"</b></div>";
+  $("winBody").innerHTML=h;
+  show("s_final");
+}
+
+/* game 1: tap race */
+function gTapRace(){
+  var act=setupArena("מירוץ לחיצות");
+  var counts=act.map(function(){return 0}),live=false;
+  act.forEach(function(z,i){z.querySelector(".hint").textContent="לחצו מהר!";setScore(z,0);});
+  tapHandler=function(pi,z){if(!live)return;counts[pi]++;setScore(z,counts[pi]);bump(z);};
+  countdown(function(){
+    live=true;var t0=performance.now();
+    (function loop(){var t=8-(performance.now()-t0)/1000;setTimer(t);
+      if(t<=0){setTimer(0);
+        var mx=Math.max.apply(null,counts),w=counts.indexOf(mx),tie=counts.filter(function(c){return c===mx}).length>1;
+        endRound(tie?null:w,"תוצאות: "+counts.join(" | "));return;}
+      raf=requestAnimationFrame(loop);})();
+  });
+}
+
+/* game 2: reaction */
+function gReaction(){
+  var act=setupArena("תגובת שיא");
+  var state="wait",alive=act.map(function(){return true}),goAt=0;
+  act.forEach(function(z){z.querySelector(".hint").textContent="חכו לאדום...";});
+  tapHandler=function(pi,z){
+    if(!alive[pi])return;
+    if(state==="wait"){alive[pi]=false;z.querySelector(".hint").textContent="מוקדם מדי! ✗";z.classList.add("flash");}
+    else if(state==="go"){
+      state="done";var ms=Math.round(performance.now()-goAt);bump(z);
+      endRound(pi,"זמן תגובה: "+ms+"ms");
+    }
+  };
+  countdown(function(){
+    $("signal").style.display="block";
+    later(function(){
+      if(state!=="wait")return;
+      state="go";goAt=performance.now();$("signal").classList.add("go");
+    },1200+Math.random()*2600);
+    later(function(){if(state==="wait"){state="done";endRound(null,"אף אחד לא לחץ.");}},12000);
+  });
+}
+
+/* game 3: timing */
+function gTiming(){
+  var act=setupArena("עצירת זמן");
+  var bars=[],stopped=act.map(function(){return false}),pos=act.map(function(){return Math.random()*20}),dir=act.map(function(){return 1});
+  var live=false,done=0;
+  act.forEach(function(z,i){
+    z.querySelector(".garea").innerHTML='<div class="tbar"><div class="target"></div><div class="mark" style="right:0"></div></div>';
+    z.querySelector(".hint").textContent="לחצו באזור האדום";
+    bars.push(z.querySelector(".mark"));
+  });
+  function finish(){
+    var best=-1,bd=1e9;
+    pos.forEach(function(p,i){var d=Math.abs(p-50);if(d<bd){bd=d;best=i}});
+    var hit=bd<=7.5;
+    endRound(hit?best:null,hit?("סטייה מהמרכז: "+bd.toFixed(1)+"%"):"אף אחד לא פגע באזור.");
+  }
+  tapHandler=function(pi,z){
+    if(!live||stopped[pi])return;
+    stopped[pi]=true;done++;
+    var d=Math.abs(pos[pi]-50);
+    z.querySelector(".hint").textContent=d<=7.5?"פגיעה! ✓":"פספוס";
+    if(d<=7.5)z.classList.add("flash");
+    if(done>=act.length){live=false;finish();}
+  };
+  countdown(function(){
+    live=true;var last=performance.now();
+    (function loop(now){
+      var dt=(now-last)/1000;last=now;
+      for(var i=0;i<bars.length;i++){
+        if(stopped[i])continue;
+        pos[i]+=dir[i]*dt*80;
+        if(pos[i]>=100){pos[i]=100;dir[i]=-1}
+        if(pos[i]<=0){pos[i]=0;dir[i]=1}
+        bars[i].style.right="calc("+pos[i]+"% - 2px)";
+      }
+      if(live)raf=requestAnimationFrame(loop);
+    })(performance.now());
+  });
+}
+
+/* game 4: target rush */
+function gTarget(){
+  var act=setupArena("מטרה נודדת");
+  var hits=act.map(function(){return 0}),live=false,tgs=[];
+  act.forEach(function(z,i){
+    z.querySelector(".hint").textContent="פגעו במטרה!";setScore(z,0);
+    var tg=document.createElement("div");tg.className="tgt";z.appendChild(tg);tgs.push(tg);
+    var zw=z.clientWidth,zh=z.clientHeight;
+    tg.dataset.jx=zw;tg.dataset.jy=zh;
+    jump(tg,z);
+  });
+  function jump(tg,z){
+    var zw=z.clientWidth,zh=z.clientHeight;
+    tg.style.left=(12+Math.random()*Math.max(20,zw-84))+"px";
+    tg.style.top=(12+Math.random()*Math.max(20,zh-84))+"px";
+    tg.style.animation="none";void tg.offsetWidth;tg.style.animation="";
+  }
+  tapHandler=function(pi,z,ev){
+    if(!live)return;
+    var r=tgs[pi].getBoundingClientRect();
+    if(ev.clientX>=r.left-14&&ev.clientX<=r.right+14&&ev.clientY>=r.top-14&&ev.clientY<=r.bottom+14){
+      hits[pi]++;setScore(z,hits[pi]);bump(z);jump(tgs[pi],z);
+    }
+  };
+  countdown(function(){
+    live=true;var t0=performance.now();
+    (function loop(){var t=10-(performance.now()-t0)/1000;setTimer(t);
+      if(t<=0){setTimer(0);
+        var mx=Math.max.apply(null,hits),w=hits.indexOf(mx),tie=hits.filter(function(c){return c===mx}).length>1;
+        endRound(tie?null:w,"פגיעות: "+hits.join(" | "));return;}
+      raf=requestAnimationFrame(loop);})();
+  });
+}
+
+/* game 5: tug of war */
+function gTug(){
+  var act=setupArena("מלחמת חבל");
+  var taps=act.map(function(){return 0}),live=false,marks=[];
+  act.forEach(function(z,i){
+    z.querySelector(".garea").innerHTML='<div class="tugWrap"><div class="mark" style="right:calc(50% - 0px)"></div></div>';
+    marks.push(z.querySelector(".mark"));
+    z.querySelector(".hint").textContent="לחצו מהר!";setScore(z,0);
+  });
+  tapHandler=function(pi,z){if(!live)return;taps[pi]++;setScore(z,taps[pi]);bump(z);};
+  countdown(function(){
+    live=true;var t0=performance.now();
+    (function loop(){
+      var t=15-(performance.now()-t0)/1000;setTimer(t);
+      var mx=Math.max.apply(null,taps),mn=Math.min.apply(null,taps);
+      var lead=taps.indexOf(mx),spread=mx-mn;
+      var shift=Math.min(42,spread*2.5);
+      marks.forEach(function(m){m.style.right="calc("+(50-shift)+"% - 10px)"});
+      act.forEach(function(z,i){z.querySelector(".hint").textContent=spread>0?("מוביל: "+NAMES[lead]):"לחצו מהר!";});
+      if(spread>=18||t<=0){
+        setTimer(0);
+        if(mx===0||spread===0){endRound(null,"שוויון מושלם!");return;}
+        var tie=taps.filter(function(c){return c===mx}).length>1;
+        endRound(tie?null:lead,"לחיצות: "+taps.join(" | "));return;
+      }
+      raf=requestAnimationFrame(loop);
+    })();
+  });
+}
+
+function runGame(key){
+  stopLoop();
+  screens.forEach(function(s){$(s).classList.remove("on")});
+  $("arena").classList.add("on");
+  ({taprace:gTapRace,reaction:gReaction,timing:gTiming,target:gTarget,tug:gTug})[key]();
+}
+})();
+</script>
 </body>
 </html>
