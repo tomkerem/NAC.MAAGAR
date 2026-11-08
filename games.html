@@ -1035,7 +1035,8 @@ GAMES[6].draw=function(){
   });
   /* lap HUD chips */
   this.bikes.forEach(function(bk,i){
-    var lx=12,ly=(H<480)?(170+i*30):(H/2-((g.bikes.length-1)*30)/2+i*30+22);
+    var n4=g.bikes.length,lx,ly;
+    if(W>H){lx=W/2-((n4-1)*66)/2+i*66-28;ly=54;}else{lx=12;ly=H/2-((n4-1)*30)/2+i*30+22;}
     ctx.fillStyle='rgba(10,0,0,.8)';ctx.strokeStyle=COLORS[i];ctx.lineWidth=2;
     ctx.beginPath();ctx.rect(lx,ly,56,22);ctx.fill();ctx.stroke();
     ctx.fillStyle='#fff';ctx.font='800 12px Arial';ctx.textAlign='center';
