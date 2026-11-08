@@ -1085,7 +1085,7 @@ GAMES[8].build=function(st){
     this.b.push({a:(Math.PI*2/numPlayers)*i+Math.PI*0.5,w:1.15+(i%3)*0.07,dash:-1,cd:0,out:false,dist:0,el:el});
   }
   /* saw starts at the midpoint of a gap, never on a bull */
-  this.sawA=(Math.PI*2/numPlayers)*0+Math.PI*0.5-(Math.PI/numPlayers);this.sawW=0.86;
+  this.sawA=(Math.PI*2/numPlayers)*0+Math.PI*0.5-(Math.PI/numPlayers);this.sawW=1.32; /* faster than any bull: it hunts, you dash */
   var g=this;
   physLoop(function(dt){g.step(dt);});
 };
@@ -1112,7 +1112,7 @@ GAMES[8].step=function(dt){
   if(alive.length){
     g.sawA+=g.sawW*dt; /* forward chase only - no head-on reversals */
   }
-  g.sawW=Math.min(g.sawW+dt*0.012,2.6);
+  g.sawW=Math.min(g.sawW+dt*0.011,2.4);
   /* draw + collisions */
   var sx=g.cx+Math.cos(g.sawA)*g.R,sy=g.cy+Math.sin(g.sawA)*g.R;
   var blade=g.st.querySelector('#sawBlade');
