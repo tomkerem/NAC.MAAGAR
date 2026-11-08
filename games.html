@@ -28,7 +28,7 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
 .patternBg{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.5}
 .patternBg span{position:absolute;font-size:26px;opacity:.13;filter:grayscale(60%) brightness(.8)}
 /* ---------- player select cards (reference layout) ---------- */
-.trophyTop,.plaqueTop{width:100px;height:124px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 22px rgba(255,30,30,.4));animation:trophyBob 2.6s ease-in-out infinite}
+.trophyTop,.plaqueTop{display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 22px rgba(255,30,30,.4));animation:trophyBob 2.6s ease-in-out infinite}
 @keyframes trophyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .cardsRow{display:flex;gap:14px;justify-content:center;width:100%}
 .pcard{flex:1;max-width:120px;aspect-ratio:1/1.08;border-radius:20px;border:4px solid #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-weight:900;box-shadow:0 6px 0 rgba(0,0,0,.55),0 0 20px rgba(255,0,0,.25);transition:transform .12s;position:relative;overflow:hidden}
@@ -173,28 +173,7 @@ img{-webkit-user-drag:none}
 <div class="screen" id="s_mode">
   <div class="patternBg" data-pattern></div>
   <div class="plaqueTop animItem">
-    <svg viewBox="0 0 100 128" width="100" height="128" aria-label="מגן שבט 2028">
-      <defs>
-        <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#4a2c1a"/><stop offset="1" stop-color="#241105"/>
-        </linearGradient>
-      </defs>
-      <rect x="30" y="120" width="40" height="8" rx="1.5" fill="#1c0d04"/>
-      <path d="M50 4 L92 16 V64 Q92 100 50 120 Q8 100 8 64 V16 Z" fill="url(#wood)" stroke="#170b03" stroke-width="3"/>
-      <path d="M50 8 L88 19 V63 Q88 96 50 115 Q12 96 12 63 V19 Z" fill="none" stroke="#5d3a20" stroke-width="1.5"/>
-      <g transform="translate(50 48)">
-        <path d="M0 -26 C 7 -18 7 -8 0 0 C -7 -8 -7 -18 0 -26 Z" fill="#0a7a3f"/>
-        <path d="M-17 -14 C -7 -13 -4 -2 -9 7 C -15 4 -21 -5 -17 -14 Z" fill="#0a7a3f"/>
-        <path d="M17 -14 C 7 -13 4 -2 9 7 C 15 4 21 -5 17 -14 Z" fill="#0a7a3f"/>
-        <circle cx="0" cy="-25" r="5.5" fill="#d61f26"/>
-        <circle cx="-16" cy="-13" r="5.5" fill="#d61f26"/>
-        <circle cx="16" cy="-13" r="5.5" fill="#d61f26"/>
-        <rect x="-13" y="6" width="26" height="8" rx="3.5" fill="#c9a227" stroke="#8a6a12" stroke-width="1"/>
-        <path d="M0 14 L 4 22 L -4 22 Z" fill="#c9a227" stroke="#8a6a12" stroke-width="1"/>
-      </g>
-      <rect x="22" y="92" width="56" height="20" rx="2" fill="#ececec" stroke="#a8a8a8" stroke-width="1.5"/>
-      <text x="50" y="107" text-anchor="middle" font-size="14" font-weight="900" fill="#111" font-family="Arial,sans-serif">2028</text>
-    </svg>
+    <img src="plaque.webp" alt="מגן שבט 2028" style="width:118px;height:auto">
   </div>
   <div class="cardsRow animItem">
     <div class="pcard c2" data-n="2"><div class="bigP">2P</div><div class="pawns">♟♟</div></div>
@@ -423,7 +402,7 @@ function winFx(winnerIdx){
   rib.style.background='linear-gradient(180deg,'+col+' 0%, #0a0000 130%)';
   fx.appendChild(rib);
   var bn=document.createElement('div');bn.className='winBanner';
-  bn.innerHTML='<div class="winWord">'+(winnerIdx==null?'תיקו!':'מנצח!')+'</div>'+(winnerIdx!=null?'<div class="winSub">'+NAMES[winnerIdx]+'</div>':'');
+  bn.innerHTML='<div class="winWord" dir="ltr">'+(winnerIdx==null?'TIE!':'WINNER')+'</div>'+(winnerIdx!=null?'<div class="winSub">'+NAMES[winnerIdx]+'</div>':'');
   fx.appendChild(bn);
   var reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!reduced){
