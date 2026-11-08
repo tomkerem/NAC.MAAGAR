@@ -296,7 +296,7 @@ document.querySelectorAll(".pcard").forEach(function(c){
   });
 });
 document.querySelectorAll("[data-rounds]").forEach(function(b){
-  b.addEventListener("click",function(){totalRounds=+b.dataset.rounds;buildPick();show("s_pick");});
+  b.addEventListener("click",function(){totalRounds=+b.dataset.rounds;points=[0,0,0,0];roundIdx=0;pickRoundGame();});
 });
 $("exitBtn").addEventListener("click",function(){stopLoop();show("s_home");});
 $("againBtn").addEventListener("click",function(){show("s_home");});
