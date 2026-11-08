@@ -1005,20 +1005,20 @@ GAMES[6].draw=function(){
     /* frame + handlebar */
     ctx.strokeStyle=col;ctx.lineWidth=2.6;ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(0,13);ctx.lineTo(0,-13);ctx.moveTo(-7,-10);ctx.lineTo(7,-10);ctx.stroke();
-    /* pedaling legs: hips to crank */
-    var px=Math.cos(ped)*5,py=Math.sin(ped)*5;
-    ctx.strokeStyle='#dcdcdc';ctx.lineWidth=2.4;
-    ctx.beginPath();
-    ctx.moveTo(-3.5,6);ctx.lineTo(px,py+2);
-    ctx.moveTo(3.5,6);ctx.lineTo(-px,-py+2);
-    ctx.stroke();
     /* arms reaching the bars */
     ctx.strokeStyle=col;ctx.lineWidth=3;
     ctx.beginPath();ctx.moveTo(-5,-1);ctx.lineTo(-6.5,-9.5);ctx.moveTo(5,-1);ctx.lineTo(6.5,-9.5);ctx.stroke();
     /* torso (top view) */
     ctx.fillStyle=col;
-    ctx.beginPath();ctx.ellipse(0,3,6.6,9.5,0,0,7);ctx.fill();
+    ctx.beginPath();ctx.ellipse(0,3,5.8,8.8,0,0,7);ctx.fill();
     ctx.lineWidth=1.3;ctx.strokeStyle='#0d0d0d';ctx.stroke();
+    /* pedaling legs: wide white strokes visible past the torso */
+    var px=Math.cos(ped)*6,py=Math.sin(ped)*6;
+    ctx.strokeStyle='#e8e8e8';ctx.lineWidth=2.7;ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(-4,7.5);ctx.lineTo(-Math.abs(px)-2.5,py*0.6+3.5);
+    ctx.moveTo(4,7.5);ctx.lineTo(Math.abs(px)+2.5,-py*0.6+3.5);
+    ctx.stroke();
     /* helmet */
     ctx.beginPath();ctx.fillStyle=col;ctx.arc(0,-4.5,5.6,0,7);ctx.fill();
     ctx.lineWidth=1.5;ctx.strokeStyle='#0d0d0d';ctx.stroke();
