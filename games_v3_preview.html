@@ -179,7 +179,7 @@ img{-webkit-user-drag:none}
 .ringBull{position:absolute;left:0;top:0;width:60px;height:60px;z-index:7;pointer-events:none;will-change:transform}
 .ringBull svg{width:100%;height:100%;filter:drop-shadow(0 4px 5px rgba(0,0,0,.45))}
 /* saw trap */
-.sandPit{position:absolute;left:50%;top:calc(50% + 10px);width:min(88vw,72vh);height:min(88vw,72vh);transform:translate(-50%,-50%);border-radius:26px;background:radial-gradient(circle at 50% 40%,#d8c194,#c3a76f 70%,#a98c54);border:5px solid #6b5535;box-shadow:inset 0 0 46px rgba(96,70,30,.55),0 10px 26px rgba(0,0,0,.4);z-index:1}
+.sandPit{position:absolute;left:50%;top:calc(50% + 10px);width:min(88vw,84vh);height:min(88vw,84vh);transform:translate(-50%,-50%);border-radius:26px;background:radial-gradient(circle at 50% 40%,#d8c194,#c3a76f 70%,#a98c54);border:5px solid #6b5535;box-shadow:inset 0 0 46px rgba(96,70,30,.55),0 10px 26px rgba(0,0,0,.4);z-index:1}
 .sandPit:after{content:"";position:absolute;inset:14px;border-radius:18px;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 26px,rgba(120,95,50,.12) 26px 28px)}
 #sawBlade{position:absolute;left:0;top:0;width:66px;height:66px;z-index:8;pointer-events:none;filter:drop-shadow(0 5px 7px rgba(0,0,0,.5))}
 #sawBlade svg{width:100%;height:100%;animation:sawSpin .5s linear infinite}
@@ -687,10 +687,14 @@ function chipRows(arr){
 
 function perPlayer(arr){return chipRows(arr);}
 
+/* reset per-game arena background between games */
+(function(){var _ba=buildArena;buildArena=function(){var ar=document.getElementById("s_arena");if(ar)ar.style.background="";_ba();};})();
+
 
 /* ============ target rush v2: each player has their OWN zone near their corner ============ */
 GAMES[3].build=function(st){
   var W=innerWidth,H=innerHeight;
+  document.getElementById('s_arena').style.background='radial-gradient(circle at 50% 50%,#250505 0%,#0d0101 70%,#050000 100%)';
   this.st=st;this.hits=[];this.tgts=[];this.zones=[];this.over=false;this.wanderT=[];
   st.innerHTML='<div class="arenaGlow"></div>';
   var ZDEF={
@@ -757,7 +761,8 @@ GAMES[3].start=function(){
 /* ============ sumo bulls: hold pad = charge straight, push out of ring ============ */
 GAMES[5].build=function(st){
   var W=innerWidth,H=innerHeight;
-  var R=Math.min(W,H)*0.335, cx=W/2, cy=H/2+6;
+  document.getElementById('s_arena').style.background='radial-gradient(circle at 50% 50%,#330d06 0%,#170302 62%,#0a0101 100%)';
+  var R=Math.min(W,H)*(W>H?0.42:0.335), cx=W/2, cy=H/2+6;
   this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;this.go=false;this.go=false;
   st.innerHTML='<div class="sumoRing" style="width:'+(R*2)+'px;height:'+(R*2)+'px"></div>';
   this.b=[];
@@ -837,6 +842,7 @@ GAMES[5].start=function(){
 /* ============ bicycle race: winding circuit + corner steering wheels ============ */
 GAMES[6].build=function(st){
   var W=innerWidth,H=innerHeight,dpr=Math.min(devicePixelRatio||1,2);
+  document.getElementById('s_arena').style.background='radial-gradient(circle at 50% 50%,#1b1b1f 0%,#08080a 72%,#030304 100%)';
   this.st=st;this.over=false;this.go=false;
   st.innerHTML='<canvas id="bikeCv" style="position:absolute;inset:0;width:100%;height:100%"></canvas>';
   var cv=st.querySelector('#bikeCv');
@@ -844,7 +850,7 @@ GAMES[6].build=function(st){
   var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
   this.ctx=ctx;this.W=W;this.H=H;
   /* centerline: wobbly closed loop */
-  var cx=W/2,cy=H/2,R0=Math.min(W,H)*0.315,N=720,pts=[],cum=[0];
+  var cx=W/2,cy=H/2,R0=Math.min(W,H)*(W>H?0.40:0.315),N=720,pts=[],cum=[0];
   for(var k=0;k<N;k++){
     var th=k/N*Math.PI*2;
     var r=R0*(1+0.30*Math.sin(3*th+1.1)+0.13*Math.sin(5*th+2.2));
@@ -994,7 +1000,8 @@ GAMES[6].start=function(){
 /* ============ rage monster: jump the sweeping tongue-laser ============ */
 GAMES[7].build=function(st){
   var W=innerWidth,H=innerHeight;
-  var cx=W/2,cy=H/2+10,R=Math.min(W,H)*0.345;
+  document.getElementById('s_arena').style.background='radial-gradient(circle at 50% 42%,#2e070b 0%,#120102 70%,#070000 100%)';
+  var cx=W/2,cy=H/2+10,R=Math.min(W,H)*(W>H?0.43:0.345);
   this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;this.go=false;this.go=false;
   this.th=0;this.omega=0.9;this.laps=0;
   st.innerHTML='<div class="monsterWrap"><svg viewBox="0 0 120 110">'
@@ -1070,7 +1077,8 @@ GAMES[7].start=function(){
 /* ============ saw trap: outrun the chasing blade, tap to dash ============ */
 GAMES[8].build=function(st){
   var W=innerWidth,H=innerHeight;
-  var cx=W/2,cy=H/2+10,R=Math.min(W,H)*0.34;
+  document.getElementById('s_arena').style.background='radial-gradient(circle at 50% 42%,#5d4930 0%,#33270f 58%,#150e04 100%)';
+  var cx=W/2,cy=H/2+10,R=Math.min(W,H)*(W>H?0.42:0.34);
   this.cx=cx;this.cy=cy;this.R=R;this.st=st;this.over=false;this.go=false;this.go=false;
   st.innerHTML='<div class="sandPit"></div>'
     +'<div id="sawBlade"><svg viewBox="0 0 100 100">'
