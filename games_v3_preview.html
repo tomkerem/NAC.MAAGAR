@@ -194,6 +194,12 @@ img{-webkit-user-drag:none}
   #s_pick .btn{padding:10px 14px;font-size:16px}
   .pcard{max-width:96px}
 }
+@media (max-height:480px){
+  .pad{width:56px;height:56px}
+  .pad .pnum{font-size:16px}
+  .pad .pn{font-size:10px}
+  .laneLabel{left:80px}
+}
 
 </style>
 </head>
@@ -483,7 +489,7 @@ GAMES[0].build=function(st){
   st.innerHTML='<div class="arenaGlow"></div>';
   this.taps=[];this.racers=[];this.fills=[];this.over=false;
   var H=innerHeight,W=innerWidth;
-  var top=104,bottom=H-128,areaH=bottom-top;
+  var top=H<480?120:104,bottom=H-(H<480?84:128),areaH=bottom-top;
   var laneH=Math.min(84,(areaH-(numPlayers-1)*12)/numPlayers);
   var totalH=numPlayers*laneH+(numPlayers-1)*12;
   var y0=top+(areaH-totalH)/2;
