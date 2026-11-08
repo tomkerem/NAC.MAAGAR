@@ -1,7 +1,6 @@
 {
- "stats": {
-  "docs": 4,
-  "files": 21
- },
- "fails": []
+ "stats": {},
+ "fails": [
+  "/מדיה וצ׳ופרים/שיחות אישיות/מונופול/מונופול(2).jpg (image decode: OSError)"
+ ]
 }
