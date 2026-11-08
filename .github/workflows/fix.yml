@@ -1,0 +1,31 @@
+name: fix-bad-downloads
+on:
+  push:
+    paths:
+      - '.github/workflows/fix.yml'
+permissions:
+  contents: write
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove sign-in pages saved as documents
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,subprocess
+          no=json.load(open('manifest/noaccess.json'))
+          bad=['0BxczrtXDxJ0sQUtoYmJEMjFEblk','0BxczrtXDxJ0sejQ2NF9oNEhkSVlFU3ZJZU5MUWRrdmU5LXRR','0BxczrtXDxJ0sUHhYallVSU9Ea3M']
+          for b in bad:
+              if b not in no: no.append(b)
+          json.dump(no,open('manifest/noaccess.json','w'))
+          p='archive/a/0BxczrtXDxJ0sQUtoYmJEMjFEblk.docx'
+          if os.path.exists(p): os.remove(p)
+          for b in bad[1:]:
+              r=subprocess.run(['gh','release','delete-asset','media',b+'.docx','-y','--repo','${{ github.repository }}'],capture_output=True,text=True)
+              print(b,r.returncode,r.stderr[:100])
+          PY
+          git config user.name archive-bot; git config user.email archive-bot@users.noreply.github.com
+          git add -A manifest archive; git commit -m "remove 3 sign-in pages saved as docx"; git pull --rebase origin main; git push origin HEAD:main
