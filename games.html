@@ -67,6 +67,7 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
 @keyframes cdPop{0%{transform:scale(2.2);opacity:0}30%{transform:scale(1);opacity:1}80%{opacity:1}100%{opacity:0}}
 /* race scene */
 .raceTrack{position:absolute;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);border-radius:6px}
+.redbull{filter:sepia(.7) saturate(5) hue-rotate(-35deg) drop-shadow(0 0 7px rgba(255,0,0,.9))}
 .racer{position:absolute;font-size:34px;transition:transform .18s ease-out;z-index:10;filter:drop-shadow(0 0 6px rgba(255,0,0,.8))}
 .racer .tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:900;color:#fff;background:#a00;border-radius:8px;padding:1px 6px;border:1.5px solid #fff}
 .centerGoal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:52px;z-index:5;animation:trophyBob 2s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(255,190,0,.6))}
@@ -96,7 +97,7 @@ h1{color:#ff2222;font-size:34px;text-shadow:0 0 22px rgba(255,0,0,.65);letter-sp
 @keyframes tgtPop{from{transform:scale(.15);opacity:0}to{transform:scale(1);opacity:1}}
 .burst{position:absolute;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;border:4px solid #fff;z-index:14;animation:burstOut .38s ease-out both;pointer-events:none}
 @keyframes burstOut{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
-.miniScore{position:absolute;bottom:96px;left:0;right:0;display:flex;justify-content:center;gap:18px;z-index:20;pointer-events:none}
+.miniScore{position:absolute;bottom:110px;left:84px;right:84px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;z-index:20;pointer-events:none}
 .miniScore div{background:rgba(15,0,0,.8);border:2px solid;border-radius:12px;padding:3px 12px;font-size:14px;font-weight:800}
 /* result/final */
 .bigTitle{font-size:30px;color:#ff2222;text-shadow:0 0 20px rgba(255,0,0,.7);text-align:center;animation:itemIn .45s both}
@@ -407,7 +408,7 @@ GAMES[0].build=function(st){
     st.appendChild(track);
     var r=document.createElement("div");
     r.className="racer";
-    r.style.filter="sepia(.7) saturate(5) hue-rotate(-35deg) drop-shadow(0 0 7px rgba(255,0,0,.9))";
+    r.classList.add("redbull");
     if(dx<0)r.style.transform="scaleX(-1)";
     r.innerHTML='🐂<div class="tag" style="background:'+COLORS[i]+';'+(COLORS[i]==="#f5f5f5"?'color:#000;':'')+'">'+(i+1)+'</div>';
     st.appendChild(r);
@@ -563,8 +564,8 @@ GAMES[3].start=function(){
 /* ============ game 5: tug of war ============ */
 GAMES[4].build=function(st){
   st.innerHTML='<div id="ropeWrap"><div id="ropeLine"><div id="ropeKnot"></div></div></div>'
-    +'<div class="tugEmoji" id="bullL" style="left:6%">🐂</div>'
-    +'<div class="tugEmoji" id="bullR" style="right:6%">🐂</div>'
+    +'<div class="tugEmoji redbull" id="bullL" style="left:6%">🐂</div>'
+    +'<div class="tugEmoji redbull" id="bullR" style="right:6%;transform:scaleX(-1)">🐂</div>'
     +'<div class="miniScore" id="tugScores"></div>';
   this.taps=[];this.over=false;
   for(var i=0;i<numPlayers;i++)this.taps.push(0);
