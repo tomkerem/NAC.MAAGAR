@@ -1,0 +1,9 @@
+{
+ "stats": {
+  "img": 20,
+  "release_files": 1
+ },
+ "fails": [
+  "/מדיה וצ׳ופרים/שיחות אישיות/מונופול/מונופול(2).jpg (image decode: OSError)"
+ ]
+}
