@@ -722,10 +722,10 @@ GAMES[3].build=function(st){
   this.st=st;this.hits=[];this.tgts=[];this.zones=[];this.over=false;this.wanderT=[];
   st.innerHTML='<div class="arenaGlow"></div>';
   var ZDEF={
-    tl:{left:0.045,top:0.115,width:0.40,height:0.26},
-    tr:{left:0.555,top:0.115,width:0.40,height:0.26},
-    bl:{left:0.045,top:0.60,width:0.40,height:0.26},
-    br:{left:0.555,top:0.60,width:0.40,height:0.26}
+    tl:{left:0.525,top:0.115,width:0.375,height:0.26},
+    tr:{left:0.10,top:0.115,width:0.375,height:0.26},
+    bl:{left:0.525,top:0.60,width:0.375,height:0.26},
+    br:{left:0.10,top:0.60,width:0.375,height:0.26}
   };
   for(var i=0;i<numPlayers;i++){
     this.hits.push(0);
@@ -882,10 +882,17 @@ GAMES[6].build=function(st){
     var x=cx+Math.cos(th)*r*1.28,y=cy+Math.sin(th)*r*0.86;
     pts.push([x,y]);
   }
-  /* fit course vertically: keep start-line sprites fully on screen */
-  var mnY=1e9,mxY=-1e9;for(var k=0;k<N;k++){if(pts[k][1]<mnY)mnY=pts[k][1];if(pts[k][1]>mxY)mxY=pts[k][1];}
-  var yT=Math.max(36,H*0.09),yB=H-Math.max(48,H*0.12);
-  for(var k=0;k<N;k++){pts[k][1]=yT+(pts[k][1]-mnY)/(mxY-mnY)*(yB-yT);}
+  /* fit course into a safe rect, then push the line out of the corner wheels */
+  var mnY=1e9,mxY=-1e9,mnX=1e9,mxX=-1e9;
+  for(var k=0;k<N;k++){if(pts[k][1]<mnY)mnY=pts[k][1];if(pts[k][1]>mxY)mxY=pts[k][1];if(pts[k][0]<mnX)mnX=pts[k][0];if(pts[k][0]>mxX)mxX=pts[k][0];}
+  var yT=Math.max(36,H*0.09),yB=H-Math.max(48,H*0.12),xL=34,xR=W-34;
+  for(var k=0;k<N;k++){pts[k][0]=xL+(pts[k][0]-mnX)/(mxX-mnX)*(xR-xL);pts[k][1]=yT+(pts[k][1]-mnY)/(mxY-mnY)*(yB-yT);}
+  var clearR=59+Math.min(W,H)*0.115/2+14;
+  var cors=[[69,117],[W-69,117],[69,H-71],[W-69,H-71]];
+  for(var k=0;k<N;k++)for(var c=0;c<4;c++){
+    var cdx=pts[k][0]-cors[c][0],cdy=pts[k][1]-cors[c][1],cdd=Math.sqrt(cdx*cdx+cdy*cdy);
+    if(cdd<clearR&&cdd>0.01){pts[k][0]=cors[c][0]+cdx/cdd*clearR;pts[k][1]=cors[c][1]+cdy/cdd*clearR;}
+  }
   for(var k=1;k<=N;k++){var a=pts[k-1],b=pts[k%N];cum.push(cum[k-1]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
   this.pts=pts;this.cum=cum;this.N=N;this.total=cum[N];
   this.roadW=Math.min(W,H)*0.115;
@@ -895,7 +902,7 @@ GAMES[6].build=function(st){
   /* hide tap pads, build steering wheels at the same corners */
   pads.forEach(function(p){p.style.display='none';});
   this.wheels=[];this.bikes=[];
-  var WPOS={tl:{right:'auto',left:'10px',top:'58px'},tr:{left:'auto',right:'10px',top:'58px'},bl:{right:'auto',left:'10px',bottom:'12px'},br:{left:'auto',right:'10px',bottom:'12px'}};
+  var WPOS={tl:{left:'auto',right:'10px',top:'58px'},tr:{right:'auto',left:'10px',top:'58px'},bl:{left:'auto',right:'10px',bottom:'12px'},br:{right:'auto',left:'10px',bottom:'12px'}};
   for(var i=0;i<numPlayers;i++){
     var wp=WPOS[PADPOS[i]];
     var w=document.createElement('div');w.className='wheelPad';
@@ -909,9 +916,9 @@ GAMES[6].build=function(st){
         var a=Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2));
         var d=a-wh.lastA;
         if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;
-        wh.lastA=a;wh.ang=Math.max(-1.3,Math.min(1.3,wh.ang+d));
+        wh.lastA=a;wh.lastT=performance.now();wh.ang=Math.max(-1.3,Math.min(1.3,wh.ang+d));
       };
-      w.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();wh.held=true;var r=w.getBoundingClientRect();wh.lastA=Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2));w.setPointerCapture(e.pointerId);});
+      w.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();wh.held=true;wh.lastT=performance.now();var r=w.getBoundingClientRect();wh.lastA=Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2));w.setPointerCapture(e.pointerId);});
       w.addEventListener('pointermove',function(e){if(wh.held)rot(e);});
       w.addEventListener('pointerup',function(){wh.held=false;});
       w.addEventListener('pointercancel',function(){wh.held=false;});
@@ -934,8 +941,19 @@ GAMES[6].step=function(dt){
     var wh=g.wheels[i];
     if(!wh.held)wh.ang*=Math.pow(0.02,dt); /* spring to center */
     wh.el.style.transform='rotate('+(wh.ang*180/Math.PI)+'deg)';
-    bk.sp+=(150-bk.sp)*dt*1.4;bk.ped=(bk.ped||0)+bk.sp*dt*0.055;
-    bk.hd+=wh.ang*2.7*dt*Math.min(bk.sp/120,1);
+    bk.ped=(bk.ped||0)+bk.sp*dt*0.055;
+    var active=wh.held||(performance.now()-(wh.lastT||0)<1200);
+    if(active){
+      bk.sp+=(150-bk.sp)*dt*1.4;
+      bk.hd+=wh.ang*2.7*dt*Math.min(bk.sp/120,1);
+    }else{
+      /* driverless cruise: follow the course gently, slower than active steering */
+      bk.sp+=(88-bk.sp)*dt*1.1;
+      var ap=g.pts[(bk.idx+6)%N];
+      var want=Math.atan2(ap[1]-bk.y,ap[0]-bk.x),ddf=want-bk.hd;
+      while(ddf>Math.PI)ddf-=2*Math.PI;while(ddf<-Math.PI)ddf+=2*Math.PI;
+      bk.hd+=Math.max(-1,Math.min(1,ddf*1.6))*2.4*dt;
+    }
     var nx=bk.x+Math.cos(bk.hd)*bk.sp*dt,ny=bk.y+Math.sin(bk.hd)*bk.sp*dt;
     /* nearest centerline index (local search) */
     var best=bk.idx,bd=1e18;
@@ -951,7 +969,7 @@ GAMES[6].step=function(dt){
     if(lat>g.roadW*0.62){bk.sp=Math.max(bk.sp-260*dt,46);bk.dust+=dt;}
     bk.x=nx;bk.y=ny;
     /* respawn when far off course: back on the track at nearest point */
-    if(lat>g.roadW*2.5||nx<-8||nx>g.W+8||ny<-8||ny>g.H-24){var rp=g.pts[bk.idx],rp2=g.pts[(bk.idx+1)%N];bk.x=rp[0];bk.y=rp[1];bk.hd=Math.atan2(rp2[1]-rp[1],rp2[0]-rp[0]);bk.sp=40;}
+    if(lat>g.roadW*2.5||nx<-8||nx>g.W+8||ny<-8||ny>g.H-24){var rp=g.pts[bk.idx],rp2=g.pts[(bk.idx+4)%N];bk.x=rp[0];bk.y=rp[1];bk.hd=Math.atan2(rp2[1]-rp[1],rp2[0]-rp[0]);bk.sp=40;}
     bk.lap=Math.floor(bk.prog/g.total);
     if(bk.prog>=g.total*2&&!g.over){
       g.over=true;
@@ -1070,7 +1088,7 @@ GAMES[7].build=function(st){
     +'<div id="beam" style="transform-origin:0 50%"></div>'
     +'<div id="beamGlow"></div>';
   /* players on ring near their corners */
-  var ANG={br:Math.PI*0.25,bl:Math.PI*0.75,tl:Math.PI*1.25,tr:Math.PI*1.75};
+  var ANG={br:Math.PI*0.75,bl:Math.PI*0.25,tl:Math.PI*1.75,tr:Math.PI*1.25};
   this.b=[];
   for(var i=0;i<numPlayers;i++){
     var a=ANG[PADPOS[i]];
