@@ -132,7 +132,13 @@ $("go").addEventListener("click",function(){
 $("ask").addEventListener("click",function(){
  var q=$("q").value.trim(),t=$("draft").value,u=update();
  if(q.length<3){$("astatus").className="status err";$("astatus").textContent="כותבים שאלה קצרה קודם.";return}
- if(READY&&wantsReady(q)){showReady(q);return}
+ if(wantsReady(q)){
+  var readyBtn=$("ask");readyBtn.disabled=true;$("aans").style.display="none";
+  $("astatus").className="status";$("astatus").textContent="מחפש פעולה מוכנה במאגר...";
+  loadReady().then(function(){showReady(q)}).catch(function(){
+   $("astatus").className="status err";$("astatus").textContent="מאגר הפעולות לא נטען כרגע. נסו שוב או פתחו את רשימת הפעולות המוכנות.";
+  }).then(function(){readyBtn.disabled=false});return
+ }
  var btn=$("ask");btn.disabled=true;$("astatus").className="status";$("astatus").textContent="ה-AI חושב... זה יכול לקחת עד דקה.";$("aans").style.display="none";
  var ctl=new AbortController(),to=setTimeout(function(){ctl.abort()},110000);
  fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",question:q+"\n(הערה: קטעים מפעולות המאגר מצורפים כבר ב-excerpts. אל תבקש מהמשתמש לשלוח את המאגר.)",draft:t,excerpts:retrieve(q+" "+t.slice(-600))}),signal:ctl.signal})
@@ -144,16 +150,35 @@ $("ask").addEventListener("click",function(){
  .catch(function(e){$("astatus").className="status err";$("astatus").textContent=e&&e.name==="AbortError"?"ה-AI לא ענה בזמן. נסו שוב.":"אין חיבור ל-AI כרגע."})
  .then(function(){clearTimeout(to);btn.disabled=false})});
 
-var READY=null;
-function loadReady(){return fetch("assets/ready-activities.json").then(function(r){return r.json()}).then(function(d){READY=d})}
-var STOP={"פעולה":1,"פעולות":1,"מוכנה":1,"מוכנות":1,"תן":1,"לי":1,"תשלח":1,"שלח":1,"אני":1,"רוצה":1,"על":1,"של":1,"עם":1,"את":1,"אחת":1,"בבקשה":1,"תכתוב":1,"תביא":1,"הצע":1,"תציע":1};
-function wantsReady(q){return /(פעולה|פעולות)\s*(מוכנה|מוכנות|מוכן|גמורה|מהמאגר)|(תן|תשלח|שלח|תביא|תכתוב|תציע|הצע|רוצה|צריך)\s*(לי\s*)?(פעולה|רעיון לפעולה)/.test(q)}
+var READY=null,readyPromise=null;
+function loadReady(){
+ if(READY)return Promise.resolve(READY);
+ if(readyPromise)return readyPromise;
+ readyPromise=fetch("assets/ready-activities.json").then(function(r){if(!r.ok)throw new Error("archive_load");return r.json()}).then(function(d){
+  if(!Array.isArray(d)||!d.length)throw new Error("archive_empty");READY=d;return d
+ }).catch(function(e){readyPromise=null;throw e});return readyPromise
+}
+// Request words are not subjects. Keep topic matching separate from request intent.
+function readyWords(q){return q.toLowerCase().replace(/[\u0591-\u05c7]/g,"").match(/[\u05d0-\u05eaa-z0-9]+/g)||[]}
+var READY_STOP={};
+("פעולה פעולות פעילות מוכנה מוכנות מוכן מוכנים מלאה מלאות שלמה שלמות גמורה גמורות מהמאגר מהארכיון מאגר המאגר ארכיון הארכיון תן תני תתן תתני לי לנו תשלח תשלחי שלח שלחי אני אנחנו רוצה רוצים צריך צריכה צריכים על של עם את אחת בבקשה תכתוב תכתבי תביא תביאי תכין תכיני הכן הכיני להכין תציע תציעי הצע תמצא תמצאי מצא למצוא חפש תחפש תחפשי תבחר תבחרי בחר לבחור אפשר לקבל אשמח לקבל שתכין שתכיני שתשלח שתשלחי שתביא שתביאי שתמצא שתמצאי שתכתוב שתכתבי שתיתן שתתן שתתני שתבחר שתבחרי יכול יכולה אתה את יש לך בשבילי עבורי בבקשה היי שלום אחי האם איזו איזה כלשהי כלשהו כל שהוא שהיא לא משנה הנושא נושא בנושא לגבי מוכנות").split(/\s+/).forEach(function(w){READY_STOP[w]=1});
+function wantsReady(q){
+ var w=readyWords(q),s=w.join(" ");
+ if(!/(?:^| )(?:פעולה|פעולות|פעילות)(?: |$)/.test(s))return false;
+ return /(?:^| )(?:מוכנה|מוכנות|מלאה|מלאות|שלמה|שלמות|גמורה|גמורות|מהמאגר|מהארכיון)(?: |$)/.test(s)||/(?:^| )(?:תן|תני|תתן|תתני|תשלח|תשלחי|שלח|שלחי|תביא|תביאי|תכין|תכיני|תכתוב|תכתבי|תמצא|תמצאי|תבחר|תבחרי|חפש|תחפש|תחפשי|רוצה|צריך|צריכה|לקבל|שתכין|שתכיני|שתמצא|שתמצאי|שתביא|שתביאי)(?: |$)/.test(s)
+}
+function readyTopic(q){
+ var w=readyWords(q),marker=-1;
+ w.forEach(function(x,i){if(x==="על"||x==="בנושא"||x==="לגבי")marker=i});
+ if(marker>=0)w=w.slice(marker+1);
+ return w.filter(function(x){return !READY_STOP[x]})
+}
 function pickReady(q){
- var qs=tok((q.match(/[\u0590-\u05ffa-z0-9]+/gi)||[]).filter(function(w){return !STOP[w]}).join(" "));
+ var qs=Array.from(new Set(tok(readyTopic(q).join(" "))));
  if(!qs.length)return{r:READY[Math.floor(Math.random()*READY.length)],matched:true,topic:false};
  var best=null,bs=0;
  READY.forEach(function(r){var tt=tok(r.title),t=tok(r.title+" "+r.text),tf={};t.forEach(function(w){tf[w]=(tf[w]||0)+1});var s=0,hit=0,th=0;qs.forEach(function(w){if(tf[w]){hit++;s+=1+Math.log(tf[w])}if(tt.indexOf(w)>=0){th++;s+=4}});
-  var ok=th>0||hit>=Math.max(1,Math.ceil(qs.length*0.6));if(ok&&s>bs){bs=s;best=r}});
+  var ok=hit===qs.length;if(ok&&s>bs){bs=s;best=r}});
  return best?{r:best,matched:true,topic:true}:{r:null,matched:false,topic:true}}
 function showReady(q){
  var p=pickReady(q),r=p.r;
