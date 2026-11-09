@@ -21,13 +21,12 @@ h1.title{margin:26px 0 6px;font-size:34px;font-weight:900;color:#ff2d2d;text-sha
 .turn b{color:#ff2d2d}
 #boardWrap{position:relative;touch-action:manipulation}
 table.board{border-collapse:collapse;border:4px solid #4a2c12;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
-td.sq{width:11.5vw;height:11.5vw;max-width:62px;max-height:62px;position:relative}
+td.sq{width:11.5vmin;height:11.5vmin;position:relative}
 td.lt{background:#e8cf9f}td.dk{background:#7a4a22}
 td.sel{outline:4px solid #ffd02e;outline-offset:-4px}
 td.dot::after{content:'';position:absolute;left:50%;top:50%;width:34%;height:34%;transform:translate(-50%,-50%);border-radius:50%;background:rgba(20,255,120,.75);box-shadow:0 0 8px rgba(20,255,120,.8)}
 td.cap::after{background:rgba(255,60,60,.85);box-shadow:0 0 10px rgba(255,60,60,.9)}
-.pc{position:absolute;left:7%;top:7%;width:86%;height:86%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:5.4vw;transition:left .18s,top .18s;pointer-events:none}
-@media(min-width:560px){.pc{font-size:30px}}
+.pc{position:absolute;left:7%;top:7%;width:86%;height:86%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:5vmin;transition:left .18s,top .18s;pointer-events:none}
 .pc.r{background:radial-gradient(circle at 35% 30%,#ff7a6b,#d41e0f 60%,#8f0f05);border:3px solid #300;color:#fff;text-shadow:0 1px 2px #000}
 .pc.w{background:radial-gradient(circle at 35% 30%,#fff,#cfcfcf 60%,#8f8f8f);border:3px solid #222;color:#333}
 .pc.k::after{content:'♛';font-size:70%}
