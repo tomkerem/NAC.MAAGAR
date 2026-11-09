@@ -59,13 +59,14 @@ ul.sug li{margin:6px 0}
 
 <div class="box" id="askbox">
 <h2>צריכים עזרה?</h2>
-<p class="small">שואלים את ה-AI חופשי על הפעולה שלכם, למשל "תציע משחק פתיחה", "רעיון להפעלה שנייה" או "אני תקוע בסיום". התשובה מופיעה כאן למטה ולא משנה את הטקסט שכתבתם.</p>
+<p class="small">שואלים את ה-AI חופשי על הפעולה שלכם, למשל "תציע משחק פתיחה", "רעיון להפעלה שנייה" או "אני תקוע בסיום". אפשר גם לבקש "תן לי פעולה מוכנה" (אפשר עם נושא, למשל "פעולה מוכנה על כבוד"), וה-AI שולף אותה מהמאגר לבד בלי שצריך לשלוח כלום. התשובה מופיעה כאן למטה ולא משנה את הטקסט שכתבתם.</p>
 <textarea id="q" style="min-height:80px" placeholder="מה תרצו לשאול?"></textarea>
 <button id="ask">שאלו את ה-AI</button>
 <div class="status" id="astatus"></div>
 <div id="aans" style="display:none;margin-top:10px;line-height:1.6;white-space:pre-wrap"></div>
 </div>
 
+<p class="small"><a href="ready.html" style="color:red">כל הפעולות המוכנות במאגר</a></p>
 <div class="box" id="res" style="display:none"><h2>משוב</h2><div id="resbody"></div></div>
 
 
@@ -131,9 +132,10 @@ $("go").addEventListener("click",function(){
 $("ask").addEventListener("click",function(){
  var q=$("q").value.trim(),t=$("draft").value,u=update();
  if(q.length<3){$("astatus").className="status err";$("astatus").textContent="כותבים שאלה קצרה קודם.";return}
+ if(READY&&wantsReady(q)){showReady(q);return}
  var btn=$("ask");btn.disabled=true;$("astatus").className="status";$("astatus").textContent="ה-AI חושב... זה יכול לקחת עד דקה.";$("aans").style.display="none";
  var ctl=new AbortController(),to=setTimeout(function(){ctl.abort()},110000);
- fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",question:q,draft:t,excerpts:u.ex}),signal:ctl.signal})
+ fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",question:q+"\n(הערה: קטעים מפעולות המאגר מצורפים כבר ב-excerpts. אל תבקש מהמשתמש לשלוח את המאגר.)",draft:t,excerpts:retrieve(q+" "+t.slice(-600))}),signal:ctl.signal})
  .then(function(r){return r.json()})
  .then(function(j){
   if(!j.ok){$("astatus").className="status err";$("astatus").textContent=ERR[j.error]||"משהו השתבש, נסו שוב.";return}
@@ -141,6 +143,25 @@ $("ask").addEventListener("click",function(){
  })
  .catch(function(e){$("astatus").className="status err";$("astatus").textContent=e&&e.name==="AbortError"?"ה-AI לא ענה בזמן. נסו שוב.":"אין חיבור ל-AI כרגע."})
  .then(function(){clearTimeout(to);btn.disabled=false})});
+
+var READY=null;
+function loadReady(){return fetch("assets/ready-activities.json").then(function(r){return r.json()}).then(function(d){READY=d})}
+var STOP={"פעולה":1,"פעולות":1,"מוכנה":1,"מוכנות":1,"תן":1,"לי":1,"תשלח":1,"שלח":1,"אני":1,"רוצה":1,"על":1,"של":1,"עם":1,"את":1,"אחת":1,"בבקשה":1,"תכתוב":1,"תביא":1,"הצע":1,"תציע":1};
+function wantsReady(q){return /(פעולה|פעולות)\s*(מוכנה|מוכנות|מוכן|גמורה|מהמאגר)|(תן|תשלח|שלח|תביא|תכתוב|תציע|הצע|רוצה|צריך)\s*(לי\s*)?(פעולה|רעיון לפעולה)/.test(q)}
+function pickReady(q){
+ var qs=tok(q).filter(function(w){return !STOP[w]}),best=null,bs=0,cand=[];
+ READY.forEach(function(r){var t=tok(r.title+" "+r.text),tf={};t.forEach(function(w){tf[w]=(tf[w]||0)+1});var s=0;qs.forEach(function(w){if(tf[w])s+=1+Math.log(tf[w])+(tok(r.title).indexOf(w)>=0?3:0)});cand.push({r:r,s:s});if(s>bs){bs=s;best=r}});
+ if(best)return{r:best,matched:true};
+ return{r:READY[Math.floor(Math.random()*READY.length)],matched:false}}
+function showReady(q){
+ var p=pickReady(q),r=p.r;
+ $("astatus").className="status good";$("astatus").textContent=p.matched?"מצאתי פעולה מוכנה מהמאגר:":"לא ציינת נושא, הנה פעולה מוכנה מהמאגר:";
+ var a=$("aans");a.style.display="block";a.textContent="";
+ var h=document.createElement("b");h.textContent=r.title;a.appendChild(h);
+ var pre=document.createElement("div");pre.style.cssText="white-space:pre-wrap;margin-top:8px";pre.textContent=r.text;a.appendChild(pre);
+ var l=document.createElement("a");l.href=r.file;l.target="_blank";l.textContent="פתיחת ה-PDF";l.style.cssText="color:red;display:inline-block;margin:10px 12px 0 0";a.appendChild(l);
+ var m=document.createElement("a");m.href="ready.html";m.textContent="עוד פעולות מוכנות";m.style.cssText="color:red;display:inline-block;margin:10px 0 0 0";a.appendChild(m)}
+loadReady().catch(function(){});
 loadIndex().catch(function(){$("exlist").textContent="אינדקס המאגר לא נטען."});
 </script>
 </body>
