@@ -889,9 +889,15 @@ GAMES[6].build=function(st){
   for(var k=0;k<N;k++){pts[k][0]=xL+(pts[k][0]-mnX)/(mxX-mnX)*(xR-xL);pts[k][1]=yT+(pts[k][1]-mnY)/(mxY-mnY)*(yB-yT);}
   var clearR=59+Math.min(W,H)*0.115/2+14;
   var cors=[[69,117],[W-69,117],[69,H-71],[W-69,H-71]];
-  for(var k=0;k<N;k++)for(var c=0;c<4;c++){
-    var cdx=pts[k][0]-cors[c][0],cdy=pts[k][1]-cors[c][1],cdd=Math.sqrt(cdx*cdx+cdy*cdy);
-    if(cdd<clearR&&cdd>0.01){pts[k][0]=cors[c][0]+cdx/cdd*clearR;pts[k][1]=cors[c][1]+cdy/cdd*clearR;}
+  var cx2=W/2,cy2=(yT+yB)/2;
+  for(var it=0;it<30;it++){
+    var bad=false;
+    for(var k=0;k<N&&!bad;k++)for(var c=0;c<4;c++){
+      var cdx=pts[k][0]-cors[c][0],cdy=pts[k][1]-cors[c][1];
+      if(cdx*cdx+cdy*cdy<clearR*clearR){bad=true;break;}
+    }
+    if(!bad)break;
+    for(var k=0;k<N;k++){pts[k][0]=cx2+(pts[k][0]-cx2)*0.97;pts[k][1]=cy2+(pts[k][1]-cy2)*0.97;}
   }
   for(var k=1;k<=N;k++){var a=pts[k-1],b=pts[k%N];cum.push(cum[k-1]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
   this.pts=pts;this.cum=cum;this.N=N;this.total=cum[N];
