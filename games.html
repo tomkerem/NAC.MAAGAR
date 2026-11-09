@@ -1375,7 +1375,7 @@ GAMES[10].build=function(st){
     var sx=fx+(pc.x<W/2?56:fw-56),sy=fy+(pc.y<H/2?56:fh-56);
     var bel=document.createElement('div');
     bel.style.cssText='position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:'+COLORS[i]+';border:2.5px solid #0a0a0a;box-shadow:0 2px 5px rgba(0,0,0,.5);z-index:9;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:'+(COLORS[i]==='#ffd02e'||COLORS[i]==='#f5f5f5'?'#111':'#fff')+';will-change:transform';
-    bel.textContent=(i+1);st.appendChild(bel);
+    bel.textContent=(i+1);bel.style.transform='translate('+sx+'px,'+sy+'px)';st.appendChild(bel);
     var ael=document.createElement('div');
     ael.style.cssText='position:absolute;left:0;top:0;height:0;width:0;z-index:8;visibility:hidden;pointer-events:none;will-change:transform';
     ael.innerHTML='<div class="gArrLine" style="position:absolute;left:14px;top:-4px;height:8px;width:60px;border-radius:4px;background:linear-gradient(90deg,'+COLORS[i]+',#fff);box-shadow:0 0 8px rgba(0,0,0,.4)"></div>'
@@ -1510,6 +1510,7 @@ GAMES[11].build=function(st){
     kel.style.cssText='position:absolute;left:0;top:0;width:54px;height:54px;margin:-27px 0 0 -27px;z-index:8;pointer-events:none;will-change:transform';
     kel.innerHTML=bullTop(COLORS[i]);
     kel.firstChild.style.width='100%';kel.firstChild.style.height='100%';
+    kel.style.transform='translate('+kx+'px,'+ky+'px)';
     st.appendChild(kel);
     this.kick.push({x:kx,y:ky,sx:kx,sy:ky,vx:0,vy:0,dash:0,cd:0,el:kel});
   }
@@ -1654,7 +1655,9 @@ GAMES[12].build=function(st){
     var oel=document.createElement('div');
     oel.style.cssText='position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 55%,#c9c9c9);border:2.5px solid #333;box-shadow:0 2px 6px rgba(0,0,0,.4);z-index:8;will-change:transform';
     st.appendChild(oel);
-    this.rings.push({x:rx,y:ry,r:ringR,a:Math.random()*Math.PI*2,w:(1.3+i*0.22)*(i%2?1:-1),st:'orbit',vx:0,vy:0,ox:0,oy:0,wait:0,el:oel,chip:chip});
+    var ra0=Math.random()*Math.PI*2;
+    oel.style.transform='translate('+(rx+Math.cos(ra0)*ringR)+'px,'+(ry+Math.sin(ra0)*ringR)+'px)';
+    this.rings.push({x:rx,y:ry,r:ringR,a:ra0,w:(1.3+i*0.22)*(i%2?1:-1),st:'orbit',vx:0,vy:0,ox:0,oy:0,wait:0,el:oel,chip:chip});
     this.score.push(0);
   }
   var g=this;
