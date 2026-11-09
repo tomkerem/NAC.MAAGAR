@@ -1525,6 +1525,7 @@ GAMES[11].build=function(st){
   this.cL=cL;this.cR=cR;
   var sb=document.createElement('div');
   sb.style.cssText='position:absolute;left:50%;bottom:10px;transform:translateX(-50%);padding:6px 20px;border-radius:14px;background:rgba(2,12,5,.9);border:3px solid #f2fff4;z-index:20;font-size:26px;font-weight:900;letter-spacing:1px';
+  sb.dir='ltr';
   sb.innerHTML='<span style="color:'+cL+'" id="scL">0</span> <span style="color:#fff">:</span> <span style="color:'+cR+'" id="scR">0</span>';
   st.appendChild(sb);
   this.goalMsg=document.createElement('div');
