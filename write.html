@@ -149,17 +149,20 @@ function loadReady(){return fetch("assets/ready-activities.json").then(function(
 var STOP={"פעולה":1,"פעולות":1,"מוכנה":1,"מוכנות":1,"תן":1,"לי":1,"תשלח":1,"שלח":1,"אני":1,"רוצה":1,"על":1,"של":1,"עם":1,"את":1,"אחת":1,"בבקשה":1,"תכתוב":1,"תביא":1,"הצע":1,"תציע":1};
 function wantsReady(q){return /(פעולה|פעולות)\s*(מוכנה|מוכנות|מוכן|גמורה|מהמאגר)|(תן|תשלח|שלח|תביא|תכתוב|תציע|הצע|רוצה|צריך)\s*(לי\s*)?(פעולה|רעיון לפעולה)/.test(q)}
 function pickReady(q){
- var qs=tok(q).filter(function(w){return !STOP[w]}),best=null,bs=0,cand=[];
- READY.forEach(function(r){var t=tok(r.title+" "+r.text),tf={};t.forEach(function(w){tf[w]=(tf[w]||0)+1});var s=0;qs.forEach(function(w){if(tf[w])s+=1+Math.log(tf[w])+(tok(r.title).indexOf(w)>=0?3:0)});cand.push({r:r,s:s});if(s>bs){bs=s;best=r}});
- if(best)return{r:best,matched:true};
- return{r:READY[Math.floor(Math.random()*READY.length)],matched:false}}
+ var qs=tok((q.match(/[\u0590-\u05ffa-z0-9]+/gi)||[]).filter(function(w){return !STOP[w]}).join(" "));
+ if(!qs.length)return{r:READY[Math.floor(Math.random()*READY.length)],matched:true,topic:false};
+ var best=null,bs=0;
+ READY.forEach(function(r){var tt=tok(r.title),t=tok(r.title+" "+r.text),tf={};t.forEach(function(w){tf[w]=(tf[w]||0)+1});var s=0,hit=0,th=0;qs.forEach(function(w){if(tf[w]){hit++;s+=1+Math.log(tf[w])}if(tt.indexOf(w)>=0){th++;s+=4}});
+  var ok=th>0||hit>=Math.max(1,Math.ceil(qs.length*0.6));if(ok&&s>bs){bs=s;best=r}});
+ return best?{r:best,matched:true,topic:true}:{r:null,matched:false,topic:true}}
 function showReady(q){
  var p=pickReady(q),r=p.r;
- $("astatus").className="status good";$("astatus").textContent=p.matched?"מצאתי פעולה מוכנה מהמאגר:":"לא ציינת נושא, הנה פעולה מוכנה מהמאגר:";
+ if(!p.matched){$("astatus").className="status err";$("astatus").textContent="לא מצאתי במאגר פעולה מוכנה בנושא הזה. אפשר לבקש נושא אחר או לראות את כל הפעולות המוכנות.";var a0=$("aans");a0.style.display="block";a0.textContent="";var m0=document.createElement("a");m0.href="ready.html";m0.textContent="כל הפעולות המוכנות";m0.style.color="red";a0.appendChild(m0);return}
+ $("astatus").className="status good";$("astatus").textContent=p.topic?"מצאתי פעולה מוכנה מהמאגר:":"לא ציינת נושא, הנה פעולה מוכנה מהמאגר:";
  var a=$("aans");a.style.display="block";a.textContent="";
  var h=document.createElement("b");h.textContent=r.title;a.appendChild(h);
  var pre=document.createElement("div");pre.style.cssText="white-space:pre-wrap;margin-top:8px";pre.textContent=r.text;a.appendChild(pre);
- var l=document.createElement("a");l.href=r.file;l.target="_blank";l.textContent="פתיחת ה-PDF";l.style.cssText="color:red;display:inline-block;margin:10px 12px 0 0";a.appendChild(l);
+ var l=document.createElement("a");l.href=r.file;l.target="_blank";l.textContent=r.src==="new"?"פתיחת ה-PDF":"פתיחת הקובץ המקורי";l.style.cssText="color:red;display:inline-block;margin:10px 12px 0 0";a.appendChild(l);
  var m=document.createElement("a");m.href="ready.html";m.textContent="עוד פעולות מוכנות";m.style.cssText="color:red;display:inline-block;margin:10px 0 0 0";a.appendChild(m)}
 loadReady().catch(function(){});
 loadIndex().catch(function(){$("exlist").textContent="אינדקס המאגר לא נטען."});
