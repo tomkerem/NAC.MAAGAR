@@ -131,7 +131,7 @@
     <div class="status" id="fStatus"></div>
     <div class="code-show" id="codeShow" style="display:none">
         המודעה פורסמה! קוד המחיקה שלך:<br><b id="theCode"></b><br>
-        <span class="small">שמור את הקוד (צלם מסך) - רק איתו אפשר למחוק את המודעה.</span>
+        <span class="small">שמור את הקוד (צלם מסך) - רק איתו אפשר למחוק את המודעה. המודעה מופיעה אצלך כבר עכשיו, ואצל כולם תוך דקה בערך.</span>
     </div>
 </div>
 
@@ -146,6 +146,7 @@
 var API = "https://nac-market.tomkerem42.workers.dev";
 var $ = function(i){ return document.getElementById(i); };
 var adminToken = sessionStorage.getItem("mktAdmin") || "";
+var lastImg = null;
 
 function esc(s){ var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
@@ -185,6 +186,7 @@ $("publish").addEventListener("click", function(){
     if (!$("fAgree").checked) { st.className = "status err"; st.textContent = "צריך לאשר שהמודעה תהיה גלויה לכולם"; return; }
     this.disabled = true; st.textContent = "מעלה...";
     compressImage(f).then(function(dataUrl){
+        lastImg = dataUrl;
         return fetch(API + "/api/listing", {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -199,7 +201,10 @@ $("publish").addEventListener("click", function(){
             st.className = "status ok"; st.textContent = "";
             $("theCode").textContent = res.j.code;
             $("codeShow").style.display = "block";
-            loadListings();
+            var em = document.querySelector("#grid .empty"); if (em) em.remove();
+            $("lStatus").textContent = "";
+            $("grid").prepend(makeCard({ id: res.j.id, title: $("fTitle").value, price: $("fPrice").value, desc: $("fDesc").value, phone: $("fPhone").value.replace(/[\s\-+]/g,"").replace(/^972/,"0") }, lastImg));
+            setTimeout(loadListings, 30000);
         } else {
             st.className = "status err";
             st.textContent = (res.j && res.j.error) || "שגיאה בפרסום, נסו שוב";
@@ -215,6 +220,23 @@ function waLink(phone){
     return "https://wa.me/" + p;
 }
 
+function makeCard(l, localImg){
+    var c = document.createElement("div"); c.className = "card";
+    c.innerHTML =
+        '<img loading="lazy" src="' + (localImg || (API + '/api/img?id=' + l.id)) + '" alt="">' +
+        '<div class="t">' + esc(l.title) + '</div>' +
+        '<div class="p">' + esc(l.price) + '</div>' +
+        (l.desc ? '<div class="d">' + esc(l.desc) + '</div>' : '') +
+        '<div class="actions">' +
+        '<a href="tel:' + esc(l.phone) + '">📞 ' + esc(l.phone) + '</a>' +
+        '<button data-id="' + l.id + '">מחק</button></div>';
+    c.querySelector("img").addEventListener("click", function(){
+        window.open(waLink(l.phone), "_blank");
+    });
+    c.querySelector("button").addEventListener("click", function(){ del(l.id); });
+    return c;
+}
+
 function loadListings(){
     $("lStatus").className = "status"; $("lStatus").textContent = "טוען מודעות...";
     fetch(API + "/api/listings").then(function(r){ return r.json(); }).then(function(d){
@@ -225,22 +247,7 @@ function loadListings(){
             return;
         }
         $("lStatus").textContent = "";
-        d.listings.forEach(function(l){
-            var c = document.createElement("div"); c.className = "card";
-            c.innerHTML =
-                '<img loading="lazy" src="' + API + '/api/img?id=' + l.id + '" alt="">' +
-                '<div class="t">' + esc(l.title) + '</div>' +
-                '<div class="p">' + esc(l.price) + '</div>' +
-                (l.desc ? '<div class="d">' + esc(l.desc) + '</div>' : '') +
-                '<div class="actions">' +
-                '<a href="tel:' + esc(l.phone) + '">📞 ' + esc(l.phone) + '</a>' +
-                '<button data-id="' + l.id + '">מחק</button></div>';
-            c.querySelector("img").addEventListener("click", function(){
-                window.open(waLink(l.phone), "_blank");
-            });
-            c.querySelector("button").addEventListener("click", function(){ del(l.id); });
-            g.appendChild(c);
-        });
+        d.listings.forEach(function(l){ g.appendChild(makeCard(l)); });
     }).catch(function(){
         $("lStatus").className = "status err"; $("lStatus").textContent = "לא הצלחנו לטעון. נסו רענן.";
     });
