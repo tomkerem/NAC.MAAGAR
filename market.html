@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - מאגר הנשיא</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #000 url('bg-home.jpg?v=2') center/cover no-repeat fixed;
+            color: red;
+            text-align: center;
+            font-family: 'Secular One', sans-serif;
+            padding: 30px 10px;
+            margin: 0;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: -1;
+        }
+        h1 { margin-bottom: 4px; }
+        .sub { margin-top: 0; opacity: .85; }
+        .dot { display: inline-block; width: 18px; height: 18px; border-radius: 50%; vertical-align: -3px; margin: 0 4px; }
+        .dot-red { background-color: red; }
+        .dot-black { background-color: black; border: 2px solid red; box-sizing: border-box; }
+
+        .btn {
+            display: inline-block;
+            background: red; color: #000;
+            border: 2px solid red; border-radius: 10px;
+            font-family: 'Secular One', sans-serif; font-size: 20px;
+            padding: 10px 26px; margin: 12px 4px; cursor: pointer;
+        }
+        .btn.ghost { background: #000; color: red; }
+        .btn:active { opacity: .8; }
+
+        .box {
+            border: 2px solid red; border-radius: 12px;
+            background: rgba(0,0,0,.85);
+            max-width: 600px; margin: 16px auto; padding: 18px;
+            text-align: right;
+        }
+        .box h2 { text-align: center; margin-top: 0; }
+        label { display: block; margin: 12px 0 4px; font-size: 17px; }
+        input[type=text], input[type=tel], textarea {
+            width: 100%; box-sizing: border-box;
+            background: #111; color: #fff; border: 2px solid red; border-radius: 8px;
+            font-family: 'Secular One', sans-serif; font-size: 17px; padding: 8px 10px;
+        }
+        textarea { min-height: 70px; resize: vertical; }
+        input[type=file] { width: 100%; color: #fff; margin-top: 4px; }
+        .agree { display: flex; gap: 8px; align-items: flex-start; margin-top: 14px; font-size: 15px; line-height: 1.5; }
+        .agree input { margin-top: 4px; transform: scale(1.4); }
+        .status { text-align: center; min-height: 22px; margin-top: 8px; font-size: 16px; }
+        .status.err { color: #ff8080; }
+        .status.ok { color: #7dff7d; }
+        .code-show {
+            text-align: center; font-size: 20px; margin-top: 10px;
+            border: 2px dashed red; border-radius: 10px; padding: 12px;
+        }
+        .code-show b { font-size: 30px; letter-spacing: 4px; }
+        #preview { max-width: 100%; border-radius: 8px; margin-top: 8px; display: none; }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 14px; max-width: 700px; margin: 20px auto;
+        }
+        .card {
+            border: 2px solid red; border-radius: 12px; overflow: hidden;
+            background: rgba(0,0,0,.85); text-align: center;
+            animation: rise .5s ease-out both;
+        }
+        .card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: #111; cursor: pointer; }
+        .card .t { font-size: 18px; padding: 8px 8px 0; }
+        .card .p { font-size: 17px; padding: 2px 8px; }
+        .card .d { font-size: 14px; color: #ff9a9a; padding: 0 8px 6px; white-space: pre-wrap; }
+        .card .actions { display: flex; flex-direction: column; border-top: 2px solid red; }
+        .card .actions a, .card .actions button {
+            display: block; width: 100%; box-sizing: border-box; padding: 10px 4px;
+            font-family: 'Secular One', sans-serif; font-size: 17px;
+            background: #000; color: red; border: none; cursor: pointer; text-decoration: none;
+        }
+        .card .actions a { border-bottom: 2px solid red; direction: ltr; }
+        .card .actions a:active, .card .actions button:active { background: red; color: #000; }
+
+        .back-btn {
+            display: inline-block; margin-top: 26px; color: red; text-decoration: none;
+            font-size: 18px; border: 2px solid red; padding: 10px 20px; border-radius: 8px;
+        }
+        .back-btn:hover { color: black; background-color: red; }
+        .empty { opacity: .8; margin: 30px 0; font-size: 19px; }
+        .small { font-size: 13px; opacity: .7; text-align: center; }
+
+        .tabs { margin: 4px auto 0; max-width: 640px; display: flex; gap: 10px; justify-content: center; }
+        .tab { flex: 1; max-width: 260px; background: #000; color: red; border: 2px solid red; border-radius: 10px; font-family: 'Secular One', sans-serif; font-size: 19px; padding: 9px 4px; cursor: pointer; }
+        .tab.active { background: red; color: #000; }
+        .card .badge { display: inline-block; margin-top: 10px; font-size: 15px; border: 2px solid red; border-radius: 20px; padding: 2px 14px; color: red; }
+        @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+        h1, .sub { animation: rise .55s ease-out both; }
+        .sub { animation-delay: .15s; }
+        @media (prefers-reduced-motion: reduce) { h1, .sub, .card { animation: none; } }
+        @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<h1>Marketplace <span class="dot dot-red"></span><span class="dot dot-black"></span></h1>
+<p class="sub">קונים ומוכרים בתוך השבט</p>
+
+<button class="btn" id="openForm">פרסם מודעה +</button>
+<button class="btn ghost" id="refresh">רענן</button>
+
+<div class="tabs">
+    <button class="tab active" id="tabSell">מוכרים</button>
+    <button class="tab" id="tabWant">מחפשים לקנות</button>
+</div>
+
+<div class="box" id="formBox" style="display:none">
+    <h2 id="formTitle">מודעת מכירה חדשה</h2>
+    <div id="sellOnly">
+    <label>תמונה של המוצר *</label>
+    <input type="file" id="fImg" accept="image/*" style="display:none">
+    <button type="button" class="btn ghost" id="pickImg" style="display:block;width:100%;box-sizing:border-box;margin:4px 0">📷 בחר תמונה</button>
+    <div class="small" id="imgName" style="margin:2px 0 6px"></div>
+    <img id="preview" alt="">
+    </div>
+    <label id="lTitle">שם המוצר *</label>
+    <input type="text" id="fTitle" maxlength="60" placeholder='למשל: חולצת שבט מידה M'>
+    <div id="sellOnly2">
+    <label>מחיר *</label>
+    <input type="text" id="fPrice" maxlength="30" placeholder='למשל: 40 ש"ח'>
+    </div>
+    <label id="lPhone">טלפון ליצירת קשר *</label>
+    <input type="tel" id="fPhone" placeholder="0501234567" style="direction:ltr;text-align:left">
+    <label>תיאור (לא חובה)</label>
+    <textarea id="fDesc" maxlength="300" placeholder="מצב, גודל, איפה לאסוף..."></textarea>
+    <label class="agree">
+        <input type="checkbox" id="fAgree">
+        <span id="agreeText">אני מבין/ת שהמודעה, התמונה ומספר הטלפון יפורסמו באתר ויהיו גלויים לכל גולש באינטרנט, לא רק לחברי השבט.</span>
+    </label>
+    <input type="text" id="fHp" style="display:none" tabindex="-1" autocomplete="off">
+    <div style="text-align:center"><button class="btn" id="publish">פרסם!</button></div>
+    <div class="status" id="fStatus"></div>
+    <div class="code-show" id="codeShow" style="display:none">
+        המודעה נשלחה לאישור!<br>
+        <span class="small">היא תופיע באתר אחרי אישור מנהל האתר. רק מנהל האתר יכול למחוק מודעות.</span>
+    </div>
+</div>
+
+<div class="status" id="lStatus">טוען מודעות...</div>
+<div class="grid" id="grid"></div>
+
+<p class="small"><a href="#" id="adminLink" style="color:red;opacity:.6">ניהול</a></p>
+
+<div class="box" id="adminBox" style="display:none;max-width:420px">
+    <h2>כניסת מנהל</h2>
+    <label for="adminPass">סיסמת ניהול</label>
+    <input type="password" id="adminPass" autocomplete="current-password" style="width:100%;box-sizing:border-box;background:#111;color:#fff;border:2px solid red;border-radius:8px;font-family:'Secular One',sans-serif;font-size:17px;padding:8px 10px">
+    <div style="text-align:center"><button class="btn" id="adminGo">כניסה</button></div>
+    <div class="status" id="adminStatus"></div>
+</div>
+
+<div class="box" id="pendingBox" style="display:none">
+    <h2>מודעות ממתינות לאישור</h2>
+    <div id="pendingList"></div>
+</div>
+
+<a class="back-btn" href="index.html">חזרה לדף הבית</a>
+
+<script>
+var API = "https://nac-market.tomkerem42.workers.dev";
+var $ = function(i){ return document.getElementById(i); };
+var adminToken = sessionStorage.getItem("mktAdmin") || "";
+var lastImg = null;
+var currentTab = "sell";
+
+function setTab(t){
+    currentTab = t;
+    $("tabSell").className = "tab" + (t === "sell" ? " active" : "");
+    $("tabWant").className = "tab" + (t === "want" ? " active" : "");
+    var sell = t === "sell";
+    $("sellOnly").style.display = sell ? "block" : "none";
+    $("sellOnly2").style.display = sell ? "block" : "none";
+    $("formTitle").textContent = sell ? "מודעת מכירה חדשה" : "מודעת חיפוש חדשה";
+    $("lTitle").textContent = sell ? "שם המוצר *" : "מה אתה מחפש? *";
+    $("lPhone").textContent = sell ? "טלפון ליצירת קשר *" : "הטלפון שלך - מי שיש לו את המוצר יוכל לכתוב לך *";
+    $("agreeText").textContent = sell ?
+        "אני מבין/ת שהמודעה, התמונה ומספר הטלפון יפורסמו באתר ויהיו גלויים לכל גולש באינטרנט, לא רק לחברי השבט." :
+        "אני מבין/ת שהמודעה ומספר הטלפון יפורסמו באתר ויהיו גלויים לכל גולש באינטרנט, לא רק לחברי השבט.";
+    loadListings();
+}
+$("tabSell").addEventListener("click", function(){ setTab("sell"); });
+$("tabWant").addEventListener("click", function(){ setTab("want"); });
+
+function esc(s){ var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+function compressImage(file){
+    return new Promise(function(res, rej){
+        var r = new FileReader();
+        r.onload = function(e){
+            var img = new Image();
+            img.onload = function(){
+                var max = 1000, w = img.width, h = img.height;
+                if (w > max || h > max) { var k = max / Math.max(w, h); w = Math.round(w*k); h = Math.round(h*k); }
+                var c = document.createElement("canvas"); c.width = w; c.height = h;
+                c.getContext("2d").drawImage(img, 0, 0, w, h);
+                res(c.toDataURL("image/jpeg", 0.78));
+            };
+            img.onerror = rej;
+            img.src = e.target.result;
+        };
+        r.onerror = rej;
+        r.readAsDataURL(file);
+    });
+}
+
+$("pickImg").addEventListener("click", function(){ $("fImg").click(); });
+$("fImg").addEventListener("change", function(){
+    var f = this.files[0]; if (!f) return;
+    $("imgName").textContent = "נבחרה: " + f.name;
+    compressImage(f).then(function(d){ $("preview").src = d; $("preview").style.display = "block"; $("pickImg").textContent = "📷 החלף תמונה"; });
+});
+
+$("openForm").addEventListener("click", function(){
+    var b = $("formBox"); b.style.display = b.style.display === "none" ? "block" : "none";
+});
+
+$("publish").addEventListener("click", function(){
+    var st = $("fStatus"); st.className = "status"; st.textContent = "";
+    var want = currentTab === "want";
+    var f = $("fImg").files[0];
+    if (!want && !f) { st.className = "status err"; st.textContent = "חובה לבחור תמונה"; return; }
+    if (!$("fAgree").checked) { st.className = "status err"; st.textContent = "צריך לאשר שהמודעה תהיה גלויה לכולם"; return; }
+    this.disabled = true; st.textContent = "מעלה...";
+    var start = want ? Promise.resolve(null) : compressImage(f);
+    start.then(function(dataUrl){
+        lastImg = dataUrl;
+        var body = {
+            type: currentTab,
+            title: $("fTitle").value,
+            phone: $("fPhone").value, desc: $("fDesc").value,
+            hp: $("fHp").value
+        };
+        if (!want) { body.price = $("fPrice").value; body.img = dataUrl; }
+        return fetch(API + "/api/listing", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); });
+    }).then(function(res){
+        $("publish").disabled = false;
+        if (res.ok && res.j.ok) {
+            st.className = "status ok"; st.textContent = "";
+            $("codeShow").style.display = "block";
+            $("formBox").scrollIntoView();
+        } else {
+            st.className = "status err";
+            st.textContent = (res.j && res.j.error) || "שגיאה בפרסום, נסו שוב";
+        }
+    }).catch(function(){
+        $("publish").disabled = false;
+        st.className = "status err"; st.textContent = "בעיית תקשורת, נסו שוב";
+    });
+});
+
+function waLink(phone){
+    var p = phone.replace(/^0/, "972");
+    return "https://wa.me/" + p;
+}
+
+function makeCard(l, localImg){
+    var want = l.type === "want";
+    var c = document.createElement("div"); c.className = "card";
+    c.innerHTML =
+        (want ? '<div class="badge">מחפש/ת לקנות</div>'
+              : '<img loading="lazy" src="' + (localImg || (API + '/api/img?id=' + l.id)) + '" alt="">') +
+        '<div class="t">' + esc(l.title) + '</div>' +
+        (want || !l.price ? '' : '<div class="p">' + esc(l.price) + '</div>') +
+        (l.desc ? '<div class="d">' + esc(l.desc) + '</div>' : '') +
+        '<div class="actions">' +
+        '<a href="tel:' + esc(l.phone) + '">📞 ' + esc(l.phone) + '</a>' +
+        (adminToken ? '<button data-id="' + l.id + '">מחק</button>' : '') + '</div>';
+    if (!want) {
+        c.querySelector("img").addEventListener("click", function(){
+            window.open(waLink(l.phone), "_blank");
+        });
+    }
+    var db = c.querySelector("button");
+    if (db) db.addEventListener("click", function(){ del(l.id); });
+    return c;
+}
+
+function loadListings(){
+    $("lStatus").className = "status"; $("lStatus").textContent = "טוען מודעות...";
+    fetch(API + "/api/listings", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(d){
+        var g = $("grid"); g.innerHTML = "";
+        var items = (d.listings || []).filter(function(l){ return (l.type === "want") === (currentTab === "want"); });
+        if (!items.length) {
+            $("lStatus").textContent = "";
+            g.innerHTML = '<p class="empty" style="grid-column:1/-1">' +
+                (currentTab === "want" ? "עוד אף אחד לא מחפש כלום - פרסמו מה שאתם מחפשים!" : "עוד אין מודעות - תהיו הראשונים לפרסם!") + '</p>';
+            return;
+        }
+        $("lStatus").textContent = "";
+        items.forEach(function(l){ g.appendChild(makeCard(l)); });
+    }).catch(function(){
+        $("lStatus").className = "status err"; $("lStatus").textContent = "לא הצלחנו לטעון. נסו רענן.";
+    });
+}
+
+function del(id){
+    if (!adminToken) return;
+    var headers = { "Content-Type": "application/json", "X-Admin-Token": adminToken };
+    var body = { id: id };
+    if (!confirm("בטוח למחוק את המודעה?")) return;
+    fetch(API + "/api/delete", { method: "POST", headers: headers, body: JSON.stringify(body) })
+    .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+        if (res.ok && res.j.ok) loadListings();
+        else alert((res.j && res.j.error) || "המחיקה נכשלה");
+    }).catch(function(){ alert("בעיית תקשורת"); });
+}
+
+$("refresh").addEventListener("click", loadListings);
+
+function loadPending(){
+    if (!adminToken) return;
+    fetch(API + "/api/pending", { headers: { "X-Admin-Token": adminToken }, cache: "no-store" })
+    .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+        if (!res.ok) {
+            if (res.j && res.j.error) $("adminStatus").textContent = res.j.error;
+            if (res.j && res.j.error && res.j.error.indexOf("הרשאה") > -1) {
+                adminToken = ""; sessionStorage.removeItem("mktAdmin");
+                $("pendingBox").style.display = "none"; $("adminBox").style.display = "block";
+            }
+            return;
+        }
+        var items = res.j.listings || [];
+        $("pendingBox").style.display = "block";
+        var pl = $("pendingList"); pl.innerHTML = "";
+        if (!items.length) { pl.innerHTML = '<p class="empty" style="margin:10px 0">אין מודעות ממתינות</p>'; return; }
+        items.forEach(function(l){
+            var c = makeCard(l);
+            var bar = document.createElement("div");
+            bar.className = "actions";
+            var ok = document.createElement("button"); ok.textContent = "אשר פרסום";
+            ok.addEventListener("click", function(){ moderate(l.id, "approve"); });
+            var no = document.createElement("button"); no.textContent = "דחה";
+            no.addEventListener("click", function(){ moderate(l.id, "reject"); });
+            bar.appendChild(ok); bar.appendChild(no);
+            c.appendChild(bar);
+            pl.appendChild(c);
+        });
+    }).catch(function(){});
+}
+
+function moderate(id, action){
+    fetch(API + "/api/moderate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Token": adminToken },
+        body: JSON.stringify({ id: id, action: action })
+    }).then(function(){ loadPending(); loadListings(); })
+    .catch(function(){ alert("בעיית תקשורת"); });
+}
+
+$("adminLink").addEventListener("click", function(e){
+    e.preventDefault();
+    if (adminToken) {
+        adminToken = ""; sessionStorage.removeItem("mktAdmin");
+        $("pendingBox").style.display = "none"; $("adminBox").style.display = "none";
+        loadListings(); alert("מצב ניהול כבוי"); return;
+    }
+    var b = $("adminBox"); b.style.display = b.style.display === "none" ? "block" : "none";
+});
+
+$("adminGo").addEventListener("click", function(){
+    var t = $("adminPass").value.trim();
+    if (!t) return;
+    adminToken = t; sessionStorage.setItem("mktAdmin", adminToken);
+    $("adminStatus").textContent = "";
+    $("adminBox").style.display = "none";
+    loadPending(); loadListings();
+});
+
+if (adminToken) { loadPending(); }
+
+loadListings();
+</script>
+</body>
+</html>
