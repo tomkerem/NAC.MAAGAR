@@ -79,12 +79,13 @@
         .card .t { font-size: 18px; padding: 8px 8px 0; }
         .card .p { font-size: 17px; padding: 2px 8px; }
         .card .d { font-size: 14px; color: #ff9a9a; padding: 0 8px 6px; white-space: pre-wrap; }
-        .card .actions { display: flex; border-top: 2px solid red; }
+        .card .actions { display: flex; flex-direction: column; border-top: 2px solid red; }
         .card .actions a, .card .actions button {
-            flex: 1; padding: 8px 0; font-family: 'Secular One', sans-serif; font-size: 16px;
+            display: block; width: 100%; box-sizing: border-box; padding: 10px 4px;
+            font-family: 'Secular One', sans-serif; font-size: 17px;
             background: #000; color: red; border: none; cursor: pointer; text-decoration: none;
         }
-        .card .actions a + button { border-right: 2px solid red; }
+        .card .actions a { border-bottom: 2px solid red; direction: ltr; }
         .card .actions a:active, .card .actions button:active { background: red; color: #000; }
 
         .back-btn {
