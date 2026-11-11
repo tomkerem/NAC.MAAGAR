@@ -283,14 +283,16 @@ function makeCard(l, localImg){
         (l.desc ? '<div class="d">' + esc(l.desc) + '</div>' : '') +
         '<div class="actions">' +
         '<a href="tel:' + esc(l.phone) + '">📞 ' + esc(l.phone) + '</a>' +
-        (adminToken ? '<button data-id="' + l.id + '">מחק</button>' : '') + '</div>';
+        (adminToken ? '<button class="editBtn">ערוך</button><button data-id="' + l.id + '">מחק</button>' : '') + '</div>';
     if (!want) {
         c.querySelector("img").addEventListener("click", function(){
             window.open(waLink(l.phone), "_blank");
         });
     }
-    var db = c.querySelector("button");
+    var db = c.querySelector("button[data-id]");
     if (db) db.addEventListener("click", function(){ del(l.id); });
+    var eb = c.querySelector(".editBtn");
+    if (eb) eb.addEventListener("click", function(){ startEdit(l, c); });
     return c;
 }
 
@@ -309,6 +311,52 @@ function loadListings(){
         items.forEach(function(l){ g.appendChild(makeCard(l)); });
     }).catch(function(){
         $("lStatus").className = "status err"; $("lStatus").textContent = "לא הצלחנו לטעון. נסו רענן.";
+    });
+}
+
+function startEdit(l, c){
+    if (!adminToken) return;
+    var want = l.type === "want";
+    c.innerHTML = "";
+    var box = document.createElement("div");
+    box.style.cssText = "display:flex;flex-direction:column;gap:6px;text-align:right";
+    function fld(label, val){
+        var lab = document.createElement("label"); lab.textContent = label; lab.className = "small";
+        var inp = document.createElement("input");
+        inp.value = val || "";
+        inp.style.cssText = "width:100%;box-sizing:border-box;background:#111;color:#fff;border:1px solid #555;border-radius:6px;font-family:inherit;font-size:15px;padding:6px 8px";
+        box.appendChild(lab); box.appendChild(inp);
+        return inp;
+    }
+    var t = fld(want ? "מה מחפשים" : "שם המוצר", l.title);
+    var p = want ? null : fld("מחיר", l.price);
+    var ph = fld("טלפון ליצירת קשר", l.phone);
+    var dlab = document.createElement("label"); dlab.textContent = "תיאור"; dlab.className = "small";
+    var d = document.createElement("textarea"); d.rows = 3; d.value = l.desc || "";
+    d.style.cssText = "width:100%;box-sizing:border-box;background:#111;color:#fff;border:1px solid #555;border-radius:6px;font-family:inherit;font-size:15px;padding:6px 8px";
+    box.appendChild(dlab); box.appendChild(d);
+    var st = document.createElement("div"); st.className = "status";
+    var bar = document.createElement("div"); bar.className = "actions";
+    var save = document.createElement("button"); save.textContent = "שמור שינויים";
+    var cancel = document.createElement("button"); cancel.textContent = "ביטול";
+    bar.appendChild(save); bar.appendChild(cancel);
+    box.appendChild(bar); box.appendChild(st);
+    c.appendChild(box);
+    cancel.addEventListener("click", function(){ loadListings(); loadPending(); });
+    save.addEventListener("click", function(){
+        save.disabled = true; st.className = "status"; st.textContent = "שומר...";
+        fetch(API + "/api/edit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Admin-Token": adminToken },
+            body: JSON.stringify({ id: l.id, title: t.value, price: p ? p.value : "", phone: ph.value, desc: d.value })
+        }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+        .then(function(res){
+            save.disabled = false;
+            if (res.ok && res.j.ok) { loadListings(); loadPending(); }
+            else { st.className = "status err"; st.textContent = (res.j && res.j.error) || "השמירה נכשלה"; }
+        }).catch(function(){
+            save.disabled = false; st.className = "status err"; st.textContent = "בעיית תקשורת";
+        });
     });
 }
 
