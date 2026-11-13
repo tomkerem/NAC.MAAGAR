@@ -225,8 +225,7 @@
         }
 
         .card-year {
-            font-s
-ize: 12px;
+            font-size: 12px;
             font-weight: 700;
             color: var(--accent-red);
             background: rgba(255, 42, 42, 0.12);
@@ -415,8 +414,7 @@ ize: 12px;
         { name: "הוקמן", year: 2024, colors: ["אדום", "צבע גוף", "צהוב"] },
         { name: "שימשון", year: 2024, colors: ["חום", "צבע גוף", "בורדו"] },
         { name: "ספיד פורס", year: 2024, colors: ["צהוב", "כחול", "לבן"] },
-        { name: "טרינטי", year: 2023, c
-olors: ["תכלת", "ירוק", "שחור", "חום"] },
+        { name: "טרינטי", year: 2023, colors: ["תכלת", "ירוק", "שחור", "חום"] },
         { name: "כלב דה מוגרסי", year: 2023, colors: ["לבן", "סגול", "חום"] },
         { name: "מגנוס אווויס", year: 2023, colors: ["אדום", "כחול", "צהוב", "שחור"] },
         { name: "קוודרו קורו", year: 2023, colors: ["אדום", "שחור", "בז'"] },
@@ -539,8 +537,7 @@ function toggleColor(color) {
         if (selectedColors.includes(color)) {
             selectedColors = selectedColors.filter(c => c !== color);
         } else {
-            if (selectedColors.
-length >= 3) return;
+            if (selectedColors.length >= 3) return;
             selectedColors.push(color);
         }
         document.getElementById('status-text').textContent = `נבחרו ${selectedColors.length} מתוך 3 צבעים`;
