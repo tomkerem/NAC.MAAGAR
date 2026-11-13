@@ -173,6 +173,28 @@
             background: rgba(255, 42, 42, 0.05);
         }
 
+        .back-container {
+            text-align: center;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 700;
+            border: 2px solid var(--accent-red);
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            color: #000;
+            background-color: var(--accent-red);
+        }
+
         .results-section {
             margin-top: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -203,7 +225,8 @@
         }
 
         .card-year {
-            font-size: 12px;
+            font-s
+ize: 12px;
             font-weight: 700;
             color: var(--accent-red);
             background: rgba(255, 42, 42, 0.12);
@@ -343,6 +366,10 @@
             <canvas id="ropeCanvas" width="750" height="70"></canvas>
         </div>
     </div>
+
+    <div class="back-container">
+        <a class="back-btn" href="index.html">חזרה לדף הבית</a>
+    </div>
 </div>
 
 <script>
@@ -388,7 +415,8 @@
         { name: "הוקמן", year: 2024, colors: ["אדום", "צבע גוף", "צהוב"] },
         { name: "שימשון", year: 2024, colors: ["חום", "צבע גוף", "בורדו"] },
         { name: "ספיד פורס", year: 2024, colors: ["צהוב", "כחול", "לבן"] },
-        { name: "טרינטי", year: 2023, colors: ["תכלת", "ירוק", "שחור", "חום"] },
+        { name: "טרינטי", year: 2023, c
+olors: ["תכלת", "ירוק", "שחור", "חום"] },
         { name: "כלב דה מוגרסי", year: 2023, colors: ["לבן", "סגול", "חום"] },
         { name: "מגנוס אווויס", year: 2023, colors: ["אדום", "כחול", "צהוב", "שחור"] },
         { name: "קוודרו קורו", year: 2023, colors: ["אדום", "שחור", "בז'"] },
@@ -511,7 +539,8 @@ function toggleColor(color) {
         if (selectedColors.includes(color)) {
             selectedColors = selectedColors.filter(c => c !== color);
         } else {
-            if (selectedColors.length >= 3) return;
+            if (selectedColors.
+length >= 3) return;
             selectedColors.push(color);
         }
         document.getElementById('status-text').textContent = `נבחרו ${selectedColors.length} מתוך 3 צבעים`;
