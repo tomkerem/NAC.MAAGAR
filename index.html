@@ -1,147 +1,33 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>דף הבית - מאגר הנשיא</title>
-
-    <!-- הפונט השבטי -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: black;
-            color: red;
-            text-align: center;
-            font-family: 'Secular One', sans-serif;
-            padding: 30px 10px;
-        }
-
-        .tile { display: block; max-width: 600px; margin: 18px auto; border: 2px solid red; border-radius: 12px; overflow: hidden; background: #000; }
-        .tile img { display: block; width: 100%; height: auto; }
-        .tile:active { opacity: .85; }
-
-        .tile-text {
-            display: flex; align-items: center; justify-content: center;
-            min-height: 180px; font-size: 44px; color: red; letter-spacing: 1px;
-        }
-
-        .jingle-card {
-            border: 2px solid red;
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #111;
-        }
-
-        iframe {
-            border-radius: 8px;
-            border: 2px solid red;
-            max-width: 100%;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 30px;
-            color: red;
-            text-decoration: none;
-            font-size: 18px;
-            border: 2px solid red;
-            padding: 10px 20px;
-            border-radius: 8px;
-        }
-
-        .back-btn:hover {
-            color: black;
-            background-color: red;
-        }
-
-        .dot {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            vertical-align: -3px;
-            margin: 0 4px;
-        }
-
-        .dot-red { background-color: red; }
-        .dot-black { background-color: black; border: 2px solid red; box-sizing: border-box; }
-
-
-        /* אנימציית פתיחה: הכותרת והקטגוריות מופיעות בהדרגה */
-        @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
-        h1, body > p, .tile, .jingle-card { animation: rise .55s ease-out both; }
-        body > p { animation-delay: .18s; }
-        .tile:nth-of-type(1)  { animation-delay: .30s; }
-        .tile:nth-of-type(2)  { animation-delay: .42s; }
-        .tile:nth-of-type(3)  { animation-delay: .54s; }
-        .tile:nth-of-type(4)  { animation-delay: .66s; }
-        .tile:nth-of-type(5)  { animation-delay: .78s; }
-        .tile:nth-of-type(6)  { animation-delay: .90s; }
-        .tile:nth-of-type(7)  { animation-delay: 1.02s; }
-        .tile:nth-of-type(8)  { animation-delay: 1.14s; }
-        .tile:nth-of-type(9)  { animation-delay: 1.26s; }
-        .tile:nth-of-type(10) { animation-delay: 1.38s; }
-        .tile:nth-of-type(11) { animation-delay: 1.50s; }
-        @media (prefers-reduced-motion: reduce) {
-            h1, body > p, .tile, .jingle-card { animation: none; }
-        }
-
-        body {
-            background: #000 url('bg-home.jpg?v=2') center/cover no-repeat fixed;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: -1;
-        }
-
-        @media (max-width: 600px) {
-            body::before { display: none; }
-            body {
-                padding-top: 58vw;
-                background:
-                    linear-gradient(to bottom, rgba(0,0,0,0) 62%, #000 98%),
-                    url('bg-home.jpg?v=2') top center / 100% auto no-repeat,
-                    #000;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<h1>מאגר הנשיא <span class="dot dot-red"></span><span class="dot dot-black"></span></h1>
-<p>שבט הנשיא</p>
-
-<a class="tile" href="media.html"><img src="bg-media.jpg?v=3" alt="מדיה וצ׳ופרים"></a>
-
-<a class="tile" href="glupot.html"><img src="bg-glupot.jpg?v=3" alt="גלופות וסמלים"></a>
-
-<a class="tile" href="catalog.html"><img src="bg-catalog.jpg?v=3" alt="קטלוג השבט"></a>
-
-<a class="tile" href="fanatia.html"><img src="bg-fanatia.jpg?v=3" alt="פנאטיות"></a>
-
-<a class="tile" href="hadracha.html"><img src="bg-hadracha.jpg?v=3" alt="הדרכה"></a>
-
-<a class="tile" href="machanot.html"><img src="bg-machanot.jpg?v=3" alt="מחנאות"></a>
-
-<a class="tile" href="jingles.html"><img src="bg-jingles.jpg?v=3" alt="ג׳ינגלים"></a>
-
-<a class="tile" href="write.html"><img src="bg-writing.jpg?v=3" alt="כתיבת פעולות"></a>
-
-<a class="tile" href="falanga.html?v=20261113-fixed1"><img src="bg-falanga.jpg?v=3" alt="מציאת הפלנגה שלך"></a>
-
-
-<a class="tile" href="market.html"><img src="1-image-173b7ece.jpg?v=1" alt="Marketplace"></a>
-
-<a class="tile" href="bareket.html"><img src="bg-bareket.jpg" alt="ברקת הנשיא"></a>
-
-</body>
-</html>
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>מאגר הנשיא</title><style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:#fff;font-family:Arial,sans-serif}#content{width:100%;height:100dvh;border:0;display:block}.music{position:fixed;bottom:16px;left:16px;width:350px;background:#131316;border:1px solid #d42b40;border-radius:16px;box-shadow:0 8px 40px #000a;overflow:hidden;z-index:1000}.head{padding:12px 14px;background:linear-gradient(120deg,#52101c,#151519);display:flex;align-items:center;justify-content:space-between;gap:8px}.head b{font-size:17px}.head button{font-size:14px;border:1px solid #d57380;background:#24131a;color:white;padding:7px 11px;border-radius:8px;cursor:pointer}#panel{padding:0 12px 10px}#panel[hidden]{display:none}label{display:block;font-size:12px;color:#d8bfc5;margin:9px 0 5px}select{width:100%;background:#27272c;color:white;border:1px solid #555;border-radius:8px;padding:8px;font-size:14px}#youtube{width:100%;height:200px;border:0;border-radius:0}#status{font-size:12px;color:#d9c6cb;min-height:15px;margin:7px 0 0;line-height:1.4}.controls{display:flex;gap:6px;padding:8px 0}.controls button{flex:1;background:#b81b33;color:white;border:0;border-radius:8px;padding:9px;font-size:14px;cursor:pointer}.music.open~*{color:inherit}body.playing #content{width:calc(100% - 380px);margin-left:380px}a{color:#ffc0c9}#fallback{font-size:11px}#fallback a{display:inline-block;padding-top:4px}
+@media(max-width:700px){.music{bottom:0;left:0;width:100%;border-radius:14px 14px 0 0}.head{padding:8px 12px}.head b{font-size:15px}#panel{padding:0 12px 5px}label{display:none}select{margin:7px 0 0;padding:6px}#youtube{height:200px}.controls{padding:5px 0}.controls button{padding:6px}#status{margin:3px 0 0;font-size:11px}#fallback{display:none}body.playing #content{width:100%;margin-left:0;height:calc(100dvh - 365px)}}
+</style></head><body>
+<iframe id="content" title="תוכן מאגר הנשיא" src="home.html?v=20261123-1" allow="fullscreen; autoplay" allowfullscreen></iframe>
+<section class="music" aria-label="נגן ג׳ינגלים"><div class="head"><b>♫ הג׳ינגלים של הנשיא</b><button id="toggle" aria-expanded="false">הפעלת מוזיקה ▶</button></div><div id="panel" hidden><label for="songs">בחירת ג׳ינגל</label><select id="songs" aria-label="בחירת ג׳ינגל"></select><div class="controls"><button id="previous" aria-label="הג׳ינגל הקודם">◀ הקודם</button><button id="pause">השהיה / ניגון</button><button id="next" aria-label="הג׳ינגל הבא">הבא ▶</button></div><div id="youtube"></div><p id="status" role="status">לחצו על ▶ בסרטון כדי להתחיל. הנגן נשאר בזמן הגלישה.</p><div id="fallback"><a id="ytlink" target="_blank" rel="noopener">פתיחה ביוטיוב ↗</a></div></div></section>
+<noscript><p>יש להפעיל JavaScript לנגן. <a href="home.html">כניסה למאגר ללא מוזיקה</a></p></noscript>
+<script>(() => {
+'use strict';
+const frame=document.getElementById('content'),panel=document.getElementById('panel'),toggle=document.getElementById('toggle'),select=document.getElementById('songs'),status=document.getElementById('status');
+let tracks=[],player=null,ready=false,index=0,opened=false;
+const base=new URL('.',location.href);
+function safePath(value){try{const u=new URL(value,base);return u.origin===base.origin&&u.pathname.startsWith(base.pathname)&&u.pathname.endsWith('.html')?u:null}catch{return null}}
+const initial=safePath(new URL(location.href).searchParams.get('page')||'home.html');
+if(initial&& !initial.pathname.endsWith('/index.html'))frame.src=initial.href;
+function message(t){status.textContent=t}
+function setLink(){document.getElementById('ytlink').href='https://www.youtube.com/watch?v='+tracks[index].id;select.value=String(index)}
+function choose(n){index=(n+tracks.length)%tracks.length;setLink();open();if(ready)player.loadVideoById(tracks[index].id)}
+function open(){opened=true;panel.hidden=false;document.body.classList.add('playing');toggle.textContent='עצירה וסגירה ✕';toggle.setAttribute('aria-expanded','true');if(!player){if(window.YT&&YT.Player)createPlayer();else{const script=document.createElement('script');script.src='https://www.youtube.com/iframe_api';script.onerror=()=>message('הנגן לא נטען. אפשר לנסות שוב או לפתוח ביוטיוב.');document.head.appendChild(script)}}}
+function close(){if(ready)player.pauseVideo();opened=false;panel.hidden=true;document.body.classList.remove('playing');toggle.textContent='הפעלת מוזיקה ▶';toggle.setAttribute('aria-expanded','false')}
+function createPlayer(){if(player||!tracks.length)return;player=new YT.Player('youtube',{height:200,width:326,videoId:tracks[index].id,playerVars:{playsinline:1,rel:0,origin:location.origin},events:{onReady:()=>{ready=true;message('לחצו על ▶ בסרטון כדי להתחיל. אפשר להמשיך לגלוש.')},onStateChange:e=>{if(e.data===1)message('מתנגן עכשיו: '+tracks[index].title);if(e.data===0)choose(index+1);if(e.data===2)message('הניגון מושהה. לחצו להמשך.')},onAutoplayBlocked:()=>message('הדפדפן דורש לחיצה על ▶ בתוך הסרטון להמשך הניגון.'),onError:()=>message('הסרטון הזה לא זמין לניגון כאן. בחרו ג׳ינגל אחר או פתחו ביוטיוב.')}})}
+window.onYouTubeIframeAPIReady=createPlayer;
+toggle.addEventListener('click',()=>{if(!tracks.length)return;opened?close():open()});
+select.addEventListener('change',()=>choose(Number(select.value)));
+document.getElementById('previous').onclick=()=>choose(index-1);
+document.getElementById('next').onclick=()=>choose(index+1);
+document.getElementById('pause').onclick=()=>{if(!ready)return;player.getPlayerState()===1?player.pauseVideo():player.playVideo()};
+window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==frame.contentWindow)return;if(e.data?.type==='nac-jingle'){const n=tracks.findIndex(t=>t.id===e.data.id);if(n>=0)choose(n)}if(e.data?.type==='nac-media-play'&&ready)player.pauseVideo()});
+frame.addEventListener('load',()=>{try{const doc=frame.contentDocument;document.title=doc.title||'מאגר הנשיא';const url=new URL(frame.contentWindow.location.href);if(url.pathname.endsWith('/index.html')){frame.contentWindow.location.replace(new URL('home.html',base).href);return}doc.addEventListener('click',e=>{const a=e.target.closest('a');if(!a||a.target==='_blank'||a.hasAttribute('download'))return;const u=safePath(a.href);if(!u)return;if(u.pathname.endsWith('/index.html')){e.preventDefault();frame.contentWindow.location.href=new URL('home.html',base).href}});doc.addEventListener('play',()=>{if(ready)player.pauseVideo()},true);if(url.origin===location.origin){const route=url.pathname.slice(base.pathname.length)+url.search+url.hash;history.replaceState(null,'',route.startsWith('home.html')?base.pathname:base.pathname+'?page='+encodeURIComponent(route))}}catch{}});
+Promise.resolve([{"id": "J-Cz7m-9AbI", "title": "ברקת שביעיות - שירת הג׳ינגל"}, {"id": "0cd7wzK5SNc", "title": "ג'ינגל 67- הנשיאפיקציה רותם סייפן"}, {"id": "kIv11bPXGQg", "title": "ג'ינגל תורן NA-SIU- מחנה קיץ 2026 | שבט הנשיא"}, {"id": "YV2xDp4wUwI", "title": "פולג חמישיות פותחים שנה"}, {"id": "-TWLert7nkg", "title": "פסטיבל אביב 2026- רותם שמיניות- בלדה על סנדה"}, {"id": "pMFHp0FG4d0", "title": "שאנטי-גינגל פעילים 2025 שבט הנשיא"}, {"id": "A-NVl5he4Hw", "title": "פסטיבל אביב 2025 שבט הנשיא: סהר שמיניות - שוברים ת'מוסכמות"}, {"id": "wiFyRKiMyfM", "title": "סהר במדבר - חנוכה 88 שבט הנשיא"}, {"id": "tc5MwVVpLFQ", "title": "ג'ינגל חמישיות 2024-2025 - גדוד ברקת"}, {"id": "4FhHGiPOSyE", "title": "ג׳ינגל תורן 2024 - [עוז, סהר, רותם]"}, {"id": "aWjqR5iN8x0", "title": "ג׳ינגל שכבת ח פתיחת שנה"}, {"id": "DR4hiuOnz5Q", "title": "ג׳ינגל אתגר 2025 אימפריית הנשיא!"}]).then(data=>{tracks=data;tracks.forEach((t,i)=>{const o=document.createElement('option');o.value=i;o.textContent=t.title;select.appendChild(o)});setLink()}).catch(()=>{toggle.textContent='הנגן לא זמין כרגע';toggle.disabled=true});
+})();
+</script></body></html>
