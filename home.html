@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דף הבית - מאגר הנשיא</title>
+
+    <!-- הפונט השבטי -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Secular+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: black;
+            color: red;
+            text-align: center;
+            font-family: 'Secular One', sans-serif;
+            padding: 30px 10px;
+        }
+
+        .tile { display: block; max-width: 600px; margin: 18px auto; border: 2px solid red; border-radius: 12px; overflow: hidden; background: #000; }
+        .tile img { display: block; width: 100%; height: auto; }
+        .tile:active { opacity: .85; }
+
+        .tile-text {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 180px; font-size: 44px; color: red; letter-spacing: 1px;
+        }
+
+        .jingle-card {
+            border: 2px solid red;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #111;
+        }
+
+        iframe {
+            border-radius: 8px;
+            border: 2px solid red;
+            max-width: 100%;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: red;
+            text-decoration: none;
+            font-size: 18px;
+            border: 2px solid red;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .back-btn:hover {
+            color: black;
+            background-color: red;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            vertical-align: -3px;
+            margin: 0 4px;
+        }
+
+        .dot-red { background-color: red; }
+        .dot-black { background-color: black; border: 2px solid red; box-sizing: border-box; }
+
+
+        /* אנימציית פתיחה: הכותרת והקטגוריות מופיעות בהדרגה */
+        @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+        h1, body > p, .tile, .jingle-card { animation: rise .55s ease-out both; }
+        body > p { animation-delay: .18s; }
+        .tile:nth-of-type(1)  { animation-delay: .30s; }
+        .tile:nth-of-type(2)  { animation-delay: .42s; }
+        .tile:nth-of-type(3)  { animation-delay: .54s; }
+        .tile:nth-of-type(4)  { animation-delay: .66s; }
+        .tile:nth-of-type(5)  { animation-delay: .78s; }
+        .tile:nth-of-type(6)  { animation-delay: .90s; }
+        .tile:nth-of-type(7)  { animation-delay: 1.02s; }
+        .tile:nth-of-type(8)  { animation-delay: 1.14s; }
+        .tile:nth-of-type(9)  { animation-delay: 1.26s; }
+        .tile:nth-of-type(10) { animation-delay: 1.38s; }
+        .tile:nth-of-type(11) { animation-delay: 1.50s; }
+        @media (prefers-reduced-motion: reduce) {
+            h1, body > p, .tile, .jingle-card { animation: none; }
+        }
+
+        body {
+            background: #000 url('bg-home.jpg?v=2') center/cover no-repeat fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        @media (max-width: 600px) {
+            body::before { display: none; }
+            body {
+                padding-top: 58vw;
+                background:
+                    linear-gradient(to bottom, rgba(0,0,0,0) 62%, #000 98%),
+                    url('bg-home.jpg?v=2') top center / 100% auto no-repeat,
+                    #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>מאגר הנשיא <span class="dot dot-red"></span><span class="dot dot-black"></span></h1>
+<p>שבט הנשיא</p>
+
+<a class="tile" href="media.html"><img src="bg-media.jpg?v=3" alt="מדיה וצ׳ופרים"></a>
+
+<a class="tile" href="glupot.html"><img src="bg-glupot.jpg?v=3" alt="גלופות וסמלים"></a>
+
+<a class="tile" href="catalog.html"><img src="bg-catalog.jpg?v=3" alt="קטלוג השבט"></a>
+
+<a class="tile" href="fanatia.html"><img src="bg-fanatia.jpg?v=3" alt="פנאטיות"></a>
+
+<a class="tile" href="hadracha.html"><img src="bg-hadracha.jpg?v=3" alt="הדרכה"></a>
+
+<a class="tile" href="machanot.html"><img src="bg-machanot.jpg?v=3" alt="מחנאות"></a>
+
+<a class="tile" href="jingles.html"><img src="bg-jingles.jpg?v=3" alt="ג׳ינגלים"></a>
+
+<a class="tile" href="write.html"><img src="bg-writing.jpg?v=3" alt="כתיבת פעולות"></a>
+
+<a class="tile" href="falanga.html?v=20261113-fixed1"><img src="bg-falanga.jpg?v=3" alt="מציאת הפלנגה שלך"></a>
+
+
+<a class="tile" href="market.html"><img src="1-image-173b7ece.jpg?v=1" alt="Marketplace"></a>
+
+<a class="tile" href="bareket.html"><img src="bg-bareket.jpg" alt="ברקת הנשיא"></a>
+
+</body>
+</html>
